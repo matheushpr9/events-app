@@ -9,7 +9,7 @@ const Header = () => {
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
-          <div className="flex items-center space-x-2">
+          <div className="flex items-center space-x-2 cursor-pointer" onClick={() => window.location.href = '/'}>
             <MapPin className="h-8 w-8 text-primary" />
             <span className="text-xl font-bold text-foreground">EventSpace</span>
           </div>
@@ -17,8 +17,8 @@ const Header = () => {
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-4">
             <span className="text-sm text-muted-foreground">Quer cadastrar seu espaço?</span>
-            <Button variant="ghost" size="sm">Login</Button>
-            <Button size="sm">Cadastrar</Button>
+            <Button variant="ghost" className="justify-start cursor-pointer hover:bg-gray-200 transition duration-300" onClick={() => window.location.href = '/login'} >Login</Button>
+            <Button className="justify-start cursor-pointer hover:bg-gray-200 transition duration-300" onClick={() => window.location.href = '/register'}>Cadastrar</Button>
           </div>
 
           {/* Mobile Menu */}
@@ -31,8 +31,8 @@ const Header = () => {
             <SheetContent side="right" className="w-72">
               <div className="flex flex-col space-y-4 mt-8">
                 <p className="text-sm text-muted-foreground">Quer cadastrar seu espaço?</p>
-                <Button variant="ghost" className="justify-start">Login</Button>
-                <Button className="justify-start">Cadastrar</Button>
+                <Button variant="ghost" className="justify-start" onClick={() => window.location.href = '/login'}>Login</Button>
+                <Button className="justify-start" onClick={() => window.location.href = '/register'}>Cadastrar</Button>
               </div>
             </SheetContent>
           </Sheet>

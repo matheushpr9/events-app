@@ -7,14 +7,11 @@ Route::get('/', function () {
     return Inertia::render('Spaces/Home');
 })->name('home');
 
-Route::get('/register-space', function () {
-    return Inertia::render(component: 'Spaces/Register');
-})->name('register-space');
-
 Route::middleware(['auth', 'verified'])->group(function () {
-    Route::get('dashboard', function () {
-        return Inertia::render('dashboard');
-    })->name('dashboard');
+
+    Route::get('/register-space', function () {
+        return Inertia::render(component: 'Spaces/Register');
+    })->name('register-space');
 });
 
 require __DIR__.'/settings.php';

@@ -8,7 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Badge } from '@/components/ui/badge';
 import { LoaderCircle, Upload, X, ImageIcon, MapPin, Users, DollarSign, Calendar, Home } from 'lucide-react';
 
-import Header from './components/Header';
+import Header from '../components/Header';
 
 type SpaceFormType = {
   images: File[];

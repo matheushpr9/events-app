@@ -1,8 +1,8 @@
 
 import { useState } from 'react';
-import Header from './components/Header';
-import SearchSection from './components/SearchSection';
-import SpaceCard from './components/SpaceCard';
+import Header from '../components/Header';
+import SearchSection from '../components/SearchSection';
+import SpaceCard from '../components/SpaceCard';
 
 interface SearchFilters {
   location: string;
