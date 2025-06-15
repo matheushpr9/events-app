@@ -22,3 +22,5 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local
 # Set working directory
 RUN composer global require laravel/installer
 # RUN npm install && npm run build
+# npm install
+# php artisan key:generate
