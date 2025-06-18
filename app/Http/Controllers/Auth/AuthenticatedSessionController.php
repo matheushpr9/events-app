@@ -48,4 +48,12 @@ class AuthenticatedSessionController extends Controller
 
         return redirect('/');
     }
+    public function user(Request $request)
+    {
+        return response()->json([
+            'authenticated' => Auth::check(),
+            'user' => Auth::user(),
+        ]);
+    }
 }
+

@@ -9,23 +9,22 @@ import Header from '../components/Header';
 
 const Cadastro = () => {
   const { data, setData, post, processing, errors, reset } = useForm({
-    nome: '',
+    name: '',
     email: '',
-    telefone: '',
-    senha: '',
-    confirmarSenha: ''
+    phone_number: '',
+    password: '',
+    password_confirmation: ''
   });
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (data.senha !== data.confirmarSenha) {
-      alert('As senhas não coincidem');
-      return;
-    }
+
+    console.log('Dados do formulário:', data);
+
     post(route('register'), {
-      onFinish: () => reset('senha', 'confirmarSenha'),
+      onFinish: () => reset('password', 'password_confirmation'),
     });
   };
 
@@ -60,16 +59,16 @@ const Cadastro = () => {
                   <div className="space-y-2">
                     <Label htmlFor="nome" className="text-sm font-semibold text-blue-700">Nome completo</Label>
                     <Input
-                      id="nome"
+                      id="name"
                       type="text"
                       placeholder="Digite seu nome completo"
-                      value={data.nome}
-                      onChange={(e) => setData('nome', e.target.value)}
+                      value={data.name}
+                      onChange={(e) => setData('name', e.target.value)}
                       required
                       autoFocus
                       className="bg-white text-gray-800 border border-gray-300 placeholder:text-muted-foreground focus:ring-2 focus:ring-blue-400"
                     />
-                    {errors.nome && <span className="text-red-500 text-sm">{errors.nome}</span>}
+                    {errors.name && <span className="text-red-500 text-sm">{errors.name}</span>}
                   </div>
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -96,15 +95,15 @@ const Cadastro = () => {
                         Telefone
                       </Label>
                       <Input
-                        id="telefone"
+                        id="phone_number"
                         type="tel"
                         placeholder="(11) 99999-9999"
-                        value={data.telefone}
-                        onChange={(e) => setData('telefone', e.target.value)}
+                        value={data.phone_number}
+                        onChange={(e) => setData('phone_number', e.target.value)}
                         required
                         className="bg-white text-gray-800 border border-gray-300 placeholder:text-muted-foreground focus:ring-2 focus:ring-blue-400"
                       />
-                      {errors.telefone && <span className="text-red-500 text-sm">{errors.telefone}</span>}
+                      {errors.phone_number && <span className="text-red-500 text-sm">{errors.phone_number}</span>}
                     </div>
                   </div>
                 </div>
@@ -128,11 +127,11 @@ const Cadastro = () => {
                     <Label htmlFor="senha" className="text-sm font-semibold text-green-700">Senha</Label>
                     <div className="relative">
                       <Input
-                        id="senha"
+                        id="password"
                         type={showPassword ? 'text' : 'password'}
                         placeholder="Digite uma senha"
-                        value={data.senha}
-                        onChange={(e) => setData('senha', e.target.value)}
+                        value={data.password}
+                        onChange={(e) => setData('password', e.target.value)}
                         required
                         className="bg-white text-gray-800 border border-gray-300 placeholder:text-muted-foreground focus:ring-2 focus:ring-green-400 pr-10"
                       />
@@ -150,18 +149,18 @@ const Cadastro = () => {
                         )}
                       </Button>
                     </div>
-                    {errors.senha && <span className="text-red-500 text-sm">{errors.senha}</span>}
+                    {errors.password && <span className="text-red-500 text-sm">{errors.password}</span>}
                   </div>
 
                   <div className="space-y-2">
                     <Label htmlFor="confirmarSenha" className="text-sm font-semibold text-green-700">Confirmar senha</Label>
                     <div className="relative">
                       <Input
-                        id="confirmarSenha"
+                        id="password_confirmation"
                         type={showConfirmPassword ? 'text' : 'password'}
                         placeholder="Confirme sua senha"
-                        value={data.confirmarSenha}
-                        onChange={(e) => setData('confirmarSenha', e.target.value)}
+                        value={data.password_confirmation}
+                        onChange={(e) => setData('password_confirmation', e.target.value)}
                         required
                         className="bg-white text-gray-800 border border-gray-300 placeholder:text-muted-foreground focus:ring-2 focus:ring-green-400 pr-10"
                       />
@@ -179,7 +178,7 @@ const Cadastro = () => {
                         )}
                       </Button>
                     </div>
-                    {errors.confirmarSenha && <span className="text-red-500 text-sm">{errors.confirmarSenha}</span>}
+                    {errors.password_confirmation && <span className="text-red-500 text-sm">{errors.password_confirmation}</span>}
                   </div>
                 </div>
               </CardContent>
