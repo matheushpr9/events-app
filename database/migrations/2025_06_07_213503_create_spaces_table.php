@@ -16,7 +16,6 @@ return new class extends Migration
         Schema::create('spaces', function (Blueprint $table) {
             $table->id();
             $table->integer('people_capacity');
-            $table->string('cep')->index();
             $table->float('price_per_person_buffet');
             $table->integer('events_count')->default(0);
             //$table->text('feedbacks')->nullable();

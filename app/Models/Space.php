@@ -13,7 +13,6 @@ class Space extends Model
 
     protected $fillable = [
         'people_capacity',
-        'cep',
         'price_per_person_buffet',
         'events_count',
         'type',

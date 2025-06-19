@@ -1,3 +1,4 @@
+
 import { useState, ChangeEvent, FormEventHandler } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -13,7 +14,14 @@ import Header from '../components/Header';
 type SpaceFormType = {
   images: File[];
   people_capacity: string;
-  cep: string;
+  postal_code: string;
+  street: string;
+  neighborhood: string;
+  number: string;
+  complement: string;
+  city: string;
+  state: string;
+  country: string;
   price_per_person_buffet: string;
   events_count: string;
   //feedbacks: string;
@@ -56,7 +64,14 @@ export default function Index() {
   const [data, setData] = useState<SpaceFormType>({
     images: [],
     people_capacity: '',
-    cep: '',
+    postal_code: '',
+    street: '',
+    neighborhood: '',
+    number: '',
+    complement: '',
+    city: '',
+    state: '',
+    country: '',
     price_per_person_buffet: '',
     events_count: '',
     // feedbacks: '',
@@ -76,13 +91,21 @@ export default function Index() {
   };
 
   const submit: FormEventHandler = async (e) => {
+    const validImages = data.images.filter(file => file && file.size > 0 && file.type.startsWith('image/'));
     e.preventDefault();
     setProcessing(true);
 
     const formData = new FormData();
-    data.images.forEach((file) => formData.append('images[]', file));
+    validImages.forEach((file) => formData.append('images[]', file));
     formData.append('people_capacity', data.people_capacity);
-    formData.append('cep', data.cep);
+    formData.append('postal_code', data.postal_code);
+    formData.append('street', data.street);
+    formData.append('neighborhood', data.neighborhood);
+    formData.append('number', data.number);
+    formData.append('complement', data.complement);
+    formData.append('city', data.city);
+    formData.append('state', data.state);
+    formData.append('country', data.country);
     formData.append('price_per_person_buffet', data.price_per_person_buffet);
     formData.append('events_count', data.events_count);
     //formData.append('feedbacks', data.feedbacks);
@@ -93,6 +116,10 @@ export default function Index() {
     data.services.forEach((item) => formData.append('services[]', item));
 
     try {
+        console.log('Imagens para envio:', validImages);
+for (const pair of formData.entries()) {
+  console.log(pair[0], pair[1]);
+}
       const response = await fetch('/api/spaces', {
         method: 'POST',
         body: formData,
@@ -106,7 +133,14 @@ export default function Index() {
         setData({
           images: [],
           people_capacity: '',
-          cep: '',
+          postal_code: '',
+          street: '',
+          neighborhood: '',
+          number: '',
+          complement: '',
+          city: '',
+          state: '',
+          country: '',
           price_per_person_buffet: '',
           events_count: '',
           //feedbacks: '',
@@ -195,7 +229,10 @@ export default function Index() {
                         type="file"
                         accept="image/*"
                         multiple
-                        onChange={handleFileChange}
+                        onChange={e => {
+                            handleFileChange(e);
+                            e.target.value = ''; // Limpa o input
+                        }}
                         disabled={processing}
                         className="hidden"
                         id="images-upload"
@@ -288,7 +325,7 @@ export default function Index() {
                     </Select>
                     </div>
 
-                    <div className="space-y-2">
+                    <div className="space-y-2 md:col-span-2">
                     <Label className="flex items-center gap-2 text-sm font-semibold text-blue-700">
                         <Users className="w-4 h-4" />
                         Capacidade de Pessoas
@@ -301,18 +338,118 @@ export default function Index() {
                         className="bg-white text-gray-800 border border-gray-300 placeholder:text-muted-foreground"
                     />
                     </div>
+                </div>
+                </CardContent>
+            </Card>
 
+            {/* Address Section */}
+            <Card className="border-0 shadow-xl bg-white/90 backdrop-blur-md">
+                <CardHeader className="pb-4">
+                <CardTitle className="flex items-center gap-2 text-xl text-gray-800 font-bold">
+                    <MapPin className="w-5 h-5 text-purple-600" />
+                    Endereço
+                </CardTitle>
+                <CardDescription>
+                    Informe o endereço completo do seu espaço para eventos.
+                </CardDescription>
+                </CardHeader>
+                <CardContent>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div className="space-y-2">
-                    <Label className="flex items-center gap-2 text-sm font-semibold text-blue-700">
+                    <Label className="flex items-center gap-2 text-sm font-semibold text-purple-700">
                         <MapPin className="w-4 h-4" />
                         CEP
                     </Label>
                     <Input
                         type="text"
-                        value={data.cep}
-                        onChange={e => setData(prev => ({ ...prev, cep: e.target.value }))}
+                        value={data.postal_code}
+                        onChange={e => setData(prev => ({ ...prev, postal_code: e.target.value }))}
                         placeholder="00000-000"
-                        className="bg-white text-gray-800 border border-gray-300 placeholder:text-muted-foreground"
+                        className="bg-white text-gray-800 border border-gray-300 placeholder:text-muted-foreground focus:ring-2 focus:ring-purple-400"
+                    />
+                    </div>
+
+                    <div className="space-y-2">
+                    <Label htmlFor="street" className="text-sm font-semibold text-purple-700">Rua/Avenida</Label>
+                    <Input
+                        id="street"
+                        type="text"
+                        value={data.street}
+                        onChange={e => setData(prev => ({ ...prev, street: e.target.value }))}
+                        placeholder="Ex: Rua das Flores"
+                        className="bg-white text-gray-800 border border-gray-300 placeholder:text-muted-foreground focus:ring-2 focus:ring-purple-400"
+                    />
+                    </div>
+
+                    <div className="space-y-2">
+                    <Label htmlFor="number" className="text-sm font-semibold text-purple-700">Número</Label>
+                    <Input
+                        id="number"
+                        type="text"
+                        value={data.number}
+                        onChange={e => setData(prev => ({ ...prev, number: e.target.value }))}
+                        placeholder="Ex: 123"
+                        className="bg-white text-gray-800 border border-gray-300 placeholder:text-muted-foreground focus:ring-2 focus:ring-purple-400"
+                    />
+                    </div>
+
+                    <div className="space-y-2">
+                    <Label htmlFor="complement" className="text-sm font-semibold text-purple-700">Complemento</Label>
+                    <Input
+                        id="complement"
+                        type="text"
+                        value={data.complement}
+                        onChange={e => setData(prev => ({ ...prev, complement: e.target.value }))}
+                        placeholder="Ex: Bloco A, Apto 101"
+                        className="bg-white text-gray-800 border border-gray-300 placeholder:text-muted-foreground focus:ring-2 focus:ring-purple-400"
+                    />
+                    </div>
+
+                    <div className="space-y-2">
+                    <Label htmlFor="neighborhood" className="text-sm font-semibold text-purple-700">Bairro</Label>
+                    <Input
+                        id="neighborhood"
+                        type="text"
+                        value={data.neighborhood}
+                        onChange={e => setData(prev => ({ ...prev, neighborhood: e.target.value }))}
+                        placeholder="Ex: Centro"
+                        className="bg-white text-gray-800 border border-gray-300 placeholder:text-muted-foreground focus:ring-2 focus:ring-purple-400"
+                    />
+                    </div>
+
+                    <div className="space-y-2">
+                    <Label htmlFor="city" className="text-sm font-semibold text-purple-700">Cidade</Label>
+                    <Input
+                        id="city"
+                        type="text"
+                        value={data.city}
+                        onChange={e => setData(prev => ({ ...prev, city: e.target.value }))}
+                        placeholder="Ex: São Paulo"
+                        className="bg-white text-gray-800 border border-gray-300 placeholder:text-muted-foreground focus:ring-2 focus:ring-purple-400"
+                    />
+                    </div>
+
+                    <div className="space-y-2">
+                    <Label htmlFor="state" className="text-sm font-semibold text-purple-700">Estado</Label>
+                    <Input
+                        id="state"
+                        type="text"
+                        value={data.state}
+                        onChange={e => setData(prev => ({ ...prev, state: e.target.value }))}
+                        placeholder="Ex: SP"
+                        className="bg-white text-gray-800 border border-gray-300 placeholder:text-muted-foreground focus:ring-2 focus:ring-purple-400"
+                    />
+                    </div>
+
+                    <div className="space-y-2">
+                    <Label htmlFor="country" className="text-sm font-semibold text-purple-700">País</Label>
+                    <Input
+                        id="country"
+                        type="text"
+                        value={data.country}
+                        onChange={e => setData(prev => ({ ...prev, country: e.target.value }))}
+                        placeholder="Ex: Brasil"
+                        className="bg-white text-gray-800 border border-gray-300 placeholder:text-muted-foreground focus:ring-2 focus:ring-purple-400"
                     />
                     </div>
                 </div>
