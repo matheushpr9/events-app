@@ -1,15 +1,14 @@
-
-import { useState, ChangeEvent, FormEventHandler } from 'react';
+import { useState, ChangeEvent, FormEventHandler, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-//import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
 import { LoaderCircle, Upload, X, ImageIcon, MapPin, Users, DollarSign, Calendar, Home } from 'lucide-react';
-
 import Header from '../components/Header';
+import { toast,ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 type SpaceFormType = {
   images: File[];
@@ -83,6 +82,101 @@ export default function Index() {
   });
 
   const [processing, setProcessing] = useState(false);
+  const [errors, setErrors] = useState<string[]>([]);
+
+  const validateForm = (): boolean => {
+    const newErrors: string[] = [];
+
+    // Validação de imagens
+    if (data.images.length === 0) {
+      newErrors.push('Adicione pelo menos uma imagem do espaço');
+    }
+
+    // Validação de capacidade de pessoas
+    if (!data.people_capacity.trim()) {
+      newErrors.push('Capacidade de pessoas é obrigatória');
+    }
+
+    // Validação de endereço
+    if (!data.postal_code.trim()) {
+      newErrors.push('CEP é obrigatório');
+    }
+    if (!data.street.trim()) {
+      newErrors.push('Rua/Avenida é obrigatória');
+    }
+    if (!data.neighborhood.trim()) {
+      newErrors.push('Bairro é obrigatório');
+    }
+    if (!data.number.trim()) {
+      newErrors.push('Número é obrigatório');
+    }
+    if (!data.city.trim()) {
+      newErrors.push('Cidade é obrigatória');
+    }
+    if (!data.state.trim()) {
+      newErrors.push('Estado é obrigatório');
+    }
+    if (!data.country.trim()) {
+      newErrors.push('País é obrigatório');
+    }
+
+    // Validação de tipo e localidade
+    if (!data.type) {
+      newErrors.push('Tipo do espaço é obrigatório');
+    }
+    if (!data.locality) {
+      newErrors.push('Localidade é obrigatória');
+    }
+
+    // Validação de comodidades e serviços
+    if (data.amenities.length === 0) {
+      newErrors.push('Selecione pelo menos uma comodidade');
+    }
+    if (data.services.length === 0) {
+      newErrors.push('Selecione pelo menos um serviço');
+    }
+
+    // Validação de descrição
+    if (!data.description.trim()) {
+      newErrors.push('Descrição do espaço é obrigatória');
+    }
+
+    setErrors(newErrors);
+
+     if (newErrors.length > 0) {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    return newErrors.length === 0;
+  };
+
+  const fetchAddressByCep = async (cep: string) => {
+    try {
+      const cleanCep = cep.replace(/\D/g, '');
+      if (cleanCep.length !== 8) return;
+      const res = await fetch(`https://viacep.com.br/ws/${cleanCep}/json/`);
+      const address = await res.json();
+      if (!address.erro) {
+        setData(prev => ({
+          ...prev,
+          street: address.logradouro || '',
+          neighborhood: address.bairro || '',
+          city: address.localidade || '',
+          state: address.uf || '',
+          country: 'Brasil',
+        }));
+      }
+    } catch (err) {
+        console.error('Erro ao buscar endereço:', err);
+        alert('Erro ao buscar endereço. Verifique o CEP informado.');
+    }
+  };
+
+  useEffect(() => {
+    if (data.postal_code && data.postal_code.replace(/\D/g, '').length === 8) {
+      fetchAddressByCep(data.postal_code);
+    }
+  }, [data.postal_code]);
 
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
@@ -91,8 +185,22 @@ export default function Index() {
   };
 
   const submit: FormEventHandler = async (e) => {
-    const validImages = data.images.filter(file => file && file.size > 0 && file.type.startsWith('image/'));
     e.preventDefault();
+
+    // Validar formulário antes de prosseguir
+    if (!validateForm()) {
+      toast.error('Por favor, preencha todos os campos obrigatórios!', {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+      });
+      return;
+    }
+
+     const validImages = data.images.filter(file => file && file.size > 0 && file.type.startsWith('image/'));
     setProcessing(true);
 
     const formData = new FormData();
@@ -108,7 +216,6 @@ export default function Index() {
     formData.append('country', data.country);
     formData.append('price_per_person_buffet', data.price_per_person_buffet);
     formData.append('events_count', data.events_count);
-    //formData.append('feedbacks', data.feedbacks);
     formData.append('type', data.type);
     formData.append('locality', data.locality);
     formData.append('description', data.description);
@@ -117,9 +224,9 @@ export default function Index() {
 
     try {
         console.log('Imagens para envio:', validImages);
-for (const pair of formData.entries()) {
-  console.log(pair[0], pair[1]);
-}
+        for (const pair of formData.entries()) {
+          console.log(pair[0], pair[1]);
+        }
       const response = await fetch('/api/spaces', {
         method: 'POST',
         body: formData,
@@ -127,74 +234,100 @@ for (const pair of formData.entries()) {
 
       if (!response.ok) {
         const errorData = await response.json();
-        alert('Erro ao cadastrar espaço: ' + (errorData.message || 'Erro desconhecido'));
-      } else {
-        alert('Espaço cadastrado com sucesso!');
-        setData({
-          images: [],
-          people_capacity: '',
-          postal_code: '',
-          street: '',
-          neighborhood: '',
-          number: '',
-          complement: '',
-          city: '',
-          state: '',
-          country: '',
-          price_per_person_buffet: '',
-          events_count: '',
-          //feedbacks: '',
-          type: '',
-          locality: '',
-          amenities: [],
-          services: [],
-          description: '',
+        toast.error('Erro ao cadastrar espaço: ' + (errorData.message || 'Erro desconhecido'), {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
         });
-      }
-    } catch (err) {
-      console.error('Erro ao cadastrar espaço:', err);
-    } finally {
-      setProcessing(false);
-    }
-  };
+      } else {
+        setData({
+            images: [],
+            people_capacity: '',
+            postal_code: '',
+            street: '',
+            neighborhood: '',
+            number: '',
+            complement: '',
+            city: '',
+            state: '',
+            country: '',
+            price_per_person_buffet: '',
+            events_count: '',
+            type: '',
+            locality: '',
+            amenities: [],
+            services: [],
+            description: '',
+        });
+        setErrors([]);
+        // Mostre o toast DEPOIS de limpar o formulário
+        setTimeout(() => {
+            toast.success('Espaço cadastrado com sucesso!', {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            });
+        }, 100);
+            }
+            } catch (err) {
+            console.error('Erro ao cadastrar espaço:', err);
+            toast.error('Erro inesperado ao cadastrar espaço. Tente novamente.', {
+                position: "top-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+            });
+            } finally {
+            setProcessing(false);
+            }
+        };
 
-  const removeImage = (idx: number) => {
-    setData(prev => ({
-      ...prev,
-      images: prev.images.filter((_, i) => i !== idx)
-    }));
-  };
+        const removeImage = (idx: number) => {
+            setData(prev => ({
+            ...prev,
+            images: prev.images.filter((_, i) => i !== idx)
+            }));
+        };
 
-  const handleAddImages = (e: ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files) {
-      setData(prev => ({
-        ...prev,
-        images: [...prev.images, ...Array.from(e.target.files!)]
-      }));
-    }
-  };
+        const handleAddImages = (e: ChangeEvent<HTMLInputElement>) => {
+            if (e.target.files) {
+            setData(prev => ({
+                ...prev,
+                images: [...prev.images, ...Array.from(e.target.files!)]
+            }));
+            }
+        };
 
-  const toggleAmenity = (amenity: string) => {
-    setData(prev => ({
-      ...prev,
-      amenities: prev.amenities.includes(amenity)
-        ? prev.amenities.filter(a => a !== amenity)
-        : [...prev.amenities, amenity]
-    }));
-  };
+        const toggleAmenity = (amenity: string) => {
+            setData(prev => ({
+            ...prev,
+            amenities: prev.amenities.includes(amenity)
+                ? prev.amenities.filter(a => a !== amenity)
+                : [...prev.amenities, amenity]
+            }));
+        };
 
-  const toggleService = (service: string) => {
-    setData(prev => ({
-      ...prev,
-      services: prev.services.includes(service)
-        ? prev.services.filter(s => s !== service)
-        : [...prev.services, service]
-    }));
-  };
+        const toggleService = (service: string) => {
+            setData(prev => ({
+            ...prev,
+            services: prev.services.includes(service)
+                ? prev.services.filter(s => s !== service)
+                : [...prev.services, service]
+            }));
+        };
 
   return (
     <div>
       <Header />
+      <ToastContainer />
 
         <div className="min-h-screen bg-gradient-to-br from-blue-100 via-white to-purple-100 py-10 px-4">
 
@@ -210,13 +343,29 @@ for (const pair of formData.entries()) {
             </p>
             </div>
 
-            <form onSubmit={submit} className="space-y-10">
+            {/* Exibir erros de validação */}
+            {errors.length > 0 && (
+              <Card className="border-red-200 bg-red-50 mb-6">
+                <CardContent className="pt-4">
+                  <div className="text-red-700">
+                    <h3 className="font-semibold mb-2">Campos obrigatórios não preenchidos:</h3>
+                    <ul className="list-disc list-inside space-y-1">
+                      {errors.map((error, index) => (
+                        <li key={index} className="text-sm">{error}</li>
+                      ))}
+                    </ul>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+
+             <form onSubmit={submit} className="space-y-10">
             {/* Images Section */}
             <Card className="border-0 shadow-xl bg-white/90 backdrop-blur-md">
                 <CardHeader className="pb-4">
                 <CardTitle className="flex items-center gap-2 text-xl text-gray-800 font-bold">
                     <ImageIcon className="w-5 h-5 text-blue-600" />
-                    Fotos do Espaço
+                    Fotos do Espaço *
                 </CardTitle>
                 <CardDescription>
                     Adicione fotos atrativas do seu espaço para chamar atenção dos clientes.
@@ -298,7 +447,7 @@ for (const pair of formData.entries()) {
                 <CardContent>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                     <div className="space-y-2">
-                    <Label htmlFor="type" className="text-sm font-semibold text-blue-700">Tipo do Espaço</Label>
+                    <Label htmlFor="type" className="text-sm font-semibold text-blue-700">Tipo do Espaço *</Label>
                     <Select value={data.type} onValueChange={(value) => setData(prev => ({ ...prev, type: value }))}>
                         <SelectTrigger className="bg-white text-gray-800 border border-gray-300 focus:ring-2 focus:ring-blue-400">
                         <SelectValue placeholder="Selecione o tipo" />
@@ -312,7 +461,7 @@ for (const pair of formData.entries()) {
                     </div>
 
                     <div className="space-y-2">
-                    <Label htmlFor="locality" className="text-sm font-semibold text-blue-700">Localidade</Label>
+                    <Label htmlFor="locality" className="text-sm font-semibold text-blue-700">Localidade *</Label>
                     <Select value={data.locality} onValueChange={(value) => setData(prev => ({ ...prev, locality: value }))}>
                         <SelectTrigger className="bg-white text-gray-800 border border-gray-300 focus:ring-2 focus:ring-blue-400">
                         <SelectValue placeholder="Selecione a localidade" />
@@ -328,7 +477,7 @@ for (const pair of formData.entries()) {
                     <div className="space-y-2 md:col-span-2">
                     <Label className="flex items-center gap-2 text-sm font-semibold text-blue-700">
                         <Users className="w-4 h-4" />
-                        Capacidade de Pessoas
+                        Capacidade de Pessoas *
                     </Label>
                     <Input
                         type="number"
@@ -358,7 +507,7 @@ for (const pair of formData.entries()) {
                     <div className="space-y-2">
                     <Label className="flex items-center gap-2 text-sm font-semibold text-purple-700">
                         <MapPin className="w-4 h-4" />
-                        CEP
+                        CEP *
                     </Label>
                     <Input
                         type="text"
@@ -370,7 +519,7 @@ for (const pair of formData.entries()) {
                     </div>
 
                     <div className="space-y-2">
-                    <Label htmlFor="street" className="text-sm font-semibold text-purple-700">Rua/Avenida</Label>
+                    <Label htmlFor="street" className="text-sm font-semibold text-purple-700">Rua/Avenida *</Label>
                     <Input
                         id="street"
                         type="text"
@@ -382,7 +531,7 @@ for (const pair of formData.entries()) {
                     </div>
 
                     <div className="space-y-2">
-                    <Label htmlFor="number" className="text-sm font-semibold text-purple-700">Número</Label>
+                    <Label htmlFor="number" className="text-sm font-semibold text-purple-700">Número *</Label>
                     <Input
                         id="number"
                         type="text"
@@ -406,7 +555,7 @@ for (const pair of formData.entries()) {
                     </div>
 
                     <div className="space-y-2">
-                    <Label htmlFor="neighborhood" className="text-sm font-semibold text-purple-700">Bairro</Label>
+                    <Label htmlFor="neighborhood" className="text-sm font-semibold text-purple-700">Bairro *</Label>
                     <Input
                         id="neighborhood"
                         type="text"
@@ -418,7 +567,7 @@ for (const pair of formData.entries()) {
                     </div>
 
                     <div className="space-y-2">
-                    <Label htmlFor="city" className="text-sm font-semibold text-purple-700">Cidade</Label>
+                    <Label htmlFor="city" className="text-sm font-semibold text-purple-700">Cidade *</Label>
                     <Input
                         id="city"
                         type="text"
@@ -430,7 +579,7 @@ for (const pair of formData.entries()) {
                     </div>
 
                     <div className="space-y-2">
-                    <Label htmlFor="state" className="text-sm font-semibold text-purple-700">Estado</Label>
+                    <Label htmlFor="state" className="text-sm font-semibold text-purple-700">Estado *</Label>
                     <Input
                         id="state"
                         type="text"
@@ -442,7 +591,7 @@ for (const pair of formData.entries()) {
                     </div>
 
                     <div className="space-y-2">
-                    <Label htmlFor="country" className="text-sm font-semibold text-purple-700">País</Label>
+                    <Label htmlFor="country" className="text-sm font-semibold text-purple-700">País *</Label>
                     <Input
                         id="country"
                         type="text"
@@ -503,7 +652,7 @@ for (const pair of formData.entries()) {
                 {/* Amenities */}
                 <Card className="border-0 shadow-xl bg-white/90 backdrop-blur-md">
                 <CardHeader className="pb-4">
-                    <CardTitle className="text-lg text-blue-700">Comodidades</CardTitle>
+                    <CardTitle className="text-lg text-blue-700">Comodidades *</CardTitle>
                     <CardDescription>Selecione as comodidades disponíveis</CardDescription>
                 </CardHeader>
                 <CardContent>
@@ -530,7 +679,7 @@ for (const pair of formData.entries()) {
                 {/* Services */}
                 <Card className="border-0 shadow-xl bg-white/90 backdrop-blur-md">
                 <CardHeader className="pb-4">
-                    <CardTitle className="text-lg text-green-700">Serviços</CardTitle>
+                    <CardTitle className="text-lg text-green-700">Serviços *</CardTitle>
                     <CardDescription>Selecione os serviços oferecidos</CardDescription>
                 </CardHeader>
                 <CardContent>
@@ -558,7 +707,7 @@ for (const pair of formData.entries()) {
             {/* Description */}
             <Card className="border-0 shadow-xl bg-white/90 backdrop-blur-md">
                 <CardHeader className="pb-4">
-                <CardTitle className="text-xl text-purple-700">Descrição do Espaço</CardTitle>
+                <CardTitle className="text-xl text-purple-700">Descrição do Espaço *</CardTitle>
                 <CardDescription>
                     Descreva seu espaço de forma atrativa e detalhada.
                 </CardDescription>
