@@ -18,6 +18,12 @@ class SpaceController extends Controller
     }
 
     public function store(Request $request){
+         $user = $request->user();
+         logger()->info('User authenticated', [
+            'user_id' => $user->id,
+            'user_email' => $user->email,
+        ]);
+
         logger()->info('Creating space', [
             'request' => $request->all(),
         ]);
@@ -97,6 +103,7 @@ class SpaceController extends Controller
 
         $space = Space::create([
             'address_id' => $address->id,
+            'user_id' => $user->id,
             'people_capacity' => $validatedSpace['people_capacity'],
             'price_per_person_buffet' => $validatedSpace['price_per_person_buffet'] ?? 0.0,
             'events_count' => $validatedSpace['events_count'] ?? 0,

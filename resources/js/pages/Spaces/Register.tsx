@@ -9,6 +9,8 @@ import { LoaderCircle, Upload, X, ImageIcon, MapPin, Users, DollarSign, Calendar
 import Header from '../components/Header';
 import { toast,ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { api, initSanctum } from '../../api/api';
+import axios from 'axios';
 
 type SpaceFormType = {
   images: File[];
@@ -151,26 +153,27 @@ export default function Index() {
   };
 
   const fetchAddressByCep = async (cep: string) => {
-    try {
-      const cleanCep = cep.replace(/\D/g, '');
-      if (cleanCep.length !== 8) return;
-      const res = await fetch(`https://viacep.com.br/ws/${cleanCep}/json/`);
-      const address = await res.json();
-      if (!address.erro) {
-        setData(prev => ({
-          ...prev,
-          street: address.logradouro || '',
-          neighborhood: address.bairro || '',
-          city: address.localidade || '',
-          state: address.uf || '',
-          country: 'Brasil',
-        }));
-      }
-    } catch (err) {
-        console.error('Erro ao buscar endereço:', err);
-        alert('Erro ao buscar endereço. Verifique o CEP informado.');
+  try {
+    const cleanCep = cep.replace(/\D/g, '');
+    if (cleanCep.length !== 8) return;
+    const res = await fetch(`https://viacep.com.br/ws/${cleanCep}/json/`);
+    const address = await res.json();
+    console.log('Resposta ViaCEP:', address); // <-- Adicione este log
+    if (!address.erro) {
+      setData(prev => ({
+        ...prev,
+        street: address.logradouro || '',
+        neighborhood: address.bairro || '',
+        city: address.localidade || '',
+        state: address.uf || '',
+        country: 'Brasil',
+      }));
     }
-  };
+  } catch (err) {
+    console.error('Erro ao buscar endereço:', err);
+    alert('Erro ao buscar endereço. Verifique o CEP informado.');
+  }
+};
 
   useEffect(() => {
     if (data.postal_code && data.postal_code.replace(/\D/g, '').length === 8) {
@@ -185,110 +188,78 @@ export default function Index() {
   };
 
   const submit: FormEventHandler = async (e) => {
-    e.preventDefault();
+  e.preventDefault();
 
-    // Validar formulário antes de prosseguir
-    if (!validateForm()) {
-      toast.error('Por favor, preencha todos os campos obrigatórios!', {
-        position: "top-right",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-      });
-      return;
+  if (!validateForm()) {
+    toast.error('Por favor, preencha todos os campos obrigatórios!', { /* ... */ });
+    return;
+  }
+
+  const validImages = data.images.filter(file => file && file.size > 0 && file.type.startsWith('image/'));
+  setProcessing(true);
+
+  const formData = new FormData();
+  validImages.forEach((file) => formData.append('images[]', file));
+  formData.append('people_capacity', data.people_capacity);
+  formData.append('postal_code', data.postal_code);
+  formData.append('street', data.street);
+  formData.append('neighborhood', data.neighborhood);
+  formData.append('number', data.number);
+  formData.append('complement', data.complement);
+  formData.append('city', data.city);
+  formData.append('state', data.state);
+  formData.append('country', data.country);
+  formData.append('price_per_person_buffet', data.price_per_person_buffet);
+  formData.append('events_count', data.events_count);
+  formData.append('type', data.type);
+  formData.append('locality', data.locality);
+  formData.append('description', data.description);
+  data.amenities.forEach((item) => formData.append('amenities[]', item));
+  data.services.forEach((item) => formData.append('services[]', item));
+
+  try {
+    await initSanctum(); // Garante o CSRF antes do POST
+
+    const response = await api.post('/api/spaces', formData);
+    if (response.status !== 201) {
+      throw new Error('Erro ao cadastrar espaço');
     }
 
-     const validImages = data.images.filter(file => file && file.size > 0 && file.type.startsWith('image/'));
-    setProcessing(true);
-
-    const formData = new FormData();
-    validImages.forEach((file) => formData.append('images[]', file));
-    formData.append('people_capacity', data.people_capacity);
-    formData.append('postal_code', data.postal_code);
-    formData.append('street', data.street);
-    formData.append('neighborhood', data.neighborhood);
-    formData.append('number', data.number);
-    formData.append('complement', data.complement);
-    formData.append('city', data.city);
-    formData.append('state', data.state);
-    formData.append('country', data.country);
-    formData.append('price_per_person_buffet', data.price_per_person_buffet);
-    formData.append('events_count', data.events_count);
-    formData.append('type', data.type);
-    formData.append('locality', data.locality);
-    formData.append('description', data.description);
-    data.amenities.forEach((item) => formData.append('amenities[]', item));
-    data.services.forEach((item) => formData.append('services[]', item));
-
-    try {
-        console.log('Imagens para envio:', validImages);
-        for (const pair of formData.entries()) {
-          console.log(pair[0], pair[1]);
-        }
-      const response = await fetch('/api/spaces', {
-        method: 'POST',
-        body: formData,
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        toast.error('Erro ao cadastrar espaço: ' + (errorData.message || 'Erro desconhecido'), {
-          position: "top-right",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-        });
-      } else {
-        setData({
-            images: [],
-            people_capacity: '',
-            postal_code: '',
-            street: '',
-            neighborhood: '',
-            number: '',
-            complement: '',
-            city: '',
-            state: '',
-            country: '',
-            price_per_person_buffet: '',
-            events_count: '',
-            type: '',
-            locality: '',
-            amenities: [],
-            services: [],
-            description: '',
-        });
-        setErrors([]);
-        // Mostre o toast DEPOIS de limpar o formulário
-        setTimeout(() => {
-            toast.success('Espaço cadastrado com sucesso!', {
-            position: "top-right",
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            });
-        }, 100);
-            }
-            } catch (err) {
-            console.error('Erro ao cadastrar espaço:', err);
-            toast.error('Erro inesperado ao cadastrar espaço. Tente novamente.', {
-                position: "top-right",
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-            });
-            } finally {
-            setProcessing(false);
-            }
-        };
+    setData({
+      images: [],
+      people_capacity: '',
+      postal_code: '',
+      street: '',
+      neighborhood: '',
+      number: '',
+      complement: '',
+      city: '',
+      state: '',
+      country: '',
+      price_per_person_buffet: '',
+      events_count: '',
+      type: '',
+      locality: '',
+      amenities: [],
+      services: [],
+      description: '',
+    });
+    setErrors([]);
+    setTimeout(() => {
+      toast.success('Espaço cadastrado com sucesso!', { /* ... */ });
+    }, 100);
+  } catch (err: unknown) {
+  if (axios.isAxiosError(err)) {
+    // err.response?.data.message, etc.
+    toast.error('Erro ao cadastrar espaço: ' + (err.response?.data?.message || 'Tente novamente.'), { /* ... */ });
+  } else {
+    toast.error('Erro inesperado ao cadastrar espaço. Tente novamente.', { /* ... */ });
+  }
+  console.error('Erro ao cadastrar espaço:', err);
+} finally {
+    setProcessing(false);
+  }
+};
 
         const removeImage = (idx: number) => {
             setData(prev => ({

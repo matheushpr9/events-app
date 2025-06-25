@@ -12,6 +12,8 @@ class Space extends Model
     use HasFactory;
 
     protected $fillable = [
+        'address_id',
+        'user_id',
         'people_capacity',
         'price_per_person_buffet',
         'events_count',
