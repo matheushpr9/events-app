@@ -3,6 +3,7 @@ import { useState } from 'react';
 import Header from '../components/Header';
 import SearchSection from '../components/SearchSection';
 import SpaceCard from '../components/SpaceCard';
+import { api, initSanctum } from '@/api/api';
 
 interface SearchFilters {
   location: string;
@@ -111,33 +112,31 @@ const mockSpaces: Space[] = [
 const Index = () => {
   const [filteredSpaces, setFilteredSpaces] = useState<Space[]>(mockSpaces);
 
-  const handleSearch = (filters: SearchFilters) => {
-    console.log('Aplicando filtros:', filters);
-
-    let filtered = mockSpaces;
-
-    if (filters.location) {
-      filtered = filtered.filter(space =>
-        space.location.toLowerCase().includes(filters.location.toLowerCase())
-      );
+  const handleSearch = async (filters: SearchFilters) => {
+  try {
+    const params = new URLSearchParams();
+    
+    if (filters.location) params.append('city', filters.location);
+    if (filters.type) params.append('type', filters.type);
+    if (filters.amenities && filters.amenities.length > 0) {
+      // Se amenities for array, envie como lista separada por vírgula
+      params.append('amenities', Array.isArray(filters.amenities) ? filters.amenities.join(',') : filters.amenities);
     }
-
-    if (filters.type) {
-      filtered = filtered.filter(space =>
-        space.type.toLowerCase().includes(filters.type.toLowerCase())
-      );
+    if (filters.services && filters.services.length > 0) {
+      params.append('services', Array.isArray(filters.services) ? filters.services.join(',') : filters.services);
     }
+    if (filters.locality) params.append('locality', filters.locality);
 
-    if (filters.amenities) {
-      filtered = filtered.filter(space =>
-        space.amenities.some(amenity =>
-          amenity.toLowerCase().includes(filters.amenities.toLowerCase())
-        )
-      );
-    }
+    await initSanctum();
 
-    setFilteredSpaces(filtered);
-  };
+    const response = await api.get(`/api/spaces/filter?${params.toString()}`);
+
+    setFilteredSpaces(response.data);
+  } catch (error) {
+    console.error('Erro ao buscar espaços:', error);
+    setFilteredSpaces([]);
+  }
+};
 
   return (
     <div className="min-h-screen bg-background">

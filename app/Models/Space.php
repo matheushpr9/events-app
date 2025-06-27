@@ -34,5 +34,9 @@ class Space extends Model
     {
         return $this->hasMany(SpaceImage::class);
     }
+    public function address()
+    {
+        return $this->belongsTo(Address::class);
+    }
 
 }

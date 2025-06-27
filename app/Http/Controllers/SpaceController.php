@@ -139,6 +139,57 @@ class SpaceController extends Controller
     public function show($id){
         return Space::findOrFail($id);
     }
+    public function filter(Request $request)
+    {
+        $query = Space::query();
+
+        // Filtros simples
+        if ($request->filled('people_capacity')) {
+            $query->where('people_capacity', '>=', $request->people_capacity);
+        }
+        if ($request->filled('type')) {
+            $query->where('type', $request->type);
+        }
+        if ($request->filled('locality')) {
+            $query->where('locality', $request->locality);
+        }
+
+        // Filtros relacionados ao endereço
+        if ($request->filled('street') || $request->filled('neighborhood') || $request->filled('city') || $request->filled('state')) {
+            $query->whereHas('address', function ($q) use ($request) {
+                if ($request->filled('street')) {
+                    $q->where('street', 'like', '%' . $request->street . '%');
+                }
+                if ($request->filled('neighborhood')) {
+                    $q->where('neighborhood', 'like', '%' . $request->neighborhood . '%');
+                }
+                if ($request->filled('city')) {
+                    $q->where('city', 'like', '%' . $request->city . '%');
+                }
+                if ($request->filled('state')) {
+                    $q->where('state', 'like', '%' . $request->state . '%');
+                }
+            });
+        }
+
+        // Filtros de array (amenities e services)
+        if ($request->filled('amenities')) {
+            $amenities = is_array($request->amenities) ? $request->amenities : explode(',', $request->amenities);
+            foreach ($amenities as $amenity) {
+                $query->whereJsonContains('amenities', $amenity);
+            }
+        }
+        if ($request->filled('services')) {
+            $services = is_array($request->services) ? $request->services : explode(',', $request->services);
+            foreach ($services as $service) {
+                $query->whereJsonContains('services', $service);
+            }
+        }
+
+        $spaces = $query->with(['address', 'images'])->get();
+
+        return response()->json($spaces);
+    }
 
     public function update(Request $request, $id){
         $space = $this->show($id);

@@ -8,5 +8,6 @@ Route::middleware([
     EnsureFrontendRequestsAreStateful::class,
     'auth:sanctum'
     ])->prefix('api')->group(function () {
+        Route::get('spaces/filter', [SpaceController::class, 'filter']);
         Route::apiResource('spaces', SpaceController::class);
 });
