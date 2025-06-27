@@ -1,4 +1,3 @@
-
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -27,79 +26,121 @@ const SpaceCard = ({ space }: SpaceCardProps) => {
     switch (amenity.toLowerCase()) {
       case 'wifi':
       case 'wi-fi':
-        return <Wifi className="h-3 w-3" />;
+        return <Wifi className="h-3 w-3" aria-label="Wi-Fi" />;
       case 'estacionamento':
-        return <Car className="h-3 w-3" />;
+        return <Car className="h-3 w-3" aria-label="Estacionamento" />;
       case 'cozinha':
       case 'catering':
-        return <Utensils className="h-3 w-3" />;
+        return <Utensils className="h-3 w-3" aria-label="Cozinha" />;
       default:
         return null;
     }
   };
 
   return (
-    <Card className="overflow-hidden hover:shadow-lg transition-shadow duration-300">
-      <div className="aspect-video bg-muted relative overflow-hidden">
+    <Card className="group overflow-hidden bg-white shadow-lg hover:shadow-2xl transition-all duration-500 border-0 rounded-2xl focus-within:ring-2 focus-within:ring-[#b39ddb]">
+      {/* Image Section */}
+      <div className="aspect-[4/3] bg-[#f4e6f3] relative overflow-hidden">
         <img
           src={space.image}
           alt={space.name}
-          className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+          loading="lazy"
         />
-        <Badge className="absolute top-3 left-3 bg-background/90 text-foreground">
+        <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
+        
+        {/* Type Badge */}
+        <Badge className="absolute top-4 left-4 bg-white/90 text-[#4e2780] border-0 font-semibold shadow-sm">
           {space.type}
         </Badge>
+        
+        {/* Rating Badge */}
+        <div className="absolute top-4 right-4 bg-white/90 rounded-full px-3 py-1.5 flex items-center gap-1 shadow-sm">
+          <Star className="h-3.5 w-3.5 fill-yellow-400 text-yellow-400" aria-label="Nota" />
+          <span className="text-sm font-semibold text-[#4e2780]">{space.rating}</span>
+        </div>
       </div>
 
-      <CardHeader className="pb-3">
-        <div className="flex items-start justify-between">
+      <CardHeader className="pb-4">
+        <div className="flex items-start justify-between mb-2">
           <div className="flex-1">
-            <CardTitle className="text-lg mb-1">{space.name}</CardTitle>
-            <div className="flex items-center text-sm text-muted-foreground mb-2">
-              <MapPin className="h-4 w-4 mr-1" />
-              {space.location}
+            <CardTitle className="text-xl font-bold text-[#4e2780] mb-2 group-hover:text-[#7c5ca3] transition-colors">
+              {space.name}
+            </CardTitle>
+            <div className="flex items-center text-[#4e2780]/60 mb-3">
+              <MapPin className="h-4 w-4 mr-2" aria-hidden="true" />
+              <span className="text-sm">{space.location}</span>
             </div>
           </div>
-          <div className="flex items-center">
-            <Star className="h-4 w-4 fill-yellow-400 text-yellow-400 mr-1" />
-            <span className="text-sm font-medium">{space.rating}</span>
-            <span className="text-xs text-muted-foreground ml-1">({space.reviewCount})</span>
-          </div>
         </div>
-        <CardDescription className="line-clamp-2">
+        
+        <CardDescription className="text-[#4e2780]/70 line-clamp-2 leading-relaxed">
           {space.description}
         </CardDescription>
       </CardHeader>
 
       <CardContent className="pt-0">
-        <div className="flex items-center justify-between mb-4">
-          <div className="flex items-center text-sm text-muted-foreground">
-            <Users className="h-4 w-4 mr-1" />
-            Até {space.capacity} pessoas
+        {/* Capacity and Price */}
+        <div className="flex items-center justify-between mb-6 p-4 bg-[#f4e6f3] rounded-xl">
+          <div className="flex items-center text-[#4e2780]">
+            <Users className="h-4 w-4 mr-2" aria-hidden="true" />
+            <span className="text-sm font-medium">Até {space.capacity} pessoas</span>
           </div>
           <div className="text-right">
-            <div className="text-lg font-bold text-foreground">
+            <div className="text-2xl font-bold text-[#4e2780]">
               R$ {space.pricePerHour}
             </div>
-            <div className="text-xs text-muted-foreground">por hora</div>
+            <div className="text-xs text-[#4e2780]/60 font-medium">por hora</div>
           </div>
         </div>
 
-        <div className="flex flex-wrap gap-1 mb-4">
+        {/* Amenities */}
+        <div className="flex flex-wrap gap-2 mb-6">
           {space.amenities.slice(0, 3).map((amenity, index) => (
-            <Badge key={index} variant="secondary" className="text-xs flex items-center gap-1">
+            <Badge 
+              key={index} 
+              variant="secondary" 
+              className="text-xs bg-[#4e2780]/10 text-[#4e2780] border-0 font-medium px-3 py-1 flex items-center gap-1.5"
+            >
               {getAmenityIcon(amenity)}
               {amenity}
             </Badge>
           ))}
           {space.amenities.length > 3 && (
-            <Badge variant="outline" className="text-xs">
-              +{space.amenities.length - 3}
+            <Badge 
+              variant="outline" 
+              className="text-xs border-[#4e2780]/20 text-[#4e2780]/70 font-medium px-3 py-1"
+            >
+              +{space.amenities.length - 3} mais
             </Badge>
           )}
         </div>
 
-        <Button className="w-full">Ver Detalhes</Button>
+        {/* Reviews */}
+        <div className="flex items-center justify-between mb-6">
+          <div className="flex items-center gap-2">
+            <div className="flex">
+              {[...Array(5)].map((_, i) => (
+                <Star 
+                  key={i} 
+                  className={`h-4 w-4 ${i < Math.floor(space.rating) ? 'fill-yellow-400 text-yellow-400' : 'fill-gray-200 text-gray-200'}`} 
+                  aria-hidden="true"
+                />
+              ))}
+            </div>
+            <span className="text-sm text-[#4e2780]/70 font-medium">
+              ({space.reviewCount} avaliações)
+            </span>
+          </div>
+        </div>
+
+        {/* Action Button */}
+        <Button 
+          className="w-full bg-[#4e2780] bg-gradient-to-br from-[#4e2780] to-[#7c5ca3] text-white font-semibold h-12 rounded-xl hover:shadow-lg transition-all duration-300 focus-visible:ring-2 focus-visible:ring-[#b39ddb]"
+          aria-label={`Ver detalhes e reservar ${space.name}`}
+        >
+          Ver Detalhes e Reservar
+        </Button>
       </CardContent>
     </Card>
   );

@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import {  Eye, EyeOff, LoaderCircle, User, Mail, Phone, Lock } from 'lucide-react';
+import { Eye, EyeOff, LoaderCircle, User, Mail, Phone, Lock } from 'lucide-react';
 import Header from '../components/Header';
 
 const Cadastro = () => {
@@ -20,9 +20,6 @@ const Cadastro = () => {
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
-    console.log('Dados do formulário:', data);
-
     post(route('register'), {
       onFinish: () => reset('password', 'password_confirmation'),
     });
@@ -31,13 +28,13 @@ const Cadastro = () => {
   return (
     <div>
       <Header />
-      <div className="min-h-screen bg-gradient-to-br from-blue-100 via-white to-purple-100 py-10 px-4">
+      <div className="min-h-screen bg-[#fff6f1] py-10 px-4">
         <div className="container mx-auto max-w-2xl">
           <div className="text-center mb-10">
-            <h1 className="text-4xl font-extrabold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-2 drop-shadow">
+            <h1 className="text-4xl font-extrabold bg-gradient-to-r from-[#4e2780] to-[#7c5ca3] bg-clip-text text-transparent mb-2 drop-shadow">
               Criar conta
             </h1>
-            <p className="text-muted-foreground text-lg">
+            <p className="text-[#4e2780]/70 text-lg">
               Preencha os dados abaixo para criar sua conta e começar a usar o EventSpace.
             </p>
           </div>
@@ -46,8 +43,8 @@ const Cadastro = () => {
             {/* Informações Pessoais */}
             <Card className="border-0 shadow-xl bg-white/90 backdrop-blur-md">
               <CardHeader className="pb-4">
-                <CardTitle className="flex items-center gap-2 text-xl text-gray-800 font-bold">
-                  <User className="w-5 h-5 text-blue-600" />
+                <CardTitle className="flex items-center gap-2 text-xl text-[#4e2780] font-bold">
+                  <User className="w-5 h-5 text-[#4e2780]" />
                   Informações Pessoais
                 </CardTitle>
                 <CardDescription>
@@ -57,7 +54,7 @@ const Cadastro = () => {
               <CardContent>
                 <div className="grid grid-cols-1 gap-6">
                   <div className="space-y-2">
-                    <Label htmlFor="nome" className="text-sm font-semibold text-blue-700">Nome completo</Label>
+                    <Label htmlFor="name" className="text-sm font-semibold text-[#4e2780]">Nome completo</Label>
                     <Input
                       id="name"
                       type="text"
@@ -66,14 +63,14 @@ const Cadastro = () => {
                       onChange={(e) => setData('name', e.target.value)}
                       required
                       autoFocus
-                      className="bg-white text-gray-800 border border-gray-300 placeholder:text-muted-foreground focus:ring-2 focus:ring-blue-400"
+                      className="bg-white text-[#4e2780] border border-[#b39ddb] placeholder:text-[#7c5ca3] focus:ring-2 focus:ring-[#b39ddb]"
                     />
                     {errors.name && <span className="text-red-500 text-sm">{errors.name}</span>}
                   </div>
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div className="space-y-2">
-                      <Label htmlFor="email" className="flex items-center gap-2 text-sm font-semibold text-blue-700">
+                      <Label htmlFor="email" className="flex items-center gap-2 text-sm font-semibold text-[#4e2780]">
                         <Mail className="w-4 h-4" />
                         Email
                       </Label>
@@ -84,13 +81,13 @@ const Cadastro = () => {
                         value={data.email}
                         onChange={(e) => setData('email', e.target.value)}
                         required
-                        className="bg-white text-gray-800 border border-gray-300 placeholder:text-muted-foreground focus:ring-2 focus:ring-blue-400"
+                        className="bg-white text-[#4e2780] border border-[#b39ddb] placeholder:text-[#7c5ca3] focus:ring-2 focus:ring-[#b39ddb]"
                       />
                       {errors.email && <span className="text-red-500 text-sm">{errors.email}</span>}
                     </div>
 
                     <div className="space-y-2">
-                      <Label htmlFor="telefone" className="flex items-center gap-2 text-sm font-semibold text-blue-700">
+                      <Label htmlFor="phone_number" className="flex items-center gap-2 text-sm font-semibold text-[#4e2780]">
                         <Phone className="w-4 h-4" />
                         Telefone
                       </Label>
@@ -101,7 +98,7 @@ const Cadastro = () => {
                         value={data.phone_number}
                         onChange={(e) => setData('phone_number', e.target.value)}
                         required
-                        className="bg-white text-gray-800 border border-gray-300 placeholder:text-muted-foreground focus:ring-2 focus:ring-blue-400"
+                        className="bg-white text-[#4e2780] border border-[#b39ddb] placeholder:text-[#7c5ca3] focus:ring-2 focus:ring-[#b39ddb]"
                       />
                       {errors.phone_number && <span className="text-red-500 text-sm">{errors.phone_number}</span>}
                     </div>
@@ -113,8 +110,8 @@ const Cadastro = () => {
             {/* Segurança */}
             <Card className="border-0 shadow-xl bg-white/90 backdrop-blur-md">
               <CardHeader className="pb-4">
-                <CardTitle className="flex items-center gap-2 text-xl text-gray-800 font-bold">
-                  <Lock className="w-5 h-5 text-green-600" />
+                <CardTitle className="flex items-center gap-2 text-xl text-[#4e2780] font-bold">
+                  <Lock className="w-5 h-5 text-[#7c5ca3]" />
                   Segurança
                 </CardTitle>
                 <CardDescription>
@@ -124,7 +121,7 @@ const Cadastro = () => {
               <CardContent>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-2">
-                    <Label htmlFor="senha" className="text-sm font-semibold text-green-700">Senha</Label>
+                    <Label htmlFor="password" className="text-sm font-semibold text-[#7c5ca3]">Senha</Label>
                     <div className="relative">
                       <Input
                         id="password"
@@ -133,19 +130,21 @@ const Cadastro = () => {
                         value={data.password}
                         onChange={(e) => setData('password', e.target.value)}
                         required
-                        className="bg-white text-gray-800 border border-gray-300 placeholder:text-muted-foreground focus:ring-2 focus:ring-green-400 pr-10"
+                        className="bg-white text-[#4e2780] border border-[#b39ddb] placeholder:text-[#7c5ca3] focus:ring-2 focus:ring-[#b39ddb] pr-10"
                       />
                       <Button
                         type="button"
                         variant="ghost"
                         size="icon"
-                        className="absolute right-2 top-1/2 -translate-y-1/2 h-8 w-8 hover:bg-green-50"
+                        className="absolute right-2 top-1/2 -translate-y-1/2 h-8 w-8 hover:bg-[#f4e6f3]"
                         onClick={() => setShowPassword(!showPassword)}
+                        tabIndex={-1}
+                        aria-label={showPassword ? "Ocultar senha" : "Mostrar senha"}
                       >
                         {showPassword ? (
-                          <EyeOff className="h-4 w-4 text-green-600" />
+                          <EyeOff className="h-4 w-4 text-[#7c5ca3]" />
                         ) : (
-                          <Eye className="h-4 w-4 text-green-600" />
+                          <Eye className="h-4 w-4 text-[#7c5ca3]" />
                         )}
                       </Button>
                     </div>
@@ -153,7 +152,7 @@ const Cadastro = () => {
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="confirmarSenha" className="text-sm font-semibold text-green-700">Confirmar senha</Label>
+                    <Label htmlFor="password_confirmation" className="text-sm font-semibold text-[#7c5ca3]">Confirmar senha</Label>
                     <div className="relative">
                       <Input
                         id="password_confirmation"
@@ -162,19 +161,21 @@ const Cadastro = () => {
                         value={data.password_confirmation}
                         onChange={(e) => setData('password_confirmation', e.target.value)}
                         required
-                        className="bg-white text-gray-800 border border-gray-300 placeholder:text-muted-foreground focus:ring-2 focus:ring-green-400 pr-10"
+                        className="bg-white text-[#4e2780] border border-[#b39ddb] placeholder:text-[#7c5ca3] focus:ring-2 focus:ring-[#b39ddb] pr-10"
                       />
                       <Button
                         type="button"
                         variant="ghost"
                         size="icon"
-                        className="absolute right-2 top-1/2 -translate-y-1/2 h-8 w-8 hover:bg-green-50"
+                        className="absolute right-2 top-1/2 -translate-y-1/2 h-8 w-8 hover:bg-[#f4e6f3]"
                         onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                        tabIndex={-1}
+                        aria-label={showConfirmPassword ? "Ocultar confirmação de senha" : "Mostrar confirmação de senha"}
                       >
                         {showConfirmPassword ? (
-                          <EyeOff className="h-4 w-4 text-green-600" />
+                          <EyeOff className="h-4 w-4 text-[#7c5ca3]" />
                         ) : (
-                          <Eye className="h-4 w-4 text-green-600" />
+                          <Eye className="h-4 w-4 text-[#7c5ca3]" />
                         )}
                       </Button>
                     </div>
@@ -185,12 +186,12 @@ const Cadastro = () => {
             </Card>
 
             {/* Submit Button */}
-            <Card className="border-0 shadow-xl bg-gradient-to-r from-blue-600 to-purple-600 text-white">
+            <Card className="border-0 shadow-xl bg-gradient-to-r from-[#4e2780] to-[#7c5ca3] text-white">
               <CardContent className="pt-6">
                 <Button
                   type="submit"
                   disabled={processing}
-                  className="w-full bg-white text-blue-700 hover:bg-blue-50 h-14 text-lg font-bold shadow-lg transition-all duration-150"
+                  className="w-full bg-white text-[#4e2780] hover:bg-[#f4e6f3] h-14 text-lg font-bold shadow-lg transition-all duration-150"
                 >
                   {processing ? (
                     <>
@@ -204,7 +205,7 @@ const Cadastro = () => {
 
                 <div className="text-center text-sm mt-6">
                   <span className="text-white/80">Já tem uma conta? </span>
-                  <a href="/login" className="text-white font-semibold hover:underline">
+                  <a href="/login" className="text-white font-semibold hover:underline focus:outline-none focus:ring-2 focus:ring-[#b39ddb]">
                     Faça login
                   </a>
                 </div>

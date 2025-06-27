@@ -300,182 +300,178 @@ export default function Index() {
       <Header />
       <ToastContainer />
 
-        <div className="min-h-screen bg-gradient-to-br from-blue-100 via-white to-purple-100 py-10 px-4">
-
+      <div className="min-h-screen bg-[#fff6f1] py-10 px-4">
         <div className="container mx-auto max-w-3xl">
-
-            <div className="text-center mb-10">
-
-            <h1 className="text-4xl font-extrabold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-2 drop-shadow">
-                Cadastrar Espaço para Eventos
+          <div className="text-center mb-10">
+            <h1 className="text-4xl font-extrabold bg-gradient-to-r from-[#4e2780] to-[#7c5ca3] bg-clip-text text-transparent mb-2 drop-shadow">
+              Cadastrar Espaço para Eventos
             </h1>
-            <p className="text-muted-foreground text-lg">
-                Preencha os dados para cadastrar seu espaço e começar a receber reservas.
+            <p className="text-[#4e2780]/70 text-lg">
+              Preencha os dados para cadastrar seu espaço e começar a receber reservas.
             </p>
-            </div>
+          </div>
 
-            {/* Exibir erros de validação */}
-            {errors.length > 0 && (
-              <Card className="border-red-200 bg-red-50 mb-6">
-                <CardContent className="pt-4">
-                  <div className="text-red-700">
-                    <h3 className="font-semibold mb-2">Campos obrigatórios não preenchidos:</h3>
-                    <ul className="list-disc list-inside space-y-1">
-                      {errors.map((error, index) => (
-                        <li key={index} className="text-sm">{error}</li>
-                      ))}
-                    </ul>
-                  </div>
-                </CardContent>
-              </Card>
-            )}
+          {/* Exibir erros de validação */}
+          {errors.length > 0 && (
+            <Card className="border-[#e57373] bg-[#fdeaea] mb-6">
+              <CardContent className="pt-4">
+                <div className="text-[#b71c1c]">
+                  <h3 className="font-semibold mb-2">Campos obrigatórios não preenchidos:</h3>
+                  <ul className="list-disc list-inside space-y-1">
+                    {errors.map((error, index) => (
+                      <li key={index} className="text-sm">{error}</li>
+                    ))}
+                  </ul>
+                </div>
+              </CardContent>
+            </Card>
+          )}
 
-             <form onSubmit={submit} className="space-y-10">
+          <form onSubmit={submit} className="space-y-10">
             {/* Images Section */}
             <Card className="border-0 shadow-xl bg-white/90 backdrop-blur-md">
-                <CardHeader className="pb-4">
-                <CardTitle className="flex items-center gap-2 text-xl text-gray-800 font-bold">
-                    <ImageIcon className="w-5 h-5 text-blue-600" />
-                    Fotos do Espaço *
+              <CardHeader className="pb-4">
+                <CardTitle className="flex items-center gap-2 text-xl text-[#4e2780] font-bold">
+                  <ImageIcon className="w-5 h-5 text-[#4e2780]" />
+                  Fotos do Espaço *
                 </CardTitle>
                 <CardDescription>
-                    Adicione fotos atrativas do seu espaço para chamar atenção dos clientes.
+                  Adicione fotos atrativas do seu espaço para chamar atenção dos clientes.
                 </CardDescription>
-                </CardHeader>
-                <CardContent>
+              </CardHeader>
+              <CardContent>
                 <div className="space-y-4">
-                    <div className="border-2 border-dashed border-blue-200 rounded-lg p-6 text-center hover:border-blue-400 transition-colors bg-blue-50/30">
+                  <div className="border-2 border-dashed border-[#b39ddb] rounded-lg p-6 text-center hover:border-[#4e2780] transition-colors bg-[#f4e6f3]/30">
                     <Input
-                        type="file"
-                        accept="image/*"
-                        multiple
-                        onChange={e => {
-                            handleFileChange(e);
-                            e.target.value = ''; // Limpa o input
-                        }}
-                        disabled={processing}
-                        className="hidden"
-                        id="images-upload"
+                      type="file"
+                      accept="image/*"
+                      multiple
+                      onChange={e => {
+                        handleFileChange(e);
+                        e.target.value = '';
+                      }}
+                      disabled={processing}
+                      className="hidden"
+                      id="images-upload"
                     />
                     <Label htmlFor="images-upload" className="cursor-pointer flex flex-col items-center">
-                        <Upload className="w-10 h-10 text-blue-500 mx-auto mb-2 animate-bounce" />
-                        <span className="text-base font-semibold text-blue-700">Clique ou arraste para adicionar fotos</span>
-                        <span className="text-xs text-muted-foreground">PNG, JPG até 10MB cada</span>
+                      <Upload className="w-10 h-10 text-[#7c5ca3] mx-auto mb-2 animate-bounce" />
+                      <span className="text-base font-semibold text-[#4e2780]">Clique ou arraste para adicionar fotos</span>
+                      <span className="text-xs text-[#4e2780]/60">PNG, JPG até 10MB cada</span>
                     </Label>
-                    </div>
+                  </div>
 
-                    {/* Image Preview Grid */}
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                  {/* Image Preview Grid */}
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                     {data.images.map((file, idx) => (
-                        <div key={idx} className="relative group">
+                      <div key={idx} className="relative group">
                         <img
-                            src={URL.createObjectURL(file)}
-                            alt={`Preview ${idx}`}
-                            className="w-full h-24 object-cover rounded-lg border-2 border-blue-200 shadow-sm"
+                          src={URL.createObjectURL(file)}
+                          alt={`Preview ${idx}`}
+                          className="w-full h-24 object-cover rounded-lg border-2 border-[#b39ddb] shadow-sm"
                         />
                         <button
-                            type="button"
-                            onClick={() => removeImage(idx)}
-                            className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 opacity-80 group-hover:opacity-100 transition-opacity hover:bg-red-600 shadow"
-                            aria-label="Remover imagem"
+                          type="button"
+                          onClick={() => removeImage(idx)}
+                          className="absolute -top-2 -right-2 bg-[#e57373] text-white rounded-full p-1 opacity-80 group-hover:opacity-100 transition-opacity hover:bg-[#b71c1c] shadow"
+                          aria-label="Remover imagem"
                         >
-                            <X className="w-3 h-3" />
+                          <X className="w-3 h-3" />
                         </button>
-                        </div>
+                      </div>
                     ))}
 
                     {/* Add More Button */}
                     {data.images.length > 0 && (
-                         <label className="h-24 border-2 border-dashed border-blue-300 rounded-lg flex items-center justify-center cursor-pointer hover:border-blue-500 hover:bg-blue-100 transition-colors group">
-                            <div className="text-center">
-                            <Upload className="w-7 h-7 text-blue-400 group-hover:text-blue-600 mx-auto mb-1" />
-                            <span className="text-xs text-blue-500 font-medium">Adicionar</span>
-                            </div>
-                            <input
-                            type="file"
-                            accept="image/*"
-                            multiple
-                            onChange={handleAddImages}
-                            className="hidden"
-                            disabled={processing}
-                            />
-                        </label>
+                      <label className="h-24 border-2 border-dashed border-[#b39ddb] rounded-lg flex items-center justify-center cursor-pointer hover:border-[#4e2780] hover:bg-[#f4e6f3] transition-colors group">
+                        <div className="text-center">
+                          <Upload className="w-7 h-7 text-[#7c5ca3] group-hover:text-[#4e2780] mx-auto mb-1" />
+                          <span className="text-xs text-[#4e2780] font-medium">Adicionar</span>
+                        </div>
+                        <input
+                          type="file"
+                          accept="image/*"
+                          multiple
+                          onChange={handleAddImages}
+                          className="hidden"
+                          disabled={processing}
+                        />
+                      </label>
                     )}
-
-                    </div>
+                  </div>
                 </div>
-                </CardContent>
+              </CardContent>
             </Card>
 
             {/* Basic Information */}
             <Card className="border-0 shadow-xl bg-white/90 backdrop-blur-md">
-                <CardHeader className="pb-4">
-                <CardTitle className="flex items-center gap-2 text-xl text-gray-800 font-bold">
-                    <Home className="w-5 h-5 text-blue-600" />
-                    Informações Básicas
+              <CardHeader className="pb-4">
+                <CardTitle className="flex items-center gap-2 text-xl text-[#4e2780] font-bold">
+                  <Home className="w-5 h-5 text-[#4e2780]" />
+                  Informações Básicas
                 </CardTitle>
-                </CardHeader>
-                <CardContent>
+              </CardHeader>
+              <CardContent>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                    <div className="space-y-2">
-                    <Label htmlFor="type" className="text-sm font-semibold text-blue-700">Tipo do Espaço *</Label>
+                  <div className="space-y-2">
+                    <Label htmlFor="type" className="text-sm font-semibold text-[#4e2780]">Tipo do Espaço *</Label>
                     <Select value={data.type} onValueChange={(value) => setData(prev => ({ ...prev, type: value }))}>
-                        <SelectTrigger className="bg-white text-gray-800 border border-gray-300 focus:ring-2 focus:ring-blue-400">
+                      <SelectTrigger className="bg-white text-[#4e2780] border border-[#b39ddb] focus:ring-2 focus:ring-[#b39ddb]">
                         <SelectValue placeholder="Selecione o tipo" />
-                        </SelectTrigger>
-                        <SelectContent className="bg-background border-input">
+                      </SelectTrigger>
+                      <SelectContent className="bg-background border-input">
                         {typeOptions.map(option => (
-                            <SelectItem key={option} value={option} className="text-foreground hover:bg-blue-100">{option}</SelectItem>
+                          <SelectItem key={option} value={option} className="text-foreground hover:bg-[#f4e6f3]">{option}</SelectItem>
                         ))}
-                        </SelectContent>
+                      </SelectContent>
                     </Select>
-                    </div>
+                  </div>
 
-                    <div className="space-y-2">
-                    <Label htmlFor="locality" className="text-sm font-semibold text-blue-700">Localidade *</Label>
+                  <div className="space-y-2">
+                    <Label htmlFor="locality" className="text-sm font-semibold text-[#4e2780]">Localidade *</Label>
                     <Select value={data.locality} onValueChange={(value) => setData(prev => ({ ...prev, locality: value }))}>
-                        <SelectTrigger className="bg-white text-gray-800 border border-gray-300 focus:ring-2 focus:ring-blue-400">
+                      <SelectTrigger className="bg-white text-[#4e2780] border border-[#b39ddb] focus:ring-2 focus:ring-[#b39ddb]">
                         <SelectValue placeholder="Selecione a localidade" />
-                        </SelectTrigger>
-                        <SelectContent className="bg-background border-input">
+                      </SelectTrigger>
+                      <SelectContent className="bg-background border-input">
                         {localityOptions.map(option => (
-                            <SelectItem key={option} value={option} className="text-foreground hover:bg-blue-100">{option}</SelectItem>
+                          <SelectItem key={option} value={option} className="text-foreground hover:bg-[#f4e6f3]">{option}</SelectItem>
                         ))}
-                        </SelectContent>
+                      </SelectContent>
                     </Select>
-                    </div>
+                  </div>
 
-                    <div className="space-y-2 md:col-span-2">
-                    <Label className="flex items-center gap-2 text-sm font-semibold text-blue-700">
-                        <Users className="w-4 h-4" />
-                        Capacidade de Pessoas *
+                  <div className="space-y-2 md:col-span-2">
+                    <Label className="flex items-center gap-2 text-sm font-semibold text-[#4e2780]">
+                      <Users className="w-4 h-4" />
+                      Capacidade de Pessoas *
                     </Label>
                     <Input
-                        type="number"
-                        value={data.people_capacity}
-                        onChange={e => setData(prev => ({ ...prev, people_capacity: e.target.value }))}
-                        placeholder="Ex: 100"
-                        className="bg-white text-gray-800 border border-gray-300 placeholder:text-muted-foreground"
+                      type="number"
+                      value={data.people_capacity}
+                      onChange={e => setData(prev => ({ ...prev, people_capacity: e.target.value }))}
+                      placeholder="Ex: 100"
+                      className="bg-white text-[#4e2780] border border-[#b39ddb] placeholder:text-[#7c5ca3]"
                     />
-                    </div>
+                  </div>
                 </div>
-                </CardContent>
+              </CardContent>
             </Card>
 
             {/* Address Section */}
             <Card className="border-0 shadow-xl bg-white/90 backdrop-blur-md">
-                <CardHeader className="pb-4">
-                <CardTitle className="flex items-center gap-2 text-xl text-gray-800 font-bold">
-                    <MapPin className="w-5 h-5 text-purple-600" />
-                    Endereço
+              <CardHeader className="pb-4">
+                <CardTitle className="flex items-center gap-2 text-xl text-[#4e2780] font-bold">
+                  <MapPin className="w-5 h-5 text-[#7c5ca3]" />
+                  Endereço
                 </CardTitle>
                 <CardDescription>
-                    Informe o endereço completo do seu espaço para eventos.
+                  Informe o endereço completo do seu espaço para eventos.
                 </CardDescription>
-                </CardHeader>
-                <CardContent>
+              </CardHeader>
+              <CardContent>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div className="space-y-2">
+                 <div className="space-y-2">
                     <Label className="flex items-center gap-2 text-sm font-semibold text-purple-700">
                         <MapPin className="w-4 h-4" />
                         CEP *
@@ -573,148 +569,148 @@ export default function Index() {
                     />
                     </div>
                 </div>
-                </CardContent>
+              </CardContent>
             </Card>
 
             {/* Pricing and Stats */}
             <Card className="border-0 shadow-xl bg-white/90 backdrop-blur-md">
-                <CardHeader className="pb-4">
-                <CardTitle className="flex items-center gap-2 text-xl text-gray-800 font-bold">
-                    <DollarSign className="w-5 h-5 text-green-600" />
-                    Preços e Estatísticas
+              <CardHeader className="pb-4">
+                <CardTitle className="flex items-center gap-2 text-xl text-[#4e2780] font-bold">
+                  <DollarSign className="w-5 h-5 text-[#4e2780]" />
+                  Preços e Estatísticas
                 </CardTitle>
-                </CardHeader>
-                <CardContent>
+              </CardHeader>
+              <CardContent>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                    <div className="space-y-2">
-                    <Label className="text-sm font-semibold text-green-700">Preço por Pessoa (Buffet)</Label>
+                  <div className="space-y-2">
+                    <Label className="text-sm font-semibold text-[#4e2780]">Preço por Pessoa (Buffet)</Label>
                     <div className="relative">
-                        <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground">R$</span>
-                        <Input
+                      <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-[#7c5ca3]">R$</span>
+                      <Input
                         type="number"
                         step="0.01"
                         value={data.price_per_person_buffet}
                         onChange={e => setData(prev => ({ ...prev, price_per_person_buffet: e.target.value }))}
                         placeholder="49.90"
-                        className="pl-8 bg-white text-gray-800 border border-gray-300 placeholder:text-muted-foreground"
-                        />
+                        className="pl-8 bg-white text-[#4e2780] border border-[#b39ddb] placeholder:text-[#7c5ca3]"
+                      />
                     </div>
-                    </div>
+                  </div>
 
-                    <div className="space-y-2">
-                    <Label className="flex items-center gap-2 text-sm font-semibold text-green-700">
-                        <Calendar className="w-4 h-4" />
-                        Eventos Realizados
+                  <div className="space-y-2">
+                    <Label className="flex items-center gap-2 text-sm font-semibold text-[#4e2780]">
+                      <Calendar className="w-4 h-4" />
+                      Eventos Realizados
                     </Label>
                     <Input
-                        type="number"
-                        value={data.events_count}
-                        onChange={e => setData(prev => ({ ...prev, events_count: e.target.value }))}
-                        placeholder="10"
-                        className="bg-white text-gray-800 border border-gray-300 placeholder:text-muted-foreground"
+                      type="number"
+                      value={data.events_count}
+                      onChange={e => setData(prev => ({ ...prev, events_count: e.target.value }))}
+                      placeholder="10"
+                      className="bg-white text-[#4e2780] border border-[#b39ddb] placeholder:text-[#7c5ca3]"
                     />
-                    </div>
+                  </div>
                 </div>
-                </CardContent>
+              </CardContent>
             </Card>
 
             {/* Amenities and Services */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                {/* Amenities */}
-                <Card className="border-0 shadow-xl bg-white/90 backdrop-blur-md">
+              {/* Amenities */}
+              <Card className="border-0 shadow-xl bg-white/90 backdrop-blur-md">
                 <CardHeader className="pb-4">
-                    <CardTitle className="text-lg text-blue-700">Comodidades *</CardTitle>
-                    <CardDescription>Selecione as comodidades disponíveis</CardDescription>
+                  <CardTitle className="text-lg text-[#4e2780]">Comodidades *</CardTitle>
+                  <CardDescription>Selecione as comodidades disponíveis</CardDescription>
                 </CardHeader>
                 <CardContent>
-                    <div className="flex flex-wrap gap-2">
+                  <div className="flex flex-wrap gap-2">
                     {amenitiesOptions.map(amenity => (
-                        <Badge
+                      <Badge
                         key={amenity}
                         variant={data.amenities.includes(amenity) ? "default" : "outline"}
                         className={`cursor-pointer px-4 py-2 rounded-full text-sm font-medium transition-colors duration-150
-                            ${data.amenities.includes(amenity)
-                            ? "bg-blue-600 text-white shadow"
-                            : "bg-white text-blue-700 border-blue-300 hover:bg-blue-50"}
+                          ${data.amenities.includes(amenity)
+                            ? "bg-[#4e2780] text-white shadow"
+                            : "bg-white text-[#4e2780] border-[#b39ddb] hover:bg-[#f4e6f3]"}
                         `}
                         onClick={() => toggleAmenity(amenity)}
                         aria-pressed={data.amenities.includes(amenity)}
-                        >
+                      >
                         {amenity}
-                        </Badge>
+                      </Badge>
                     ))}
-                    </div>
+                  </div>
                 </CardContent>
-                </Card>
+              </Card>
 
-                {/* Services */}
-                <Card className="border-0 shadow-xl bg-white/90 backdrop-blur-md">
+              {/* Services */}
+              <Card className="border-0 shadow-xl bg-white/90 backdrop-blur-md">
                 <CardHeader className="pb-4">
-                    <CardTitle className="text-lg text-green-700">Serviços *</CardTitle>
-                    <CardDescription>Selecione os serviços oferecidos</CardDescription>
+                  <CardTitle className="text-lg text-[#4e2780]">Serviços *</CardTitle>
+                  <CardDescription>Selecione os serviços oferecidos</CardDescription>
                 </CardHeader>
                 <CardContent>
-                    <div className="flex flex-wrap gap-2">
+                  <div className="flex flex-wrap gap-2">
                     {servicesOptions.map(service => (
-                        <Badge
+                      <Badge
                         key={service}
                         variant={data.services.includes(service) ? "default" : "outline"}
                         className={`cursor-pointer px-4 py-2 rounded-full text-sm font-medium transition-colors duration-150
-                            ${data.services.includes(service)
-                            ? "bg-green-600 text-white shadow"
-                            : "bg-white text-green-700 border-green-300 hover:bg-green-50"}
+                          ${data.services.includes(service)
+                            ? "bg-[#7c5ca3] text-white shadow"
+                            : "bg-white text-[#7c5ca3] border-[#b39ddb] hover:bg-[#f4e6f3]"}
                         `}
                         onClick={() => toggleService(service)}
                         aria-pressed={data.services.includes(service)}
-                        >
+                      >
                         {service}
-                        </Badge>
+                      </Badge>
                     ))}
-                    </div>
+                  </div>
                 </CardContent>
-                </Card>
+              </Card>
             </div>
 
             {/* Description */}
             <Card className="border-0 shadow-xl bg-white/90 backdrop-blur-md">
-                <CardHeader className="pb-4">
-                <CardTitle className="text-xl text-purple-700">Descrição do Espaço *</CardTitle>
+              <CardHeader className="pb-4">
+                <CardTitle className="text-xl text-[#4e2780]">Descrição do Espaço *</CardTitle>
                 <CardDescription>
-                    Descreva seu espaço de forma atrativa e detalhada.
+                  Descreva seu espaço de forma atrativa e detalhada.
                 </CardDescription>
-                </CardHeader>
-                <CardContent >
-                    <textarea
-                    value={data.description}
-                    onChange={e => setData(prev => ({ ...prev, description: e.target.value }))}
-                    placeholder="Descreva as características únicas do seu espaço, o ambiente, as facilidades oferecidas e o que torna especial para eventos..."
-                    className="min-h-[120px] bg-white text-gray-800 border border-gray-200 placeholder:text-gray-400 focus:border-blue-400 focus:ring-2 focus:ring-blue-100 rounded-md shadow-sm transition resize-none w-full pl-1.5 pr-1.5"
-                    />
-                </CardContent>
+              </CardHeader>
+              <CardContent>
+                <textarea
+                  value={data.description}
+                  onChange={e => setData(prev => ({ ...prev, description: e.target.value }))}
+                  placeholder="Descreva as características únicas do seu espaço, o ambiente, as facilidades oferecidas e o que torna especial para eventos..."
+                  className="min-h-[120px] bg-white text-[#4e2780] border border-[#b39ddb] placeholder:text-[#7c5ca3] focus:border-[#4e2780] focus:ring-2 focus:ring-[#b39ddb] rounded-md shadow-sm transition resize-none w-full pl-1.5 pr-1.5"
+                />
+              </CardContent>
             </Card>
 
             {/* Submit Button */}
-            <Card className="border-0 shadow-xl bg-gradient-to-r from-blue-600 to-purple-600 text-white">
-                <CardContent className="pt-6">
+            <Card className="border-0 shadow-xl bg-gradient-to-r from-[#4e2780] to-[#7c5ca3] text-white">
+              <CardContent className="pt-6">
                 <Button
-                    type="submit"
-                    disabled={processing}
-                    className="w-full bg-white text-blue-700 hover:bg-blue-50 h-14 text-lg font-bold shadow-lg transition-all duration-150"
+                  type="submit"
+                  disabled={processing}
+                  className="w-full bg-white text-[#4e2780] hover:bg-[#f4e6f3] h-14 text-lg font-bold shadow-lg transition-all duration-150"
                 >
-                    {processing ? (
+                  {processing ? (
                     <>
-                        <LoaderCircle className="w-5 h-5 animate-spin mr-2" />
-                        Cadastrando...
+                      <LoaderCircle className="w-5 h-5 animate-spin mr-2" />
+                      Cadastrando...
                     </>
-                    ) : (
+                  ) : (
                     'Cadastrar Espaço'
-                    )}
+                  )}
                 </Button>
-                </CardContent>
+              </CardContent>
             </Card>
-            </form>
+          </form>
         </div>
-    </div>
+      </div>
     </div>
   );
 }

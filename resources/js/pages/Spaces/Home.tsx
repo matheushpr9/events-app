@@ -1,17 +1,9 @@
-
 import { useState } from 'react';
+import { MapPin } from 'lucide-react';
 import Header from '../components/Header';
 import SearchSection from '../components/SearchSection';
 import SpaceCard from '../components/SpaceCard';
 import { api, initSanctum } from '@/api/api';
-
-interface SearchFilters {
-  location: string;
-  type: string;
-  locality: string;
-  amenities: string;
-  services: string;
-}
 
 interface Space {
   id: string;
@@ -26,155 +18,94 @@ interface Space {
   type: string;
   amenities: string[];
 }
+ 
 
-// Dados mock para demonstração
-const mockSpaces: Space[] = [
+// Dados mock para desenvolvimento local
+const Spaces: Space[] = [
   {
     id: '1',
-    name: 'Salão Elegance',
-    description: 'Espaço sofisticado ideal para casamentos e eventos corporativos, com decoração clássica e ambiente acolhedor.',
-    location: 'Ipanema, Rio de Janeiro',
+    name: 'Villa Elegante',
+    description: 'Espaço sofisticado com jardim amplo, perfeito para casamentos e eventos especiais.',
+    location: 'Jardim Botânico, Rio de Janeiro',
     capacity: 150,
-    pricePerHour: 320,
-    rating: 4.8,
-    reviewCount: 127,
-    image: 'https://images.unsplash.com/photo-1519167758481-83f29c1fe8ea?w=500&h=300&fit=crop',
-    type: 'Salão de Festas',
-    amenities: ['Wi-Fi', 'Estacionamento', 'Cozinha', 'Ar Condicionado']
-  },
-  {
-    id: '2',
-    name: 'Auditório Business Center',
-    description: 'Moderno auditório equipado com tecnologia de ponta para apresentações e conferências profissionais.',
-    location: 'Centro, São Paulo',
-    capacity: 200,
-    pricePerHour: 480,
+    pricePerHour: 450,
     rating: 4.9,
-    reviewCount: 89,
-    image: 'https://images.unsplash.com/photo-1505373877841-8d25f7d46678?w=500&h=300&fit=crop',
-    type: 'Auditório',
-    amenities: ['Wi-Fi', 'Projetor', 'Som Profissional', 'Ar Condicionado']
+    reviewCount: 127,
+    image: 'https://images.unsplash.com/photo-1519167758481-83f550bb49b3?w=800&h=600&fit=crop',
+    type: 'Villa',
+    amenities: ['Wi-Fi', 'Estacionamento', 'Jardim', 'Cozinha']
   },
   {
-    id: '3',
-    name: 'Terraço Garden',
-    description: 'Lindíssimo terraço com vista panorâmica, perfeito para eventos ao ar livre e celebrações especiais.',
+    id: '2', 
+    name: 'Salão Crystal',
+    description: 'Salão moderno com decoração contemporânea e sistema de som profissional.',
     location: 'Leblon, Rio de Janeiro',
     capacity: 80,
-    pricePerHour: 250,
+    pricePerHour: 280,
     rating: 4.7,
-    reviewCount: 156,
-    image: 'https://images.unsplash.com/photo-1464366400600-7168b8af9bc3?w=500&h=300&fit=crop',
-    type: 'Área Externa',
-    amenities: ['Vista Panorâmica', 'Jardim', 'Estacionamento', 'Catering']
-  },
-  {
-    id: '4',
-    name: 'Coworking Hub',
-    description: 'Espaço colaborativo moderno e flexível, ideal para workshops, reuniões e eventos corporativos.',
-    location: 'Vila Madalena, São Paulo',
-    capacity: 50,
-    pricePerHour: 120,
-    rating: 4.6,
-    reviewCount: 203,
-    image: 'https://images.unsplash.com/photo-1497366216548-37526070297c?w=500&h=300&fit=crop',
-    type: 'Coworking',
-    amenities: ['Wi-Fi', 'Café', 'Lousa Digital', 'Flexibilidade']
-  },
-  {
-    id: '5',
-    name: 'Restaurante Família',
-    description: 'Aconchegante restaurante familiar com ambiente reservado, perfeito para confraternizações e jantares.',
-    location: 'Copacabana, Rio de Janeiro',
-    capacity: 60,
-    pricePerHour: 180,
-    rating: 4.5,
-    reviewCount: 94,
-    image: 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=500&h=300&fit=crop',
-    type: 'Restaurante',
-    amenities: ['Cozinha Completa', 'Serviço de Mesa', 'Adega', 'Música Ambiente']
-  },
-  {
-    id: '6',
-    name: 'Salão Crystal',
-    description: 'Espaço luxuoso com cristais e iluminação especial, ideal para formaturas e eventos de gala.',
-    location: 'Barra da Tijuca, Rio de Janeiro',
-    capacity: 120,
-    pricePerHour: 380,
-    rating: 4.9,
-    reviewCount: 67,
-    image: 'https://images.unsplash.com/photo-1478131143081-80f7f84ca84d?w=500&h=300&fit=crop',
-    type: 'Salão de Festas',
-    amenities: ['Decoração Luxuosa', 'Estacionamento', 'Segurança', 'Catering']
+    reviewCount: 89,
+    image: 'https://images.unsplash.com/photo-1464366400600-7168b8af9bc3?w=800&h=600&fit=crop',
+    type: 'Salão',
+    amenities: ['Wi-Fi', 'Ar Condicionado', 'Som Profissional', 'Estacionamento']
   }
 ];
 
 const Index = () => {
-  const [filteredSpaces, setFilteredSpaces] = useState<Space[]>(mockSpaces);
-
-  const handleSearch = async (filters: SearchFilters) => {
-  try {
-    const params = new URLSearchParams();
-    
-    if (filters.location) params.append('city', filters.location);
-    if (filters.type) params.append('type', filters.type);
-    if (filters.amenities && filters.amenities.length > 0) {
-      // Se amenities for array, envie como lista separada por vírgula
-      params.append('amenities', Array.isArray(filters.amenities) ? filters.amenities.join(',') : filters.amenities);
-    }
-    if (filters.services && filters.services.length > 0) {
-      params.append('services', Array.isArray(filters.services) ? filters.services.join(',') : filters.services);
-    }
-    if (filters.locality) params.append('locality', filters.locality);
-
-    await initSanctum();
-
-    const response = await api.get(`/api/spaces/filter?${params.toString()}`);
-
-    setFilteredSpaces(response.data);
-  } catch (error) {
-    console.error('Erro ao buscar espaços:', error);
-    setFilteredSpaces([]);
-  }
-};
-
+  const [filteredSpaces, setFilteredSpaces] = useState<Space[]>(Spaces);
+  
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-[#fff6f1] flex flex-col">
       <Header />
-      <SearchSection onSearch={handleSearch} />
-
-      {/* Results Section */}
-      <section className="py-12">
-        <div className="container mx-auto px-4">
-          <div className="flex items-center justify-between mb-8">
-            <div>
-              <h2 className="text-2xl font-bold text-foreground mb-2">
-                Espaços Disponíveis
-              </h2>
-              <p className="text-muted-foreground">
-                {filteredSpaces.length} espaços encontrados
-              </p>
+      <main className="flex-1">
+        <SearchSection onResults={setFilteredSpaces} mockSpaces={Spaces} />
+        {/* Results Section */}
+        <section className="py-12 px-2 sm:px-4">
+          <div className="container mx-auto max-w-7xl">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-10 animate-fade-in">
+              <div>
+                <h2 className="text-2xl sm:text-3xl font-bold text-[#4e2780] mb-2 sm:mb-3">
+                  Espaços Disponíveis
+                </h2>
+                <p className="text-[#4e2780]/70 text-base sm:text-lg">
+                  {filteredSpaces.length} espaço{filteredSpaces.length !== 1 && 's'} encontrado{filteredSpaces.length !== 1 && 's'} para você
+                </p>
+              </div>
             </div>
-          </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredSpaces.map((space) => (
-              <SpaceCard key={space.id} space={space} />
-            ))}
+            {filteredSpaces.length > 0 ? (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 animate-slide-up">
+                {filteredSpaces.map((space) => (
+                  <SpaceCard key={space.id} space={space} />
+                ))}
+              </div>
+            ) : (
+              <div className="text-center py-16 animate-fade-in">
+                <div className="max-w-md mx-auto">
+                  <div
+                    className="w-20 h-20 sm:w-24 sm:h-24 bg-gradient-to-br from-[#ede7f6] to-[#f4e6f3] rounded-full flex items-center justify-center mx-auto mb-5 sm:mb-6"
+                    aria-hidden="true"
+                  >
+                    <MapPin className="w-8 h-8 sm:w-10 sm:h-10 text-[#4e2780]" />
+                  </div>
+                  <h3 className="text-xl sm:text-2xl font-semibold text-[#4e2780] mb-3 sm:mb-4">
+                    Nenhum espaço encontrado
+                  </h3>
+                  <p className="text-[#4e2780]/70 mb-5 sm:mb-6">
+                    Não encontramos espaços com os filtros aplicados. Tente ajustar sua busca ou explore outras opções.
+                  </p>
+                  <button
+                    onClick={() => setFilteredSpaces(Spaces)}
+                    className="px-5 py-2.5 sm:px-6 sm:py-3 bg-[#4e2780] text-white rounded-xl font-semibold shadow-md hover:bg-[#3a1e5a] focus:outline-none focus:ring-2 focus:ring-[#b39ddb] focus:ring-offset-2 transition-all duration-300"
+                    aria-label="Ver todos os espaços"
+                  >
+                    Ver Todos os Espaços
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
-
-          {filteredSpaces.length === 0 && (
-            <div className="text-center py-12">
-              <p className="text-muted-foreground text-lg mb-4">
-                Nenhum espaço encontrado com os filtros aplicados.
-              </p>
-              <p className="text-sm text-muted-foreground">
-                Tente ajustar os filtros ou fazer uma nova busca.
-              </p>
-            </div>
-          )}
-        </div>
-      </section>
+        </section>
+      </main>
     </div>
   );
 };
