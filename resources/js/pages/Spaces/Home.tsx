@@ -1,64 +1,39 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { MapPin } from 'lucide-react';
 import Header from '../components/Header';
 import SearchSection from '../components/SearchSection';
 import SpaceCard from '../components/SpaceCard';
 import { api, initSanctum } from '@/api/api';
-
-interface Space {
-  id: string;
-  name: string;
-  description: string;
-  location: string;
-  capacity: number;
-  pricePerHour: number;
-  rating: number;
-  reviewCount: number;
-  image: string;
-  type: string;
-  amenities: string[];
-}
- 
-
-// Dados mock para desenvolvimento local
-const Spaces: Space[] = [
-  {
-    id: '1',
-    name: 'Villa Elegante',
-    description: 'Espaço sofisticado com jardim amplo, perfeito para casamentos e eventos especiais.',
-    location: 'Jardim Botânico, Rio de Janeiro',
-    capacity: 150,
-    pricePerHour: 450,
-    rating: 4.9,
-    reviewCount: 127,
-    image: 'https://images.unsplash.com/photo-1519167758481-83f550bb49b3?w=800&h=600&fit=crop',
-    type: 'Villa',
-    amenities: ['Wi-Fi', 'Estacionamento', 'Jardim', 'Cozinha']
-  },
-  {
-    id: '2', 
-    name: 'Salão Crystal',
-    description: 'Salão moderno com decoração contemporânea e sistema de som profissional.',
-    location: 'Leblon, Rio de Janeiro',
-    capacity: 80,
-    pricePerHour: 280,
-    rating: 4.7,
-    reviewCount: 89,
-    image: 'https://images.unsplash.com/photo-1464366400600-7168b8af9bc3?w=800&h=600&fit=crop',
-    type: 'Salão',
-    amenities: ['Wi-Fi', 'Ar Condicionado', 'Som Profissional', 'Estacionamento']
-  }
-];
+import { Space } from '../../interfaces/space';
 
 const Index = () => {
-  const [filteredSpaces, setFilteredSpaces] = useState<Space[]>(Spaces);
-  
+  const [spaces, setSpaces] = useState<Space[]>([]);
+  const [filteredSpaces, setFilteredSpaces] = useState<Space[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchSpaces = async () => {
+      setLoading(true);
+      try {
+        await initSanctum();
+        const response = await api.get<Space[]>('/api/spaces');
+        setSpaces(response.data);
+        setFilteredSpaces(response.data);
+      } catch (error) {
+        setSpaces([]);
+        setFilteredSpaces([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchSpaces();
+  }, []);
+
   return (
     <div className="min-h-screen bg-[#fff6f1] flex flex-col">
       <Header />
       <main className="flex-1">
-        <SearchSection onResults={setFilteredSpaces} mockSpaces={Spaces} />
-        {/* Results Section */}
+        <SearchSection onResults={setFilteredSpaces} />
         <section className="py-12 px-2 sm:px-4">
           <div className="container mx-auto max-w-7xl">
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-10 animate-fade-in">
@@ -71,8 +46,9 @@ const Index = () => {
                 </p>
               </div>
             </div>
-
-            {filteredSpaces.length > 0 ? (
+            {loading ? (
+              <div className="text-center py-16">Carregando...</div>
+            ) : filteredSpaces.length > 0 ? (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 animate-slide-up">
                 {filteredSpaces.map((space) => (
                   <SpaceCard key={space.id} space={space} />
@@ -94,7 +70,7 @@ const Index = () => {
                     Não encontramos espaços com os filtros aplicados. Tente ajustar sua busca ou explore outras opções.
                   </p>
                   <button
-                    onClick={() => setFilteredSpaces(Spaces)}
+                    onClick={() => setFilteredSpaces(spaces)}
                     className="px-5 py-2.5 sm:px-6 sm:py-3 bg-[#4e2780] text-white rounded-xl font-semibold shadow-md hover:bg-[#3a1e5a] focus:outline-none focus:ring-2 focus:ring-[#b39ddb] focus:ring-offset-2 transition-all duration-300"
                     aria-label="Ver todos os espaços"
                   >

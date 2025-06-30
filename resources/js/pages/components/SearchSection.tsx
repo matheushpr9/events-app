@@ -5,38 +5,16 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Card, CardContent } from '@/components/ui/card';
 import { Search, MapPin, Filter } from 'lucide-react';
 import { api, initSanctum } from '@/api/api';
-
-interface SearchFilters {
-  location: string;
-  state: string;
-  type: string;
-  locality: string;
-  amenities: string;
-  services: string;
-}
-
-interface Space {
-  id: string;
-  name: string;
-  description: string;
-  location: string;
-  capacity: number;
-  pricePerHour: number;
-  rating: number;
-  reviewCount: number;
-  image: string;
-  type: string;
-  amenities: string[];
-}
-
+import {Space} from '../../interfaces/space'
+import { SearchFilters } from '../../interfaces/search-filters';
 interface SearchSectionProps {
   onResults: (spaces: Space[]) => void;
-  mockSpaces?: Space[];
+  Spaces?: Space[]; // agora pode receber mock
 }
 
-const SearchSection = ({ onResults, mockSpaces = [] }: SearchSectionProps) => {
+const SearchSection = ({ onResults, Spaces }: SearchSectionProps) => {
   const [filters, setFilters] = useState<SearchFilters>({
-    location: '',
+    city: '',
     state: '',
     type: '',
     locality: '',
@@ -48,21 +26,31 @@ const SearchSection = ({ onResults, mockSpaces = [] }: SearchSectionProps) => {
   const handleSearch = async () => {
     setLoading(true);
     try {
-      const params = new URLSearchParams();
-      if (filters.location) params.append('city', filters.location);
-      if (filters.type) params.append('type', filters.type);
-      if (filters.amenities) params.append('amenities', filters.amenities);
-      if (filters.services) params.append('services', filters.services);
-      if (filters.locality) params.append('locality', filters.locality);
-      if (filters.state) params.append('state', filters.state);
+      // Se estiver usando mock (Spaces), filtra localmente
+      if (Spaces && Spaces.length > 0) {
+        const filtered = Spaces.filter(space => {
+          // Filtros básicos (pode expandir conforme necessidade)
+          const matchCity = !filters.city || space.address.city.toLowerCase().includes(filters.city.toLowerCase());
+          const matchType = !filters.type || space.type.toLowerCase() === filters.type.toLowerCase();
+          const matchAmenities = !filters.amenities || space.amenities.map(a => a.toLowerCase()).includes(filters.amenities.toLowerCase());
+          // Adicione outros filtros conforme necessário
+          return matchCity && matchType && matchAmenities;
+        });
+        onResults(filtered);
+      } else {
+        // Busca real na API
+        await initSanctum();
+        const params = new URLSearchParams();
+        if (filters.city) params.append('city', filters.city);
+        if (filters.type) params.append('type', filters.type);
+        if (filters.amenities) params.append('amenities', filters.amenities);
+        if (filters.services) params.append('services', filters.services);
+        if (filters.locality) params.append('locality', filters.locality);
+        if (filters.state) params.append('state', filters.state);
 
-      // Se quiser usar mock, descomente a linha abaixo e comente o bloco da API
-      // onResults(mockSpaces);
-
-      // Busca real
-      await initSanctum();
-      const response = await api.get(`/api/spaces/filter?${params.toString()}`);
-      onResults(response.data);
+        const response = await api.get(`/api/spaces/filter?${params.toString()}`);
+        onResults(response.data);
+      }
     } catch (error) {
       console.error('Erro ao buscar espaços:', error);
       onResults([]);
@@ -70,7 +58,6 @@ const SearchSection = ({ onResults, mockSpaces = [] }: SearchSectionProps) => {
       setLoading(false);
     }
   };
-
   const brazilianStates = [
     { value: 'AC', label: 'Acre' },
     { value: 'AL', label: 'Alagoas' },
@@ -151,13 +138,13 @@ const SearchSection = ({ onResults, mockSpaces = [] }: SearchSectionProps) => {
                   </Select>
                 </div>
 
-                {/* Location Search */}
+                {/* City Search */}
                 <div className="flex-1 relative">
                   <MapPin className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-[#4e2780]/50 pointer-events-none" aria-hidden="true" />
                   <Input
                     placeholder="Digite a cidade, bairro ou endereço..."
-                    value={filters.location}
-                    onChange={e => setFilters({ ...filters, location: e.target.value })}
+                    value={filters.city}
+                    onChange={e => setFilters({ ...filters, city: e.target.value })}
                     className="pl-12 bg-white/90 border-[#4e2780]/20 text-[#4e2780] h-12 rounded-xl focus:ring-2 focus:ring-[#b39ddb] placeholder:text-[#4e2780]/50"
                     aria-label="Buscar por cidade, bairro ou endereço"
                   />

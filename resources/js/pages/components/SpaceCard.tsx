@@ -2,20 +2,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { MapPin, Users, Star, Wifi, Car, Utensils } from 'lucide-react';
-
-interface Space {
-  id: string;
-  name: string;
-  description: string;
-  location: string;
-  capacity: number;
-  pricePerHour: number;
-  rating: number;
-  reviewCount: number;
-  image: string;
-  type: string;
-  amenities: string[];
-}
+import {Space} from '../../interfaces/space'
 
 interface SpaceCardProps {
   space: Space;
@@ -42,7 +29,8 @@ const SpaceCard = ({ space }: SpaceCardProps) => {
       {/* Image Section */}
       <div className="aspect-[4/3] bg-[#f4e6f3] relative overflow-hidden">
         <img
-          src={space.image}
+          key={space.id}
+          src={`/storage/${space.images[0].image_path}`}
           alt={space.name}
           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
           loading="lazy"
@@ -69,7 +57,7 @@ const SpaceCard = ({ space }: SpaceCardProps) => {
             </CardTitle>
             <div className="flex items-center text-[#4e2780]/60 mb-3">
               <MapPin className="h-4 w-4 mr-2" aria-hidden="true" />
-              <span className="text-sm">{space.location}</span>
+              <span className="text-sm">{space.address.city}, {space.address.state} - {space.locality}</span>
             </div>
           </div>
         </div>
@@ -84,14 +72,14 @@ const SpaceCard = ({ space }: SpaceCardProps) => {
         <div className="flex items-center justify-between mb-6 p-4 bg-[#f4e6f3] rounded-xl">
           <div className="flex items-center text-[#4e2780]">
             <Users className="h-4 w-4 mr-2" aria-hidden="true" />
-            <span className="text-sm font-medium">Até {space.capacity} pessoas</span>
+            <span className="text-sm font-medium">Até {space.people_capacity} pessoas</span>
           </div>
-          <div className="text-right">
+          {/* <div className="text-right">
             <div className="text-2xl font-bold text-[#4e2780]">
-              R$ {space.pricePerHour}
+              R$ {space.price_per_person_buffet}
             </div>
             <div className="text-xs text-[#4e2780]/60 font-medium">por hora</div>
-          </div>
+          </div> */}
         </div>
 
         {/* Amenities */}
@@ -129,7 +117,7 @@ const SpaceCard = ({ space }: SpaceCardProps) => {
               ))}
             </div>
             <span className="text-sm text-[#4e2780]/70 font-medium">
-              ({space.reviewCount} avaliações)
+              ({space.reviews_count} avaliações)
             </span>
           </div>
         </div>

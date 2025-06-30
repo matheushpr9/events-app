@@ -13,6 +13,7 @@ import { api, initSanctum } from '../../api/api';
 import axios from 'axios';
 
 type SpaceFormType = {
+  name: string;
   images: File[];
   people_capacity: string;
   postal_code: string;
@@ -63,6 +64,7 @@ const servicesOptions = [
 
 export default function Index() {
   const [data, setData] = useState<SpaceFormType>({
+    name: '',
     images: [],
     people_capacity: '',
     postal_code: '',
@@ -88,6 +90,11 @@ export default function Index() {
 
   const validateForm = (): boolean => {
     const newErrors: string[] = [];
+
+    // Validação de nome
+    if (!data.name.trim()) {
+      newErrors.push('Nome do espaço é obrigatório');
+    }
 
     // Validação de imagens
     if (data.images.length === 0) {
@@ -199,6 +206,7 @@ export default function Index() {
   setProcessing(true);
 
   const formData = new FormData();
+  formData.append('name', data.name);
   validImages.forEach((file) => formData.append('images[]', file));
   formData.append('people_capacity', data.people_capacity);
   formData.append('postal_code', data.postal_code);
@@ -226,6 +234,7 @@ export default function Index() {
     }
 
     setData({
+      name: '',
       images: [],
       people_capacity: '',
       postal_code: '',
@@ -413,6 +422,18 @@ export default function Index() {
               </CardHeader>
               <CardContent>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                  <div className="space-y-2 md:col-span-2">
+                    <Label htmlFor="name" className="text-sm font-semibold text-[#4e2780]">Nome do Espaço *</Label>
+                    <Input
+                      id="name"
+                      type="text"
+                      value={data.name}
+                      onChange={e => setData(prev => ({ ...prev, name: e.target.value }))}
+                      placeholder="Ex: Villa Elegante"
+                      className="bg-white text-[#4e2780] border border-[#b39ddb] placeholder:text-[#7c5ca3] focus:ring-2 focus:ring-[#b39ddb]"
+                    />
+                  </div>
+
                   <div className="space-y-2">
                     <Label htmlFor="type" className="text-sm font-semibold text-[#4e2780]">Tipo do Espaço *</Label>
                     <Select value={data.type} onValueChange={(value) => setData(prev => ({ ...prev, type: value }))}>

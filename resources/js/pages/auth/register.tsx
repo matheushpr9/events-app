@@ -21,7 +21,7 @@ const Cadastro = () => {
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     post(route('register'), {
-      onFinish: () => reset('password', 'password_confirmation'),
+      onFinish: () => post('/logout'),
     });
   };
 

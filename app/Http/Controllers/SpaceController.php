@@ -14,7 +14,7 @@ use Illuminate\Validation\Rules\Enum;
 class SpaceController extends Controller
 {
     public function index(){
-        return Space::all();
+        return Space::with(['address', 'images', 'user'])->get();
     }
 
     public function store(Request $request){
@@ -56,23 +56,13 @@ class SpaceController extends Controller
             'services' => 'required|array',
             'services.*' => [new Enum(SpaceServicesEnum::class)],
             'description' => 'required|string',
+            'name' => 'required|string|max:255',
         ]);
 
         logger()->info('Validated space data', [
             'validated_space' => $validatedSpace,
         ]);
         // Create address and space
-        logger()->info('Creating address for space', [
-            'street' => $validatedSpace['street'],
-            'neighborhood' => $validatedSpace['neighborhood'],
-            'number' => $validatedSpace['number'],
-            'complement' => $validatedSpace['complement'],
-            'city' => $validatedSpace['city'],
-            'state' => $validatedSpace['state'],
-            'postal_code' => $validatedSpace['postal_code'],
-            'country' => $validatedSpace['country'],
-        ]);
-
         $address = Address::create([
             'street' => $validatedSpace['street'],
             'neighborhood' => $validatedSpace['neighborhood'],
@@ -82,6 +72,7 @@ class SpaceController extends Controller
             'state' => $validatedSpace['state'],
             'postal_code' => $validatedSpace['postal_code'],
             'country' => $validatedSpace['country'],
+            
         ]);
 
         logger()->info('Address created', [
@@ -99,6 +90,7 @@ class SpaceController extends Controller
             'amenities' => $validatedSpace['amenities'] ?? [],
             'services' => $validatedSpace['services'] ?? [],
             'description' => $validatedSpace['description'],
+            'name' => $validatedSpace['name'],
         ]);
 
         $space = Space::create([
@@ -112,6 +104,7 @@ class SpaceController extends Controller
             'amenities' => $validatedSpace['amenities'] ?? [],
             'services' => $validatedSpace['services'] ?? [],
             'description' => $validatedSpace['description'],
+            'name' => $validatedSpace['name'],
         ]);
 
 
@@ -137,7 +130,7 @@ class SpaceController extends Controller
     }
 
     public function show($id){
-        return Space::findOrFail($id);
+        return Space::with(['address', 'images'])->findOrFail($id);
     }
     public function filter(Request $request)
     {
