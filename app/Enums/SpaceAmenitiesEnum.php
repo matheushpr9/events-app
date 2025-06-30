@@ -8,11 +8,15 @@ enum SpaceAmenitiesEnum: string
     case ESTACIONAMENTO = 'Estacionamento';
     case AR_CONDICIONADO = 'Ar condicionado';
     case WIFI = 'Wi-Fi';
-    case AUDIOVISUAL = 'Audiovisual';
-    case BAR = 'Bar';
     case COZINHA_EQUIPADA = 'Cozinha equipada';
-    case PISCINA = 'piscina';
-    case OUTRO = 'Outro';
+    case SUITE_DA_NOIVA = 'Suíte da noiva';
+    case CAPELA = 'Capela';
+    case AREA_EXTERNA_COBERTA = 'Área externa coberta';
+    case GERADOR = 'Gerador de energia';
+    case ACESSIBILIDADE = 'Acessibilidade';
+    case ILUMINACAO_DECORATIVA = 'Iluminação decorativa';
+    case ESPACO_KIDS = 'Espaço Kids';
+    case PISCINA = 'Piscina';
 
     public static function getValues(): array
     {
