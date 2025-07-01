@@ -1,28 +1,15 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { MapPin, Users, Star, Wifi, Car, Utensils } from 'lucide-react';
+import { MapPin, Users, Star } from 'lucide-react';
 import {Space} from '../../interfaces/space'
+import getAmenityIcon from '../helpers/get-amenty-icon';
 
 interface SpaceCardProps {
   space: Space;
 }
 
 const SpaceCard = ({ space }: SpaceCardProps) => {
-  const getAmenityIcon = (amenity: string) => {
-    switch (amenity.toLowerCase()) {
-      case 'wifi':
-      case 'wi-fi':
-        return <Wifi className="h-3 w-3" aria-label="Wi-Fi" />;
-      case 'estacionamento':
-        return <Car className="h-3 w-3" aria-label="Estacionamento" />;
-      case 'cozinha':
-      case 'catering':
-        return <Utensils className="h-3 w-3" aria-label="Cozinha" />;
-      default:
-        return null;
-    }
-  };
 
   return (
     <Card className="group overflow-hidden bg-white shadow-lg hover:shadow-2xl transition-all duration-500 border-0 rounded-2xl focus-within:ring-2 focus-within:ring-[#b39ddb]">
