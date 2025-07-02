@@ -1,13 +1,13 @@
 import React from 'react';
-import { Wifi, Car, Utensils, Speaker, PartyPopper, Flower2, Snowflake, CookingPot, Bed, Church, Umbrella, Zap, Accessibility, LampCeiling, ToyBrick, WavesLadder } from 'lucide-react';
+import { Wifi, Car, Speaker, PartyPopper, Flower2, Snowflake, CookingPot, Bed, Church, Umbrella, Zap, Accessibility, LampCeiling, ToyBrick, WavesLadder, Utensils } from 'lucide-react';
 
 const getAmenityIcon = (amenity: string): React.ReactElement | null => {
   switch (amenity.toLowerCase()) {
     case 'pista de dança':
       return <Speaker className="h-3 w-3" aria-label="Pista de Dança" />;
-    case 'salão de festas':
-      return <PartyPopper className="h-3 w-3" aria-label="Salão de Festas" />;
-    case 'jardin':
+    case 'salão de jantar':
+      return <Utensils className="h-3 w-3" aria-label="Salão de Festas" />;
+    case 'jardim':
       return <Flower2 className="h-3 w-3" aria-label="Jardim" />;
     case 'estacionamento':
       return <Car className="h-3 w-3" aria-label="Estacionamento" />;
