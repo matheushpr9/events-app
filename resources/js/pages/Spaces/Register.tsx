@@ -11,6 +11,10 @@ import { toast,ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { api, initSanctum } from '../../api/api';
 import axios from 'axios';
+import getTypes from '../helpers/get-types';
+import getLocalities from '../helpers/get-localities';
+import getAmenities from '../helpers/get-amenties';
+import getServices from '../helpers/get-services';
 
 type SpaceFormType = {
   name: string;
@@ -34,35 +38,37 @@ type SpaceFormType = {
   description: string;
 };
 
-const typeOptions = ['Chácara', 'Capela', 'Sítio', 'Casa', 'Outro'];
-const localityOptions = ['Urbano', 'Rural', 'Outro'];
-const amenitiesOptions = [
-  'Pista de dança',
-  'Salão de jantar',
-  'Jardim',
-  'Estacionamento',
-  'Ar condicionado',
-  'Wi-Fi',
-  'Audiovisual',
-  'Bar',
-  'Cozinha equipada',
-  'Piscina',
-  'Outro'
-];
-const servicesOptions = [
-  'Música',
-  'Recepção',
-  'Buffet',
-  'Mesas',
-  'Cadeiras',
-  'Decoração',
-  'Segurança',
-  'Limpeza',
-  'Estacionamento',
-  'Outro'
-];
-
 export default function Index() {
+
+  const [amenitiesOptions, setAmenitiesOptions] = useState<string[]>([]);
+  useEffect(() => {
+    getAmenities()
+    .then(setAmenitiesOptions)
+    .catch(() => setAmenitiesOptions([]));
+  },[]);
+
+  const [servicesOptions, setServicesOptions] = useState<string[]>([]);
+  useEffect(() => {
+    getServices()
+    .then(setServicesOptions)
+    .catch(() => setServicesOptions([]));
+  },[]);
+  
+  const [localityOptions, setLocalityOptions] = useState<string[]>([]);
+
+  useEffect(() => {
+    getLocalities()
+    .then(setLocalityOptions)
+    .catch(() => setLocalityOptions([]));
+  },[]);
+
+  const [typeOptions, setTypeOptions]= useState<string[]>([]);
+  useEffect(() => {
+    getTypes()
+    .then(setTypeOptions)
+    .catch(()=>setTypeOptions([]));
+  },[]);
+
   const [data, setData] = useState<SpaceFormType>({
     name: '',
     images: [],

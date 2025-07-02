@@ -200,4 +200,20 @@ class SpaceController extends Controller
             'message' => 'Space deleted successfully'
         ], 204);
     }
+    public function getAmenities()
+    {
+        return response()->json(SpaceAmenitiesEnum::getValues());
+    }
+    public function getLocalities()
+    {
+        return response()->json(SpaceLocalityEnum::getValues());
+    }
+    public function getServices()
+    {
+        return response()->json(SpaceServicesEnum::getValues());
+    }
+    public function getTypes()
+    {
+        return response()->json(SpaceTypeEnum::getValues());
+    }
 }

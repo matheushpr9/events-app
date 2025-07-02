@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -7,9 +7,14 @@ import { Search, MapPin, Filter } from 'lucide-react';
 import { api, initSanctum } from '@/api/api';
 import {Space} from '../../interfaces/space'
 import { SearchFilters } from '../../interfaces/search-filters';
+import getTypes from '../helpers/get-types';
+import getLocalities from '../helpers/get-localities';
+import getAmenities from '../helpers/get-amenties';
+import getServices from '../helpers/get-services';
+
 interface SearchSectionProps {
   onResults: (spaces: Space[]) => void;
-  Spaces?: Space[]; // agora pode receber mock
+  Spaces?: Space[];
 }
 
 const SearchSection = ({ onResults, Spaces }: SearchSectionProps) => {
@@ -26,19 +31,15 @@ const SearchSection = ({ onResults, Spaces }: SearchSectionProps) => {
   const handleSearch = async () => {
     setLoading(true);
     try {
-      // Se estiver usando mock (Spaces), filtra localmente
       if (Spaces && Spaces.length > 0) {
         const filtered = Spaces.filter(space => {
-          // Filtros básicos (pode expandir conforme necessidade)
           const matchCity = !filters.city || space.address.city.toLowerCase().includes(filters.city.toLowerCase());
           const matchType = !filters.type || space.type.toLowerCase() === filters.type.toLowerCase();
           const matchAmenities = !filters.amenities || space.amenities.map(a => a.toLowerCase()).includes(filters.amenities.toLowerCase());
-          // Adicione outros filtros conforme necessário
           return matchCity && matchType && matchAmenities;
         });
         onResults(filtered);
       } else {
-        // Busca real na API
         await initSanctum();
         const params = new URLSearchParams();
         if (filters.city) params.append('city', filters.city);
@@ -58,6 +59,38 @@ const SearchSection = ({ onResults, Spaces }: SearchSectionProps) => {
       setLoading(false);
     }
   };
+
+  const [amenties, setAmenties] = useState<string[]>([]);
+  useEffect(() =>{
+    getAmenities()
+      .then(setAmenties)
+      .catch(() => setAmenties([]));
+  },[]);
+
+  const [spaceLocality, setSpaceLocality] = useState<string[]>([]);
+  useEffect(
+    () =>{
+      getLocalities()
+      .then(setSpaceLocality)
+      .catch(()=> setSpaceLocality([]));
+    }, []);
+
+  const [services, setServices] = useState<string[]>([]);
+  useEffect(() => {
+    getServices()
+    .then(setServices)
+    .catch(() => setServices([]));
+  }, []);
+
+  const [spaceTypes, setSpaceTypes] = useState<string[]>([]);
+  
+  useEffect(() => {
+    getTypes()
+      .then(setSpaceTypes)
+      .catch(() => setSpaceTypes([]));
+  }, []);
+
+
   const brazilianStates = [
     { value: 'AC', label: 'Acre' },
     { value: 'AL', label: 'Alagoas' },
@@ -187,10 +220,15 @@ const SearchSection = ({ onResults, Spaces }: SearchSectionProps) => {
                     <SelectValue placeholder="Tipo de espaço" />
                   </SelectTrigger>
                   <SelectContent className="bg-white border-[#4e2780]/20 shadow-lg z-50">
-                    <SelectItem value="villa" className="text-[#4e2780] hover:bg-[#4e2780]/5">Villa</SelectItem>
-                    <SelectItem value="salao" className="text-[#4e2780] hover:bg-[#4e2780]/5">Salão</SelectItem>
-                    <SelectItem value="chacara" className="text-[#4e2780] hover:bg-[#4e2780]/5">Chácara</SelectItem>
-                    <SelectItem value="sitio" className="text-[#4e2780] hover:bg-[#4e2780]/5">Sítio</SelectItem>
+                    {spaceTypes.map(type => (
+                      <SelectItem
+                        key={type}
+                        value={type}
+                        className="text-[#4e2780] hover:bg-[#4e2780]/5"
+                      >
+                        {type}
+                      </SelectItem>
+                    ))}
                   </SelectContent>
                 </Select>
 
@@ -199,8 +237,15 @@ const SearchSection = ({ onResults, Spaces }: SearchSectionProps) => {
                     <SelectValue placeholder="Localização" />
                   </SelectTrigger>
                   <SelectContent className="bg-white border-[#4e2780]/20 shadow-lg z-50">
-                    <SelectItem value="urbano" className="text-[#4e2780] hover:bg-[#4e2780]/5">Urbano</SelectItem>
-                    <SelectItem value="rural" className="text-[#4e2780] hover:bg-[#4e2780]/5">Rural</SelectItem>
+                    {spaceLocality.map( locality => (
+                      <SelectItem
+                        key={locality}
+                        value={locality}
+                        className="text-[#4e2780] hover:bg-[#4e2780]/5"
+                      >
+                        {locality}
+                      </SelectItem>
+                    ))}
                   </SelectContent>
                 </Select>
 
@@ -209,11 +254,18 @@ const SearchSection = ({ onResults, Spaces }: SearchSectionProps) => {
                     <SelectValue placeholder="Comodidades" />
                   </SelectTrigger>
                   <SelectContent className="bg-white border-[#4e2780]/20 shadow-lg z-50">
-                    <SelectItem value="wifi" className="text-[#4e2780] hover:bg-[#4e2780]/5">Wi-Fi</SelectItem>
-                    <SelectItem value="estacionamento" className="text-[#4e2780] hover:bg-[#4e2780]/5">Estacionamento</SelectItem>
-                    <SelectItem value="jardim" className="text-[#4e2780] hover:bg-[#4e2780]/5">Jardim</SelectItem>
-                    <SelectItem value="cozinha" className="text-[#4e2780] hover:bg-[#4e2780]/5">Cozinha</SelectItem>
-                  </SelectContent>
+                    {
+                      amenties.map(amenity => (
+                        <SelectItem
+                          key={amenity}
+                          value={amenity}
+                          className="text-[#4e2780] hover:bg-[#4e2780]/5"
+                        >
+                          {amenity.charAt(0).toUpperCase() + amenity.slice(1)}
+                        </SelectItem>
+                      ))
+                    }
+                    </SelectContent>
                 </Select>
 
                 <Select value={filters.services} onValueChange={value => setFilters({ ...filters, services: value })}>
@@ -221,10 +273,17 @@ const SearchSection = ({ onResults, Spaces }: SearchSectionProps) => {
                     <SelectValue placeholder="Serviços" />
                   </SelectTrigger>
                   <SelectContent className="bg-white border-[#4e2780]/20 shadow-lg z-50">
-                    <SelectItem value="catering" className="text-[#4e2780] hover:bg-[#4e2780]/5">Catering</SelectItem>
-                    <SelectItem value="decoracao" className="text-[#4e2780] hover:bg-[#4e2780]/5">Decoração</SelectItem>
-                    <SelectItem value="som-luz" className="text-[#4e2780] hover:bg-[#4e2780]/5">Som e Luz</SelectItem>
-                    <SelectItem value="seguranca" className="text-[#4e2780] hover:bg-[#4e2780]/5">Segurança</SelectItem>
+                    {
+                      services.map(service => (
+                        <SelectItem
+                          key={service}
+                          value={service}
+                          className="text-[#4e2780] hover:bg-[#4e2780]/5"
+                        >
+                          {service.charAt(0).toUpperCase() + service.slice(1)}
+                        </SelectItem>
+                      ))
+                    }
                   </SelectContent>
                 </Select>
               </div>
