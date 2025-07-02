@@ -8,7 +8,7 @@ import { Eye, EyeOff, LoaderCircle, User, Mail, Phone, Lock } from 'lucide-react
 import Header from '../components/Header';
 
 const Cadastro = () => {
-  const { data, setData, post, processing, errors, reset } = useForm({
+  const { data, setData, post, processing, errors } = useForm({
     name: '',
     email: '',
     phone_number: '',

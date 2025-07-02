@@ -20,6 +20,7 @@ const Index = () => {
         setSpaces(response.data);
         setFilteredSpaces(response.data);
       } catch (error) {
+        console.error('Erro ao buscar espaços:', error);
         setSpaces([]);
         setFilteredSpaces([]);
       } finally {
