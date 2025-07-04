@@ -3,6 +3,6 @@ export interface SearchFilters {
   state: string;
   type: string;
   locality: string;
-  amenities: string;
-  services: string;
+  amenities: string[];
+  services: string[];
 }

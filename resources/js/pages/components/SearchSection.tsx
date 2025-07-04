@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Select as DropDownSelect, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Card, CardContent } from '@/components/ui/card';
 import { Search, MapPin, Filter } from 'lucide-react';
 import { api, initSanctum } from '@/api/api';
@@ -11,6 +11,8 @@ import getTypes from '../helpers/get-types';
 import getLocalities from '../helpers/get-localities';
 import getAmenities from '../helpers/get-amenties';
 import getServices from '../helpers/get-services';
+import Select from 'react-select';
+import makeAnimated from 'react-select/animated';
 
 interface SearchSectionProps {
   onResults: (spaces: Space[]) => void;
@@ -23,8 +25,8 @@ const SearchSection = ({ onResults, Spaces }: SearchSectionProps) => {
     state: '',
     type: '',
     locality: '',
-    amenities: '',
-    services: ''
+    amenities: [],
+    services: []
   });
   const [loading, setLoading] = useState(false);
 
@@ -35,8 +37,13 @@ const SearchSection = ({ onResults, Spaces }: SearchSectionProps) => {
         const filtered = Spaces.filter(space => {
           const matchCity = !filters.city || space.address.city.toLowerCase().includes(filters.city.toLowerCase());
           const matchType = !filters.type || space.type.toLowerCase() === filters.type.toLowerCase();
-          const matchAmenities = !filters.amenities || space.amenities.map(a => a.toLowerCase()).includes(filters.amenities.toLowerCase());
-          return matchCity && matchType && matchAmenities;
+          const matchAmenities = !(filters.amenities.length>0) || space.amenities.some(amenity =>
+            filters.amenities.includes(amenity.toLowerCase())
+          );
+          const matchServices = !(filters.services.length>0) || space.services.some(service =>
+            filters.services.includes(service.toLowerCase())
+          );
+          return matchCity && matchType && matchAmenities && matchServices ;
         });
         onResults(filtered);
       } else {
@@ -44,11 +51,10 @@ const SearchSection = ({ onResults, Spaces }: SearchSectionProps) => {
         const params = new URLSearchParams();
         if (filters.city) params.append('city', filters.city);
         if (filters.type) params.append('type', filters.type);
-        if (filters.amenities) params.append('amenities', filters.amenities);
-        if (filters.services) params.append('services', filters.services);
+        if (filters.amenities.length > 0) params.append('amenities', filters.amenities.join(','));
+        if (filters.services.length > 0) params.append('services', filters.services.join(','));
         if (filters.locality) params.append('locality', filters.locality);
         if (filters.state) params.append('state', filters.state);
-
         const response = await api.get(`/api/spaces/filter?${params.toString()}`);
         onResults(response.data);
       }
@@ -153,22 +159,19 @@ const SearchSection = ({ onResults, Spaces }: SearchSectionProps) => {
               <div className="flex flex-col lg:flex-row gap-4">
                 {/* State Selector */}
                 <div className="w-full lg:w-64">
-                  <Select value={filters.state} onValueChange={value => setFilters({ ...filters, state: value })}>
-                    <SelectTrigger className="bg-white/90 border-[#4e2780]/20 text-[#4e2780] h-12 rounded-xl focus:ring-2 focus:ring-[#b39ddb]">
-                      <SelectValue placeholder="Selecionar Estado" />
-                    </SelectTrigger>
-                    <SelectContent className="bg-white border-[#4e2780]/20 shadow-lg z-50">
-                      {brazilianStates.map(state => (
-                        <SelectItem
-                          key={state.value}
-                          value={state.value}
-                          className="text-[#4e2780] hover:bg-[#4e2780]/5 focus:bg-[#4e2780]/5"
-                        >
-                          {state.label}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                  <Select
+                    closeMenuOnSelect={true}
+                    isMulti={false}
+                    isClearable={true}
+                    components={makeAnimated()}
+                    placeholder="Selecionar Estado"
+                    options={brazilianStates.map(state => ({ value: state.value, label: state.label }))}
+                    value={brazilianStates.find(option => option.value === filters.state) || null}
+                    onChange={selectedOption => {
+                      setFilters({ ...filters, state: selectedOption ? selectedOption.value : '' });
+                    }}
+                    className="bg-white/90 border-[#4e2780]/20 text-[#4e2780] h-12 rounded-xl focus:ring-2 focus:ring-[#b39ddb]"
+                  />
                 </div>
 
                 {/* City Search */}
@@ -215,77 +218,59 @@ const SearchSection = ({ onResults, Spaces }: SearchSectionProps) => {
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                <Select value={filters.type} onValueChange={value => setFilters({ ...filters, type: value })}>
-                  <SelectTrigger className="bg-white/80 border-[#4e2780]/20 text-[#4e2780] rounded-xl focus:ring-2 focus:ring-[#b39ddb]">
-                    <SelectValue placeholder="Tipo de espaço" />
-                  </SelectTrigger>
-                  <SelectContent className="bg-white border-[#4e2780]/20 shadow-lg z-50">
-                    {spaceTypes.map(type => (
-                      <SelectItem
-                        key={type}
-                        value={type}
-                        className="text-[#4e2780] hover:bg-[#4e2780]/5"
-                      >
-                        {type}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-
-                <Select value={filters.locality} onValueChange={value => setFilters({ ...filters, locality: value })}>
-                  <SelectTrigger className="bg-white/80 border-[#4e2780]/20 text-[#4e2780] rounded-xl focus:ring-2 focus:ring-[#b39ddb]">
-                    <SelectValue placeholder="Localização" />
-                  </SelectTrigger>
-                  <SelectContent className="bg-white border-[#4e2780]/20 shadow-lg z-50">
-                    {spaceLocality.map( locality => (
-                      <SelectItem
-                        key={locality}
-                        value={locality}
-                        className="text-[#4e2780] hover:bg-[#4e2780]/5"
-                      >
-                        {locality}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-
-                <Select value={filters.amenities} onValueChange={value => setFilters({ ...filters, amenities: value })}>
-                  <SelectTrigger className="bg-white/80 border-[#4e2780]/20 text-[#4e2780] rounded-xl focus:ring-2 focus:ring-[#b39ddb]">
-                    <SelectValue placeholder="Comodidades" />
-                  </SelectTrigger>
-                  <SelectContent className="bg-white border-[#4e2780]/20 shadow-lg z-50">
-                    {
-                      amenties.map(amenity => (
-                        <SelectItem
-                          key={amenity}
-                          value={amenity}
-                          className="text-[#4e2780] hover:bg-[#4e2780]/5"
-                        >
-                          {amenity.charAt(0).toUpperCase() + amenity.slice(1)}
-                        </SelectItem>
-                      ))
-                    }
-                    </SelectContent>
-                </Select>
-
-                <Select value={filters.services} onValueChange={value => setFilters({ ...filters, services: value })}>
-                  <SelectTrigger className="bg-white/80 border-[#4e2780]/20 text-[#4e2780] rounded-xl focus:ring-2 focus:ring-[#b39ddb]">
-                    <SelectValue placeholder="Serviços" />
-                  </SelectTrigger>
-                  <SelectContent className="bg-white border-[#4e2780]/20 shadow-lg z-50">
-                    {
-                      services.map(service => (
-                        <SelectItem
-                          key={service}
-                          value={service}
-                          className="text-[#4e2780] hover:bg-[#4e2780]/5"
-                        >
-                          {service.charAt(0).toUpperCase() + service.slice(1)}
-                        </SelectItem>
-                      ))
-                    }
-                  </SelectContent>
-                </Select>
+                <Select
+                  closeMenuOnSelect={true}
+                  isMulti={false}
+                  isClearable={true}
+                  components={makeAnimated()}
+                  placeholder='Tipo de espaço'
+                  options={spaceTypes.map(type => ({value: type, label: type}))}
+                  value={spaceTypes.find(type => type === filters.type) ? { value: filters.type, label: filters.type } : null}
+                  onChange={selectedOption => {
+                    setFilters({ ...filters, type: selectedOption ? selectedOption.value : '' });
+                  }}
+                  className="bg-white/80 border-[#4e2780]/20 text-[#4e2780] rounded-xl focus:ring-2 focus:ring-[#b39ddb]"
+                />
+                <Select
+                  closeMenuOnSelect={true}
+                  isMulti={false}
+                  isClearable={true}
+                  components={makeAnimated()}
+                  placeholder='Localização'
+                  options={spaceLocality.map(locality => ({ value: locality, label: locality }))}
+                  value={spaceLocality.find(locality => locality === filters.locality) ? { value: filters.locality, label: filters.locality } : null}
+                  onChange={selectedOption => {
+                    setFilters({ ...filters, locality: selectedOption ? selectedOption.value : '' });
+                  }}
+                  className="bg-white/80 border-[#4e2780]/20 text-[#4e2780] rounded-xl focus:ring-2 focus:ring-[#b39ddb]"
+                />
+                <Select 
+                  closeMenuOnSelect={false}
+                  components={makeAnimated()}
+                  placeholder='Comodidades'
+                  isMulti
+                  options={amenties.map(amenity => ({ value: amenity, label: amenity.charAt(0).toUpperCase() + amenity.slice(1) }))}
+                  onChange={selectedOptions => {
+                  const options = (selectedOptions ?? []) as { value: string; label: string }[];
+                  const selectedValues = options.map(option => option.value);
+                  setFilters({ ...filters, amenities: selectedValues });
+                }}
+                  className="bg-white/80 border-[#4e2780]/20 text-[#4e2780] rounded-xl focus:ring-2 focus:ring-[#b39ddb] hover:bg-[#4e2780]/5"
+                />
+                <Select
+                  closeMenuOnSelect={false}
+                  components={makeAnimated()}
+                  placeholder='Serviços'
+                  isMulti
+                  options={services.map(service => ({ value: service, label: service.charAt(0).toUpperCase() + service.slice(1) }))}
+                  onChange={selectedOptions => {
+                    const options = (selectedOptions ?? []) as { value: string; label: string }[];
+                    const selectedValues = options.map(option => option.value);
+                    setFilters({ ...filters, services: selectedValues });
+                  }}
+                  className="bg-white/80 border-[#4e2780]/20 text-[#4e2780] rounded-xl focus:ring-2 focus:ring-[#b39ddb] hover:bg-[#4e2780]/5"
+                />
+                
               </div>
             </div>
           </CardContent>
