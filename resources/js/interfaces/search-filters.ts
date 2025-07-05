@@ -5,4 +5,5 @@ export interface SearchFilters {
   locality: string;
   amenities: string[];
   services: string[];
+  capacity: string;
 }

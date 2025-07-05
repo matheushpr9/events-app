@@ -5,7 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
-import { LoaderCircle, Upload, X, ImageIcon, MapPin, Users, DollarSign, Calendar, Home } from 'lucide-react';
+import { LoaderCircle, Upload, X, ImageIcon, MapPin, DollarSign, Calendar, Home } from 'lucide-react';
 import Header from '../components/Header';
 import { toast,ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -15,6 +15,7 @@ import getTypes from '../helpers/get-types';
 import getLocalities from '../helpers/get-localities';
 import getAmenities from '../helpers/get-amenties';
 import getServices from '../helpers/get-services';
+import getCapacities from '../helpers/get-capacities';
 
 type SpaceFormType = {
   name: string;
@@ -67,6 +68,13 @@ export default function Index() {
     getTypes()
     .then(setTypeOptions)
     .catch(()=>setTypeOptions([]));
+  },[]);
+
+  const [capacities, setCapacities] = useState<string[]>([]);
+  useEffect(() => {
+    getCapacities()
+      .then(setCapacities)
+      .catch(() => setCapacities([]));
   },[]);
 
   const [data, setData] = useState<SpaceFormType>({
@@ -469,17 +477,24 @@ export default function Index() {
                   </div>
 
                   <div className="space-y-2 md:col-span-2">
-                    <Label className="flex items-center gap-2 text-sm font-semibold text-[#4e2780]">
-                      <Users className="w-4 h-4" />
-                      Capacidade de Pessoas *
-                    </Label>
-                    <Input
-                      type="number"
-                      value={data.people_capacity}
-                      onChange={e => setData(prev => ({ ...prev, people_capacity: e.target.value }))}
-                      placeholder="Ex: 100"
-                      className="bg-white text-[#4e2780] border border-[#b39ddb] placeholder:text-[#7c5ca3]"
-                    />
+                     <Label htmlFor="type" className="text-sm font-semibold text-[#4e2780]">Capacidade *</Label>
+                      <Select value={data.people_capacity} onValueChange={(value) => setData(prev => ({ ...prev, people_capacity: value }))}>
+                        <SelectTrigger className="bg-white text-[#4e2780] border border-[#b39ddb] focus:ring-2 focus:ring-[#b39ddb]">
+                          <SelectValue placeholder="Capacidade máxima de pessoas" />
+                        </SelectTrigger>
+                        <SelectContent className="bg-background border-input">
+                         {capacities.map((capacity, idx) => {
+                            const label = idx === capacities.length - 1
+                              ? `Mais de ${capacity} pessoas`
+                              : `Até ${capacity} pessoas`;
+                            return (
+                              <SelectItem key={capacity} value={label} className="text-foreground hover:bg-[#f4e6f3]">
+                                {label}
+                              </SelectItem>
+                            );
+                          })}
+                        </SelectContent>
+                      </Select>
                   </div>
                 </div>
               </CardContent>

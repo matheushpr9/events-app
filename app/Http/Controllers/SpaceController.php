@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Enums\SpaceAmenitiesEnum;
+use App\Enums\SpaceCapacityEnum;
 use App\Enums\SpaceLocalityEnum;
 use App\Enums\SpaceServicesEnum;
 use App\Enums\SpaceTypeEnum;
@@ -31,13 +32,18 @@ class SpaceController extends Controller
         $images = array_filter($request->file('images') ?? [], function ($image) {
             return $image !== null;
         });
+        if ($request->has('people_capacity')) {
+            $request->merge([
+                'people_capacity' => preg_replace('/[^0-9]/', '', $request->people_capacity)
+            ]);
+        }
 
         $request->files->set('images', $images);
         $validatedSpace = $request->validate([
             //validar erro na imagem
             'images' => 'required|array',
             'images.*' => 'image|mimes:jpeg,png,jpg,gif|max:204800', //validar tamanho máximo de 200MB
-            'people_capacity' => 'required|integer',
+            'people_capacity' => ['required', new Enum (SpaceCapacityEnum::class)],
             //'price_per_person_buffet' => 'required|numeric',
             'events_count' => 'integer',
             //'feedbacks' => 'nullable|string',
@@ -138,8 +144,9 @@ class SpaceController extends Controller
 
         // Filtros simples
         if ($request->filled('people_capacity')) {
-            $query->where('people_capacity', '>=', $request->people_capacity);
-        }
+            $capacity = preg_replace('/[^0-9]/', '', $request->people_capacity);
+            $query->where('people_capacity', '>=', $capacity);
+        }   
         if ($request->filled('type')) {
             $query->where('type', $request->type);
         }
@@ -178,6 +185,7 @@ class SpaceController extends Controller
                 $query->whereJsonContains('services', $service);
             }
         }
+        
 
         $spaces = $query->with(['address', 'images'])->get();
 
@@ -215,5 +223,9 @@ class SpaceController extends Controller
     public function getTypes()
     {
         return response()->json(SpaceTypeEnum::getValues());
+    }
+    public function getCapacities()
+    {
+        return response()->json(SpaceCapacityEnum::getValues());
     }
 }

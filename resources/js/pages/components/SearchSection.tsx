@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Select as DropDownSelect, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Card, CardContent } from '@/components/ui/card';
 import { Search, MapPin, Filter } from 'lucide-react';
 import { api, initSanctum } from '@/api/api';
@@ -13,6 +12,7 @@ import getAmenities from '../helpers/get-amenties';
 import getServices from '../helpers/get-services';
 import Select from 'react-select';
 import makeAnimated from 'react-select/animated';
+import getCapacities from '../helpers/get-capacities';
 
 interface SearchSectionProps {
   onResults: (spaces: Space[]) => void;
@@ -26,7 +26,8 @@ const SearchSection = ({ onResults, Spaces }: SearchSectionProps) => {
     type: '',
     locality: '',
     amenities: [],
-    services: []
+    services: [],
+    capacity: ''
   });
   const [loading, setLoading] = useState(false);
 
@@ -55,6 +56,7 @@ const SearchSection = ({ onResults, Spaces }: SearchSectionProps) => {
         if (filters.services.length > 0) params.append('services', filters.services.join(','));
         if (filters.locality) params.append('locality', filters.locality);
         if (filters.state) params.append('state', filters.state);
+        if (filters.capacity) params.append('people_capacity', filters.capacity);
         const response = await api.get(`/api/spaces/filter?${params.toString()}`);
         onResults(response.data);
       }
@@ -95,6 +97,13 @@ const SearchSection = ({ onResults, Spaces }: SearchSectionProps) => {
       .then(setSpaceTypes)
       .catch(() => setSpaceTypes([]));
   }, []);
+
+  const [capacities, setCapacities] = useState<string[]>([]);
+  useEffect(() => {
+    getCapacities()
+      .then(setCapacities)
+      .catch(() => setCapacities([]));
+  },[]);
 
 
   const brazilianStates = [
@@ -266,7 +275,34 @@ const SearchSection = ({ onResults, Spaces }: SearchSectionProps) => {
                   }}
                   className="bg-white/80 border-[#4e2780]/20 text-[#4e2780] rounded-xl focus:ring-2 focus:ring-[#b39ddb] hover:bg-[#4e2780]/5"
                 />
-                
+                <Select
+                  closeMenuOnSelect={true}
+                  isMulti={false}
+                  isClearable={true}
+                  components={makeAnimated()}
+                  placeholder='Capacidade'
+                  options={capacities.map((capacity, idx) => ({
+                    value: capacity, // value é o número puro
+                    label: idx === capacities.length - 1
+                      ? `Mais de ${capacity} pessoas`
+                      : `Até ${capacity} pessoas`
+                  }))}
+                  value={
+                    filters.capacity
+                      ? {
+                          value: filters.capacity,
+                          label:
+                            capacities[capacities.length - 1] === filters.capacity
+                              ? `Mais de ${filters.capacity} pessoas`
+                              : `Até ${filters.capacity} pessoas`
+                        }
+                      : null
+                  }
+                  onChange={selectedOption => {
+                    setFilters({ ...filters, capacity: selectedOption ? selectedOption.value : '' });
+                  }}
+                  className="bg-white/80 border-[#4e2780]/20 text-[#4e2780] rounded-xl focus:ring-2 focus:ring-[#b39ddb] hover:bg-[#4e2780]/5"
+                />
               </div>
             </div>
           </CardContent>
