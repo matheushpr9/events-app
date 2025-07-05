@@ -195,7 +195,7 @@ const SearchSection = ({ onResults, Spaces }: SearchSectionProps) => {
                 <Button
                   type="submit"
                   disabled={loading}
-                  className="bg-[#4e2780] bg-gradient-to-br from-[#4e2780] to-[#7c5ca3] text-white font-semibold px-8 h-12 rounded-xl hover:shadow-lg transition-all duration-300 disabled:opacity-50 focus-visible:ring-2 focus-visible:ring-[#b39ddb]"
+                  className="bg-[#4e2780] bg-gradient-to-br from-[#4e2780] to-[#7c5ca3] text-white font-semibold px-8 h-12 rounded-xl hover:shadow-lg transition-all duration-300 disabled:opacity-50 focus-visible:ring-2 focus-visible:ring-[#b39ddb] cursor-pointer"
                   aria-label="Buscar Espaços"
                 >
                   {loading ? (

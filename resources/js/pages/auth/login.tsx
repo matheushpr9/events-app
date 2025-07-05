@@ -98,14 +98,14 @@ export default function Login({ status, canResetPassword }: LoginProps) {
                   name="remember"
                   checked={data.remember}
                   onCheckedChange={checked => setData('remember', checked === true)}
-                  className="border-[#b39ddb] text-[#4e2780] focus:ring-2 focus:ring-[#b39ddb]"
+                  className="border-[#b39ddb] text-[#4e2780] focus:ring-2 focus:ring-[#b39ddb] cursor-pointer"
                 />
                 <Label htmlFor="remember" className="text-[#4e2780]">Lembrar de mim</Label>
               </div>
 
               <Button
                 type="submit"
-                className="mt-4 w-full bg-gradient-to-r from-[#4e2780] to-[#7c5ca3] text-white font-semibold h-12 rounded-xl hover:shadow-lg transition-all duration-300 focus-visible:ring-2 focus-visible:ring-[#b39ddb]"
+                className="mt-4 w-full bg-gradient-to-r from-[#4e2780] to-[#7c5ca3] text-white font-semibold h-12 rounded-xl hover:shadow-lg transition-all duration-300 focus-visible:ring-2 focus-visible:ring-[#b39ddb] cursor-pointer"
                 disabled={processing}
                 aria-label="Entrar"
               >

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { Menu } from 'lucide-react';
@@ -24,21 +24,20 @@ const Header = () => {
   }, []);
 
   if (isLoggedIn === null) return null;
-  // Componentes auxiliares para reutilização
   const AuthButtons = () => (
     <>
       <span className="text-[#4e2780]/70 font-medium">Quer cadastrar seu espaço?</span>
       <Button
         variant="ghost"
         onClick={() => window.location.href = '/login'}
-        className="text-[#4e2780] hover:bg-[#4e2780]/5 font-semibold focus-visible:ring-2 focus-visible:ring-[#b39ddb]"
+        className="text-[#4e2780] hover:bg-[#4e2780]/5 font-semibold focus-visible:ring-2 focus-visible:ring-[#b39ddb] cursor-pointer"
         aria-label="Entrar"
       >
         Entrar
       </Button>
       <Button
         onClick={() => window.location.href = '/register'}
-        className="bg-[#4e2780] bg-gradient-to-br from-[#4e2780] to-[#7c5ca3] text-white font-semibold px-6 py-2.5 rounded-xl hover:shadow-lg transition-all duration-300 focus-visible:ring-2 focus-visible:ring-[#b39ddb]"
+        className="bg-[#4e2780] bg-gradient-to-br from-[#4e2780] to-[#7c5ca3] text-white font-semibold px-6 py-2.5 rounded-xl hover:shadow-lg transition-all duration-300 focus-visible:ring-2 focus-visible:ring-[#b39ddb] cursor-pointer"
         aria-label="Cadastrar"
       >
         Cadastrar
@@ -52,14 +51,14 @@ const Header = () => {
       <Button
         variant="ghost"
         onClick={() => window.location.href = '/register-space'}
-        className="text-[#4e2780] hover:bg-[#4e2780]/5 font-semibold focus-visible:ring-2 focus-visible:ring-[#b39ddb]"
+        className="text-[#4e2780] hover:bg-[#4e2780]/5 font-semibold focus-visible:ring-2 focus-visible:ring-[#b39ddb] cursor-pointer"
         aria-label="Cadastrar Espaço"
       >
         Cadastrar Espaço
       </Button>
       <Button
         onClick={() => window.location.href = '/login'}
-        className="bg-[#4e2780] bg-gradient-to-br from-[#4e2780] to-[#7c5ca3] text-white font-semibold px-6 py-2.5 rounded-xl hover:shadow-lg transition-all duration-300 focus-visible:ring-2 focus-visible:ring-[#b39ddb]"
+        className="bg-[#4e2780] bg-gradient-to-br from-[#4e2780] to-[#7c5ca3] text-white font-semibold px-6 py-2.5 rounded-xl hover:shadow-lg transition-all duration-300 focus-visible:ring-2 focus-visible:ring-[#b39ddb] cursor-pointer"
         aria-label="Sair"
       >
         Sair
@@ -68,11 +67,11 @@ const Header = () => {
   );
 
   return (
-    <header className="backdrop-blur bg-white/80 sticky top-0 z-50 border-b border-[#4e2780]/10 shadow-sm">
+    <header className="backdrop-blur bg-white sticky top-0 z-50 border-b border-[#4e2780]/10 shadow-sm">
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-20">
           {/* Logo */}
-        <Logo style={{ width: 200, height: 200 }} onClick={() => window.location.href = '/'} />
+        <Logo style={{ width: 200, height: 200, cursor: 'pointer' }} onClick={() => window.location.href = '/'} />
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center space-x-6">

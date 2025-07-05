@@ -136,7 +136,7 @@ const Cadastro = () => {
                         type="button"
                         variant="ghost"
                         size="icon"
-                        className="absolute right-2 top-1/2 -translate-y-1/2 h-8 w-8 hover:bg-[#f4e6f3]"
+                        className="absolute right-2 top-1/2 -translate-y-1/2 h-8 w-8 hover:bg-[#f4e6f3] cursor-pointer"
                         onClick={() => setShowPassword(!showPassword)}
                         tabIndex={-1}
                         aria-label={showPassword ? "Ocultar senha" : "Mostrar senha"}
@@ -167,7 +167,7 @@ const Cadastro = () => {
                         type="button"
                         variant="ghost"
                         size="icon"
-                        className="absolute right-2 top-1/2 -translate-y-1/2 h-8 w-8 hover:bg-[#f4e6f3]"
+                        className="absolute right-2 top-1/2 -translate-y-1/2 h-8 w-8 hover:bg-[#f4e6f3] cursor-pointer"
                         onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                         tabIndex={-1}
                         aria-label={showConfirmPassword ? "Ocultar confirmação de senha" : "Mostrar confirmação de senha"}
@@ -191,7 +191,7 @@ const Cadastro = () => {
                 <Button
                   type="submit"
                   disabled={processing}
-                  className="w-full bg-white text-[#4e2780] hover:bg-[#f4e6f3] h-14 text-lg font-bold shadow-lg transition-all duration-150"
+                  className="w-full bg-white text-[#4e2780] hover:bg-[#f4e6f3] h-14 text-lg font-bold shadow-lg transition-all duration-150 cursor-pointer"
                 >
                   {processing ? (
                     <>

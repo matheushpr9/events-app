@@ -451,12 +451,18 @@ export default function Index() {
                   <div className="space-y-2">
                     <Label htmlFor="type" className="text-sm font-semibold text-[#4e2780]">Tipo do Espaço *</Label>
                     <Select value={data.type} onValueChange={(value) => setData(prev => ({ ...prev, type: value }))}>
-                      <SelectTrigger className="bg-white text-[#4e2780] border border-[#b39ddb] focus:ring-2 focus:ring-[#b39ddb]">
+                      <SelectTrigger className="bg-white text-[#4e2780] border border-[#b39ddb] focus:ring-2 focus:ring-[#b39ddb] cursor-pointer">
                         <SelectValue placeholder="Selecione o tipo" />
                       </SelectTrigger>
                       <SelectContent className="bg-background border-input">
                         {typeOptions.map(option => (
-                          <SelectItem key={option} value={option} className="text-foreground hover:bg-[#f4e6f3]">{option}</SelectItem>
+                          <SelectItem
+                            key={option}
+                            value={option}
+                            className="text-foreground hover:bg-[#f4e6f3] cursor-pointer"
+                          >
+                            {option}
+                          </SelectItem>
                         ))}
                       </SelectContent>
                     </Select>
@@ -465,12 +471,12 @@ export default function Index() {
                   <div className="space-y-2">
                     <Label htmlFor="locality" className="text-sm font-semibold text-[#4e2780]">Localidade *</Label>
                     <Select value={data.locality} onValueChange={(value) => setData(prev => ({ ...prev, locality: value }))}>
-                      <SelectTrigger className="bg-white text-[#4e2780] border border-[#b39ddb] focus:ring-2 focus:ring-[#b39ddb]">
+                      <SelectTrigger className="bg-white text-[#4e2780] border border-[#b39ddb] focus:ring-2 focus:ring-[#b39ddb] cursor-pointer">
                         <SelectValue placeholder="Selecione a localidade" />
                       </SelectTrigger>
                       <SelectContent className="bg-background border-input">
                         {localityOptions.map(option => (
-                          <SelectItem key={option} value={option} className="text-foreground hover:bg-[#f4e6f3]">{option}</SelectItem>
+                          <SelectItem key={option} value={option} className="text-foreground hover:bg-[#f4e6f3] cursor-pointer">{option}</SelectItem>
                         ))}
                       </SelectContent>
                     </Select>
@@ -479,16 +485,16 @@ export default function Index() {
                   <div className="space-y-2 md:col-span-2">
                      <Label htmlFor="type" className="text-sm font-semibold text-[#4e2780]">Capacidade *</Label>
                       <Select value={data.people_capacity} onValueChange={(value) => setData(prev => ({ ...prev, people_capacity: value }))}>
-                        <SelectTrigger className="bg-white text-[#4e2780] border border-[#b39ddb] focus:ring-2 focus:ring-[#b39ddb]">
+                        <SelectTrigger className="bg-white text-[#4e2780] border border-[#b39ddb] focus:ring-2 focus:ring-[#b39ddb] cursor-pointer">
                           <SelectValue placeholder="Capacidade máxima de pessoas" />
                         </SelectTrigger>
-                        <SelectContent className="bg-background border-input">
+                        <SelectContent className="bg-background border-input ">
                          {capacities.map((capacity, idx) => {
                             const label = idx === capacities.length - 1
                               ? `Mais de ${capacity} pessoas`
                               : `Até ${capacity} pessoas`;
                             return (
-                              <SelectItem key={capacity} value={label} className="text-foreground hover:bg-[#f4e6f3]">
+                              <SelectItem key={capacity} value={label} className="text-foreground hover:bg-[#f4e6f3] cursor-pointer">
                                 {label}
                               </SelectItem>
                             );
@@ -737,7 +743,7 @@ export default function Index() {
                 <Button
                   type="submit"
                   disabled={processing}
-                  className="w-full bg-white text-[#4e2780] hover:bg-[#f4e6f3] h-14 text-lg font-bold shadow-lg transition-all duration-150"
+                  className="w-full bg-white text-[#4e2780] hover:bg-[#f4e6f3] h-14 text-lg font-bold shadow-lg transition-all duration-150 cursor-pointer flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {processing ? (
                     <>
