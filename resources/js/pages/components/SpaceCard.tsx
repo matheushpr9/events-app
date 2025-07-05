@@ -32,7 +32,7 @@ const SpaceCard = ({ space }: SpaceCardProps) => {
         {/* Rating Badge */}
         <div className="absolute top-4 right-4 bg-white/90 rounded-full px-3 py-1.5 flex items-center gap-1 shadow-sm">
           <Star className="h-3.5 w-3.5 fill-yellow-400 text-yellow-400" aria-label="Nota" />
-          <span className="text-sm font-semibold text-[#4e2780]">{space.rating}</span>
+          {/* <span className="text-sm font-semibold text-[#4e2780]">{space.rating}</span> */}
         </div>
       </div>
 
@@ -61,12 +61,6 @@ const SpaceCard = ({ space }: SpaceCardProps) => {
             <Users className="h-4 w-4 mr-2" aria-hidden="true" />
             <span className="text-sm font-medium">Até {space.people_capacity} pessoas</span>
           </div>
-          {/* <div className="text-right">
-            <div className="text-2xl font-bold text-[#4e2780]">
-              R$ {space.price_per_person_buffet}
-            </div>
-            <div className="text-xs text-[#4e2780]/60 font-medium">por hora</div>
-          </div> */}
         </div>
 
         {/* Amenities */}
@@ -95,16 +89,16 @@ const SpaceCard = ({ space }: SpaceCardProps) => {
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-2">
             <div className="flex">
-              {[...Array(5)].map((_, i) => (
+              {/* {[...Array(5)].map((_, i) => (
                 <Star 
                   key={i} 
                   className={`h-4 w-4 ${i < Math.floor(space.rating) ? 'fill-yellow-400 text-yellow-400' : 'fill-gray-200 text-gray-200'}`} 
                   aria-hidden="true"
                 />
-              ))}
+              ))} */}
             </div>
             <span className="text-sm text-[#4e2780]/70 font-medium">
-              ({space.reviews_count} avaliações)
+              {/* ({space.reviews_count} avaliações) */}
             </span>
           </div>
         </div>

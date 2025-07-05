@@ -17,12 +17,10 @@ return new class extends Migration
             $table->id();
             $table->integer('people_capacity');
             $table->float('price_per_person_buffet');
-            $table->integer('events_count')->default(0);
-            //$table->text('feedbacks')->nullable();
             $table->enum('type', SpaceTypeEnum::getValues());
             $table->enum('locality', SpaceLocalityEnum::getValues());
-            $table->json('amenities')->nullable(); // e.g., pista de dança, salão de jantar etc.
-            $table->json('services')->nullable(); // e.g., música, recepção, buffet, mesas etc.
+            $table->json('amenities')->nullable();
+            $table->json('services')->nullable(); 
             $table->longText('description');
             $table->timestamps();
         });

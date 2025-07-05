@@ -29,9 +29,6 @@ type SpaceFormType = {
   city: string;
   state: string;
   country: string;
-  price_per_person_buffet: string;
-  events_count: string;
-  //feedbacks: string;
   type: string;
   locality: string;
   amenities: string[];
@@ -89,9 +86,6 @@ export default function Index() {
     city: '',
     state: '',
     country: '',
-    price_per_person_buffet: '',
-    events_count: '',
-    // feedbacks: '',
     type: '',
     locality: '',
     amenities: [],
@@ -231,8 +225,6 @@ export default function Index() {
   formData.append('city', data.city);
   formData.append('state', data.state);
   formData.append('country', data.country);
-  formData.append('price_per_person_buffet', data.price_per_person_buffet);
-  formData.append('events_count', data.events_count);
   formData.append('type', data.type);
   formData.append('locality', data.locality);
   formData.append('description', data.description);
@@ -259,8 +251,6 @@ export default function Index() {
       city: '',
       state: '',
       country: '',
-      price_per_person_buffet: '',
-      events_count: '',
       type: '',
       locality: '',
       amenities: [],
@@ -616,48 +606,6 @@ export default function Index() {
                         className="bg-white text-gray-800 border border-gray-300 placeholder:text-muted-foreground focus:ring-2 focus:ring-purple-400"
                     />
                     </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Pricing and Stats */}
-            <Card className="border-0 shadow-xl bg-white/90 backdrop-blur-md">
-              <CardHeader className="pb-4">
-                <CardTitle className="flex items-center gap-2 text-xl text-[#4e2780] font-bold">
-                  <DollarSign className="w-5 h-5 text-[#4e2780]" />
-                  Preços e Estatísticas
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                  <div className="space-y-2">
-                    <Label className="text-sm font-semibold text-[#4e2780]">Preço por Pessoa (Buffet)</Label>
-                    <div className="relative">
-                      <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-[#7c5ca3]">R$</span>
-                      <Input
-                        type="number"
-                        step="0.01"
-                        value={data.price_per_person_buffet}
-                        onChange={e => setData(prev => ({ ...prev, price_per_person_buffet: e.target.value }))}
-                        placeholder="49.90"
-                        className="pl-8 bg-white text-[#4e2780] border border-[#b39ddb] placeholder:text-[#7c5ca3]"
-                      />
-                    </div>
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label className="flex items-center gap-2 text-sm font-semibold text-[#4e2780]">
-                      <Calendar className="w-4 h-4" />
-                      Eventos Realizados
-                    </Label>
-                    <Input
-                      type="number"
-                      value={data.events_count}
-                      onChange={e => setData(prev => ({ ...prev, events_count: e.target.value }))}
-                      placeholder="10"
-                      className="bg-white text-[#4e2780] border border-[#b39ddb] placeholder:text-[#7c5ca3]"
-                    />
-                  </div>
                 </div>
               </CardContent>
             </Card>

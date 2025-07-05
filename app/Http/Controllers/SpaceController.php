@@ -44,9 +44,6 @@ class SpaceController extends Controller
             'images' => 'required|array',
             'images.*' => 'image|mimes:jpeg,png,jpg,gif|max:204800', //validar tamanho máximo de 200MB
             'people_capacity' => ['required', new Enum (SpaceCapacityEnum::class)],
-            //'price_per_person_buffet' => 'required|numeric',
-            'events_count' => 'integer',
-            //'feedbacks' => 'nullable|string',
             'street' => 'nullable|string|max:255',
             'neighborhood' => 'nullable|string|max:255',
             'number' => 'nullable|string|max:50',
@@ -89,8 +86,6 @@ class SpaceController extends Controller
         logger()->info('Creating space with address', [
             'address_id' => $address->id,
             'people_capacity' => $validatedSpace['people_capacity'],
-            'price_per_person_buffet' => $validatedSpace['price_per_person_buffet'] ?? 0.0,
-            'events_count' => $validatedSpace['events_count'] ?? 0,
             'type' => $validatedSpace['type'],
             'locality' => $validatedSpace['locality'],
             'amenities' => $validatedSpace['amenities'] ?? [],
@@ -103,8 +98,6 @@ class SpaceController extends Controller
             'address_id' => $address->id,
             'user_id' => $user->id,
             'people_capacity' => $validatedSpace['people_capacity'],
-            'price_per_person_buffet' => $validatedSpace['price_per_person_buffet'] ?? 0.0,
-            'events_count' => $validatedSpace['events_count'] ?? 0,
             'type' => $validatedSpace['type'],
             'locality' => $validatedSpace['locality'],
             'amenities' => $validatedSpace['amenities'] ?? [],

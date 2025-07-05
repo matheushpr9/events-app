@@ -15,15 +15,12 @@ class Space extends Model
         'address_id',
         'user_id',
         'people_capacity',
-        'price_per_person_buffet',
-        'events_count',
         'type',
         'locality',
         'amenities',
         'services',
         'description',
         'name',
-        'rating',
         'reviews_count',
     ];
     protected $casts = [

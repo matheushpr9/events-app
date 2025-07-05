@@ -1,8 +1,6 @@
 export interface Space {
   id: string;
   people_capacity: number;
-  price_per_person_buffet: number;
-  events_count: number;
   type: string;
   locality: string;
   amenities: string[];
@@ -15,9 +13,6 @@ export interface Space {
   address: Address;
   images: Image[];
   name: string;
-  rating: number;
-  reviews_count: number;
-
 }
 
 export interface Address{
