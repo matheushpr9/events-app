@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
-import { Menu, MapPin } from 'lucide-react';
+import { Menu } from 'lucide-react';
+
+import Logo from './logo'
 
 import { api, initSanctum } from '../../api/api';
 
@@ -70,21 +72,7 @@ const Header = () => {
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-20">
           {/* Logo */}
-          <button
-            className="flex items-center space-x-3 group focus:outline-none"
-            onClick={() => window.location.href = '/'}
-            aria-label="Ir para a página inicial"
-          >
-            <span className="w-12 h-12 bg-gradient-to-br from-[#4e2780] to-[#7c5ca3] rounded-xl flex items-center justify-center group-hover:shadow-lg transition-all duration-300">
-              <MapPin className="h-6 w-6 text-white" aria-hidden="true" />
-            </span>
-            <span>
-              <span className="text-2xl font-bold bg-gradient-to-br from-[#4e2780] to-[#7c5ca3] bg-clip-text text-transparent">
-                EventSpace
-              </span>
-              <div className="text-xs text-[#4e2780]/60 -mt-1">Espaços únicos para momentos especiais</div>
-            </span>
-          </button>
+        <Logo style={{ width: 200, height: 200 }} onClick={() => window.location.href = '/'} />
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center space-x-6">

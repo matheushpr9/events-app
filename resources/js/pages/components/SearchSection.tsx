@@ -133,14 +133,10 @@ const SearchSection = ({ onResults, Spaces }: SearchSectionProps) => {
         {/* Hero Section */}
         <div className="text-center mb-10 animate-fade-in">
           <h1 className="text-3xl md:text-5xl font-bold text-[#4e2780] mb-4 md:mb-6 leading-tight">
-            Encontre o Espaço
-            <span className="block bg-gradient-to-r from-[#4e2780] to-[#7c5ca3] bg-clip-text text-transparent">
-              Perfeito para seu Evento
-            </span>
+            Seu casamento em um clique!
           </h1>
           <p className="text-lg md:text-xl text-[#4e2780]/70 max-w-3xl mx-auto leading-relaxed">
-            Descubra espaços únicos e especiais para tornar seu evento inesquecível.
-            De casamentos íntimos a grandes celebrações.
+            Descubra espaços únicos e especiais para tornar seu casamento inesquecível.
           </p>
         </div>
 
