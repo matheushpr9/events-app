@@ -50,7 +50,7 @@ class AuthenticatedSessionController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect('/register-space');
+        return redirect('/login');
     }
     public function user(Request $request)
     {

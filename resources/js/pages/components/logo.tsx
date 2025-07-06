@@ -3,9 +3,9 @@ const Logo: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
   <svg
     version="1.0"
     xmlns="http://www.w3.org/2000/svg"
-    width="3240pt"
-    height="3240pt"
-    viewBox="0 0 3240 3240"
+    width={280}
+    height={140}
+    viewBox="400 800 2400 1600"
     preserveAspectRatio="xMidYMid meet"
     {...props}
   >
