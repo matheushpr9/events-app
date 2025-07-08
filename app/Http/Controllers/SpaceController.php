@@ -129,7 +129,8 @@ class SpaceController extends Controller
     }
 
     public function show($id){
-        return Space::with(['address', 'images'])->findOrFail($id);
+        return Space::with(['address', 'images', 'user'])->findOrFail($id);
+        
     }
     public function filter(Request $request)
     {
