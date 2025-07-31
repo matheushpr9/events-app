@@ -1,3 +1,5 @@
+import { Interface } from "readline/promises";
+
 export interface Space {
   id: string;
   name: string;
@@ -14,6 +16,7 @@ export interface Space {
   address: Address;
   images: Image[];
   user: User;
+  ratings: SpaceRating[];
 }
 
 export interface Address {
@@ -46,4 +49,15 @@ export interface User {
   email_verified_at: string | null;
   created_at: string;
   updated_at: string;
+}
+
+export interface SpaceRating {
+  id: number;
+  space_id: number;
+  rating: number;
+  review: string | null;
+  created_at: string;
+  updated_at: string;
+  name: string;
+  email: string;
 }

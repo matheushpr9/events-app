@@ -15,7 +15,7 @@ use Illuminate\Validation\Rules\Enum;
 class SpaceController extends Controller
 {
     public function index(){
-        return Space::with(['address', 'images', 'user'])->get();
+        return Space::with(['address', 'images', 'user', 'ratings'])->get();
     }
 
     public function store(Request $request){
@@ -129,7 +129,7 @@ class SpaceController extends Controller
     }
 
     public function show($id){
-        return Space::with(['address', 'images', 'user'])->findOrFail($id);
+        return Space::with(['address', 'images', 'user', 'ratings'])->findOrFail($id);
         
     }
     public function filter(Request $request)
@@ -181,7 +181,7 @@ class SpaceController extends Controller
         }
         
 
-        $spaces = $query->with(['address', 'images'])->get();
+        $spaces = $query->with(['address', 'images', 'user', 'ratings'])->get();
 
         return response()->json($spaces);
     }

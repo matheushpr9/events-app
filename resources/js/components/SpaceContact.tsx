@@ -9,6 +9,7 @@ import { User } from '@/interfaces/space';
 export const SpaceContact = (user: User) => {
   return (
     <Card className="border-0 shadow-brand bg-white rounded-2xl">
+      
       <CardHeader className="pb-6">
         <CardTitle className="text-2xl md:text-3xl font-bold text-brand-purple">
           Informações de Contato
@@ -46,19 +47,6 @@ export const SpaceContact = (user: User) => {
             <Phone className="h-5 w-5 mr-2" />
             Ligar Agora
           </Button>
-        </div>
-
-        <div className="p-6 bg-gradient-brand-soft rounded-xl">
-          <div className="flex items-center gap-3 mb-3">
-            <div className="p-2 bg-white rounded-full">
-              <Shield className="h-6 w-6 text-brand-purple" />
-            </div>
-            <span className="font-semibold text-brand-purple text-lg">Reserva Segura</span>
-          </div>
-          <p className="text-brand-purple/70 leading-relaxed">
-            Todas as reservas são protegidas por nossa garantia. Você pode cancelar gratuitamente 
-            até 24 horas antes do evento e receber reembolso total.
-          </p>
         </div>
       </CardContent>
     </Card>

@@ -3,10 +3,14 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Space } from "@/interfaces/space";
-import { MapPin, Users, Clock, Calendar, Star } from "lucide-react";
+import getRating from "@/pages/helpers/get-rating";
+import { MapPin, Users, Clock, Star } from "lucide-react";
 
 
 export const SpaceInfoCard = (space : Space) => {
+
+  const rating = getRating(space.ratings);
+
   return (
     <div className="space-y-8">
       {/* Header */}
@@ -17,8 +21,8 @@ export const SpaceInfoCard = (space : Space) => {
           </Badge>
           <div className="flex items-center gap-1">
             <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-            <span className="font-semibold text-brand-purple">4.8</span>
-            <span className="text-brand-purple/60 text-sm">(24 avaliações)</span>
+            <span className="font-semibold text-brand-purple">{rating.average}</span>
+            <span className="text-brand-purple/60 text-sm">({rating.quantity} avaliações)</span>
           </div>
         </div>
 
@@ -66,29 +70,6 @@ export const SpaceInfoCard = (space : Space) => {
           </CardContent>
         </Card>
       </div>
-
-      {/* Booking Card */}
-      <Card className="border-0 shadow-brand bg-white">
-        <CardContent className="p-8">
-          <div className="text-center space-y-6">
-            <div>
-              <div className="text-4xl font-bold text-brand-purple mb-2">
-                A partir de R$ 150
-              </div>
-              <div className="text-brand-purple/60">por hora</div>
-            </div>
-            
-            <Button className="w-full gradient-brand text-white px-8 py-4 text-lg font-semibold rounded-xl hover:shadow-brand-lg transition-all duration-300">
-              <Calendar className="h-5 w-5 mr-2" />
-              Reservar Agora
-            </Button>
-            
-            <p className="text-sm text-brand-purple/60">
-              Cancelamento gratuito até 24h antes
-            </p>
-          </div>
-        </CardContent>
-      </Card>
     </div>
   );
 };

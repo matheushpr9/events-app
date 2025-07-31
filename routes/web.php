@@ -7,12 +7,17 @@ use Illuminate\Http\Request;
 Route::get('/', function () {
     return Inertia::render('Spaces/Home');
 })->name('home');
-Route::get('/space/details/{id}', function (Request $request, $id) {
+Route::get('/space/details/{id}', function ( $id) {
     return Inertia::render('Spaces/Details', [
         'id' => $id,
-        'userAgent' => $request->header('User-Agent'),
     ]);
 })->name('details');
+
+Route::get('/space/review/{id}', function ($id) {
+    return Inertia::render('Spaces/SpaceReview', [
+        'id' => $id,
+    ]);
+})->name('review');
 
 Route::middleware(['auth', 'verified'])->group(function () {
 

@@ -1,8 +1,7 @@
-
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import getAmenityIcon from "@/pages/helpers/get-amenty-icon";
 
-export const SpaceAmenities = (amenities : string[]) => {
+export const SpaceAmenities = ({ amenities }: { amenities: string[] }) => {
   return (
     <Card className="border-0 shadow-brand bg-white rounded-2xl">
       <CardHeader className="pb-6">

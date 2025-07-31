@@ -4,10 +4,16 @@ import { ChevronLeft, ChevronRight, ZoomIn } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Image } from "@/interfaces/space";
 
-export const SpaceImageGallery = (images : Image[]) => {
+export const SpaceImageGallery = ({images}:{images : Image[]}) => {
   const [activeIndex, setActiveIndex] = useState(0);
   const [isZoomed, setIsZoomed] = useState(false);
   const thumbsRef = useRef<HTMLDivElement>(null);
+
+  images?.forEach((image) => {
+    if (!image.image_path.startsWith('/storage/')) {
+      image.image_path = `/storage/${image.image_path}`;
+    }
+  });
 
   const scrollToThumb = (idx: number) => {
     if (thumbsRef.current) {
@@ -44,7 +50,7 @@ export const SpaceImageGallery = (images : Image[]) => {
       <div className="relative group">
         <div className="aspect-[4/3] md:aspect-[16/10] overflow-hidden rounded-2xl bg-gradient-brand-soft shadow-brand">
           <img
-            src={images[activeIndex].image_path}
+            src={`${images[activeIndex].image_path}`}
             alt={`Imagem ${activeIndex + 1} de ${images.length}`}
             className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
           />

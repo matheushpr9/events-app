@@ -10,6 +10,10 @@ interface SpaceCardProps {
 }
 
 const SpaceCard = ({ space }: SpaceCardProps) => {
+   const ratings = space.ratings || [];
+                const totalRatings = ratings.length;
+                const sumRatings = ratings.reduce((acc, curr) => acc + curr.rating, 0);
+                const averageRating = totalRatings > 0 ? sumRatings / totalRatings : 0;
 
   return (
     <Card className="group overflow-hidden bg-white shadow-lg hover:shadow-2xl transition-all duration-500 border-0 rounded-2xl focus-within:ring-2 focus-within:ring-[#b39ddb]">
@@ -32,7 +36,7 @@ const SpaceCard = ({ space }: SpaceCardProps) => {
         {/* Rating Badge */}
         <div className="absolute top-4 right-4 bg-white/90 rounded-full px-3 py-1.5 flex items-center gap-1 shadow-sm">
           <Star className="h-3.5 w-3.5 fill-yellow-400 text-yellow-400" aria-label="Nota" />
-          {/* <span className="text-sm font-semibold text-[#4e2780]">{space.rating}</span> */}
+          <span className="text-sm font-semibold text-[#4e2780]">{averageRating}</span>
         </div>
       </div>
 
@@ -88,27 +92,34 @@ const SpaceCard = ({ space }: SpaceCardProps) => {
         {/* Reviews */}
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-2">
-            <div className="flex">
-              {/* {[...Array(5)].map((_, i) => (
-                <Star 
-                  key={i} 
-                  className={`h-4 w-4 ${i < Math.floor(space.rating) ? 'fill-yellow-400 text-yellow-400' : 'fill-gray-200 text-gray-200'}`} 
-                  aria-hidden="true"
-                />
-              ))} */}
+              {(() => {
+                return (
+                  <>
+                    <div className="flex">
+                      <Star
+                        className={`h-4 w-4 ${averageRating ? 'fill-yellow-400 text-yellow-400' : 'fill-gray-200 text-gray-200'}`}
+                        aria-hidden="true"
+                      />
+                      <span className="text-sm font-semibold text-[#4e2780] ml-1">
+                        {averageRating ? averageRating.toFixed(1) : '-'}
+                      </span>
+                    </div>
+                    <span className="text-sm text-[#4e2780]/70 font-medium ml-2">
+                      ({totalRatings} avaliações)
+                    </span>
+                  </>
+                );
+              })()}
             </div>
-            <span className="text-sm text-[#4e2780]/70 font-medium">
-              {/* ({space.reviews_count} avaliações) */}
-            </span>
-          </div>
         </div>
 
         {/* Action Button */}
         <Button 
-          className="w-full bg-[#4e2780] bg-gradient-to-br from-[#4e2780] to-[#7c5ca3] text-white font-semibold h-12 rounded-xl hover:shadow-lg transition-all duration-300 focus-visible:ring-2 focus-visible:ring-[#b39ddb]"
-          aria-label={`Ver detalhes e reservar ${space.name}`}
+          className="w-full bg-[#4e2780] bg-gradient-to-br from-[#4e2780] to-[#7c5ca3] text-white font-semibold h-12 rounded-xl hover:shadow-lg transition-all duration-300 focus-visible:ring-2 focus-visible:ring-[#b39ddb] cursor-pointer"
+          aria-label={`Ver detalhes`}
+          onClick={() => window.location.href = `/space/details/${space.id}`}
         >
-          Ver Detalhes e Reservar
+          Ver Detalhes
         </Button>
       </CardContent>
     </Card>
