@@ -7,57 +7,9 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from './ui/carousel';
-
-interface Review {
-  id: string;
-  name: string;
-  rating: number;
-  comment: string;
-  date: string;
-}
-
-interface ReviewCarouselProps {
-  spaceId: string;
-}
-
-// Mock reviews data - replace with actual API call
-const mockReviews: Review[] = [
-  {
-    id: "1",
-    name: "Ana Silva",
-    rating: 5,
-    comment: "Espaço incrível! Superou todas as expectativas. A localização é perfeita e o atendimento foi excepcional.",
-    date: "2024-01-15"
-  },
-  {
-    id: "2", 
-    name: "Carlos Santos",
-    rating: 4,
-    comment: "Muito bom para eventos corporativos. O sistema de som é excelente e a infraestrutura é completa.",
-    date: "2024-01-10"
-  },
-  {
-    id: "3",
-    name: "Maria Fernanda",
-    rating: 5,
-    comment: "Realizei meu casamento aqui e foi perfeito! Todos os convidados elogiaram o local. Recomendo muito!",
-    date: "2024-01-08"
-  },
-  {
-    id: "4",
-    name: "João Oliveira",
-    rating: 4,
-    comment: "Ótimo custo-benefício. O espaço é bem amplo e comporta bastante gente. Voltaria a usar com certeza.",
-    date: "2024-01-05"
-  },
-  {
-    id: "5",
-    name: "Beatriz Costa",
-    rating: 5,
-    comment: "Ambiente sofisticado e moderno. Ideal para eventos empresariais. A equipe de apoio é muito profissional.",
-    date: "2024-01-03"
-  }
-];
+import { getRating } from '../helpers/get-ratings';
+import  { useEffect, useRef, useState } from 'react';
+import { Review, ReviewCarouselProps } from '@/interfaces/review';
 
 const ReviewCard = ({ review }: { review: Review }) => {
   const renderStars = (rating: number) => {
@@ -65,8 +17,8 @@ const ReviewCard = ({ review }: { review: Review }) => {
       <Star
         key={index}
         className={`h-4 w-4 ${
-          index < rating 
-            ? 'text-yellow-400 fill-yellow-400' 
+          index < rating
+            ? 'text-yellow-400 fill-yellow-400'
             : 'text-gray-300'
         }`}
       />
@@ -79,17 +31,17 @@ const ReviewCard = ({ review }: { review: Review }) => {
         <div className="flex items-center space-x-1 mb-3">
           {renderStars(review.rating)}
         </div>
-        
+
         <p className="text-gray-700 mb-4 flex-grow italic">
-          "{review.comment}"
+          "{review.review}"
         </p>
-        
+
         <div className="border-t border-gray-100 pt-4">
           <p className="font-semibold text-brand-purple text-lg">
             {review.name}
           </p>
           <p className="text-sm text-gray-500">
-            {new Date(review.date).toLocaleDateString('pt-BR')}
+            {review.createdAt ? new Date(review.createdAt).toLocaleDateString('pt-BR') : ''}
           </p>
         </div>
       </CardContent>
@@ -98,10 +50,55 @@ const ReviewCard = ({ review }: { review: Review }) => {
 };
 
 export const ReviewCarousel = ({ spaceId }: ReviewCarouselProps) => {
-  // In a real app, you would fetch reviews based on spaceId
-  const reviews = mockReviews;
+  const [reviews, setReviews] = useState<Review[] | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [embla, setEmbla] = useState<any>(null);
+  const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
-  if (reviews.length === 0) {
+  const startAutoplay = () => {
+    if (intervalRef.current) clearInterval(intervalRef.current);
+    intervalRef.current = setInterval(() => {
+      embla?.scrollNext();
+    }, 2800);
+  };
+
+  const resetAutoplay = () => {
+    startAutoplay();
+  };
+
+  useEffect(() => {
+    let isMounted = true;
+    setLoading(true);
+    getRating(spaceId).then((data: Review[]) => {
+      if (isMounted) {
+        setReviews(data);
+        setLoading(false);
+      }
+    });
+    return () => {
+      isMounted = false;
+    };
+  }, [spaceId]);
+
+  useEffect(() => {
+    if (!embla || !reviews || reviews.length === 0) return;
+    startAutoplay();
+    return () => {
+      if (intervalRef.current) clearInterval(intervalRef.current);
+    };
+  }, [embla, reviews]);
+
+  if (loading) {
+    return (
+      <Card className="border-0 shadow-brand bg-white rounded-2xl">
+        <CardContent className="p-8 text-center">
+          <p className="text-gray-500">Carregando avaliações...</p>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  if (!reviews || reviews.length === 0) {
     return (
       <Card className="border-0 shadow-brand bg-white rounded-2xl">
         <CardContent className="p-8 text-center">
@@ -110,6 +107,16 @@ export const ReviewCarousel = ({ spaceId }: ReviewCarouselProps) => {
       </Card>
     );
   }
+
+  const handlePrev = () => {
+    embla?.scrollPrev();
+    resetAutoplay();
+  };
+
+  const handleNext = () => {
+    embla?.scrollNext();
+    resetAutoplay();
+  };
 
   return (
     <div className="space-y-6">
@@ -127,6 +134,7 @@ export const ReviewCarousel = ({ spaceId }: ReviewCarouselProps) => {
           align: "start",
           loop: true,
         }}
+        setApi={setEmbla}
         className="w-full"
       >
         <CarouselContent className="-ml-2 md:-ml-4">
@@ -136,8 +144,28 @@ export const ReviewCarousel = ({ spaceId }: ReviewCarouselProps) => {
             </CarouselItem>
           ))}
         </CarouselContent>
-        <CarouselPrevious className="bg-white border-brand-purple/20 text-brand-purple hover:bg-brand-purple hover:text-white transition-colors duration-300" />
-        <CarouselNext className="bg-white border-brand-purple/20 text-brand-purple hover:bg-brand-purple hover:text-white transition-colors duration-300" />
+        <CarouselPrevious
+          className="
+            bg-white border-brand-purple/20 text-brand-purple
+            hover:bg-brand-purple hover:text-white transition-colors duration-300
+            w-8 h-8 md:w-10 md:h-10
+            -left-3 md:-left-5
+            top-1/2 -translate-y-1/2
+            absolute z-10
+          "
+          onClick={handlePrev}
+        />
+        <CarouselNext
+          className="
+            bg-white border-brand-purple/20 text-brand-purple
+            hover:bg-brand-purple hover:text-white transition-colors duration-300
+            w-8 h-8 md:w-10 md:h-10
+            -right-3 md:-right-5
+            top-1/2 -translate-y-1/2
+            absolute z-10
+          "
+          onClick={handleNext}
+        />
       </Carousel>
     </div>
   );

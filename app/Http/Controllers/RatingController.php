@@ -16,6 +16,15 @@ class RatingController extends Controller
             'email' => 'required|email|max:255',
         ]);
 
+        // Check if the user has already rated this space
+        $existingRating = \App\Models\Rating::where('space_id', $validatedData['space_id'])
+            ->where('email', $validatedData['email'])
+            ->first();
+
+        if ($existingRating) {
+            return response()->json(['message' => 'You have already rated this space'], 409);
+        }
+
         $rating = new \App\Models\Rating($validatedData);
         $rating->save();
 

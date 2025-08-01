@@ -32,7 +32,7 @@ const SpaceReview = () => {
       });
   }, [id]);
 
-    
+
   const [rating, setRating] = useState(0);
   const [hoveredRating, setHoveredRating] = useState(0);
   const [review, setReview] = useState('');
@@ -55,14 +55,14 @@ const SpaceReview = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (rating === 0) {
       toast.warn("Por favor, selecione uma classificação antes de enviar sua avaliação.");
       return;
     }
 
-    if (review.trim().length < 5) {
-      toast.warning("O comentário deve ter pelo menos 5 caracteres.");
+    if (review.trim().length < 3) {
+      toast.warning("O comentário deve ter pelo menos 3 caracteres.");
       return;
     }
 
@@ -87,20 +87,23 @@ const SpaceReview = () => {
         name: name.trim(),
         email: email.trim(),
       };
-      
+
       console.log('Submitting review:', reviewData);
-      
+
       await initSanctum();
       const response = await api.post(`/api/space/rating/${id}`, reviewData);
+      if (response.status === 409) {
+        toast.warning("Você já avaliou este espaço.");
+      }
       if (response.status !== 201) {
         throw new Error("Failed to submit review");
       }
-      
-      
+
+
       toast.success("Sua avaliação foi enviada com sucesso!");
 
       // Navigate back to space details
-      // window.location.href = `/space/${id}`;
+      window.location.href = `/space/details/${id}`;
     } catch (error) {
       toast.error("Ocorreu um erro ao enviar sua avaliação. Por favor, tente novamente mais tarde.");
     } finally {
@@ -242,7 +245,7 @@ const SpaceReview = () => {
                     maxLength={500}
                   />
                   <div className="flex justify-between text-sm text-brand-purple/60">
-                    <span>Mínimo 10 caracteres</span>
+                    <span>Mínimo 3 caracteres</span>
                     <span>{review.length}/500</span>
                   </div>
                 </div>
@@ -251,7 +254,7 @@ const SpaceReview = () => {
                 <div className="flex flex-col sm:flex-row gap-4 pt-4">
                   <Button
                     type="submit"
-                    disabled={isSubmitting || rating === 0 || review.trim().length < 10}
+                    disabled={isSubmitting || rating === 0 || review.trim().length < 1}
                     className="flex-1 gradient-brand text-white font-semibold py-3 rounded-xl hover:shadow-brand-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     {isSubmitting ? 'Enviando...' : 'Enviar Avaliação'}

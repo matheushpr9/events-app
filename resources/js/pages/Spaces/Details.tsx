@@ -33,7 +33,7 @@ import { ReviewCarousel } from '../components/ReviewCarousel';
       setLoading(false);
     }, [id]);
 
-    if (loading) { 
+    if (loading) {
       return (
         <div className="min-h-screen bg-brand-cream">
           <div className="container mx-auto max-w-7xl px-4 py-16">
@@ -66,7 +66,7 @@ import { ReviewCarousel } from '../components/ReviewCarousel';
 
     return (
 
-      
+
       <div className="min-h-screen bg-brand-cream">
         <Header />
         {/* Hero Section */}
@@ -104,12 +104,12 @@ import { ReviewCarousel } from '../components/ReviewCarousel';
           <Card className="border-0 shadow-brand bg-white rounded-2xl">
             <CardContent className="p-8">
               <div className="text-center space-y-6">
-                
+
                 <div className="text-4xl font-bold text-brand-purple mb-2">
                   Já visitou este espaço?
                 </div>
-                  
-                
+
+
                 <Button className="w-full gradient-brand text-white px-8 py-4 text-lg font-semibold rounded-xl hover:shadow-brand-lg transition-all duration-300 cursor-pointer"
                 onClick={() => window.location.href = `/space/review/${space.id}`}
                 >

@@ -1,7 +1,7 @@
 import { Interface } from "readline/promises";
 
 export interface Space {
-  id: string;
+  id: number;
   name: string;
   people_capacity: number;
   type: string;

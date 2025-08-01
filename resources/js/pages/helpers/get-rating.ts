@@ -7,7 +7,7 @@ interface Rating {
 
 export default function getRating(spaceRatings: SpaceRating[]): Rating {
   const total = spaceRatings.reduce((acc, rating) => acc + rating.rating, 0);
-  const average = total / spaceRatings.length;
+  const average = total / spaceRatings.length || 0;
 
   return {
     quantity: spaceRatings.length,
