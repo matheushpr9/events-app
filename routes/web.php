@@ -24,6 +24,14 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/register-space', function () {
         return Inertia::render(component: 'Spaces/Register');
     })->name('register-space');
+    Route::get('/my-spaces', function () {
+        return Inertia::render(component: 'Spaces/MySpaces');
+    })->name('my-spaces');
+    Route::get('/edit-space/{id}', function (Request $request, $id) {
+        return Inertia::render('Spaces/EditSpace', [
+            'id' => $id,
+        ]);
+    })->name('edit-space');
 });
 
 require __DIR__.'/settings.php';

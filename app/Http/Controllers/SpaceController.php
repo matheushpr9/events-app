@@ -75,7 +75,7 @@ class SpaceController extends Controller
             'state' => $validatedSpace['state'],
             'postal_code' => $validatedSpace['postal_code'],
             'country' => $validatedSpace['country'],
-            
+
         ]);
 
         logger()->info('Address created', [
@@ -130,7 +130,7 @@ class SpaceController extends Controller
 
     public function show($id){
         return Space::with(['address', 'images', 'user', 'ratings'])->findOrFail($id);
-        
+
     }
     public function filter(Request $request)
     {
@@ -140,7 +140,7 @@ class SpaceController extends Controller
         if ($request->filled('people_capacity')) {
             $capacity = preg_replace('/[^0-9]/', '', $request->people_capacity);
             $query->where('people_capacity', '>=', $capacity);
-        }   
+        }
         if ($request->filled('type')) {
             $query->where('type', $request->type);
         }
@@ -179,20 +179,63 @@ class SpaceController extends Controller
                 $query->whereJsonContains('services', $service);
             }
         }
-        
+
 
         $spaces = $query->with(['address', 'images', 'user', 'ratings'])->get();
 
         return response()->json($spaces);
     }
 
-    public function update(Request $request, $id){
-        $space = $this->show($id);
-        $space->update($request->all());
+    public function update(Request $request, $id)
+    {
+        if ($request->has('people_capacity')) {
+            $request->merge([
+                'people_capacity' => preg_replace('/[^0-9]/', '', $request->people_capacity)
+            ]);
+        }
+
+        $space = Space::with('images')->findOrFail($id);
+
+        // Atualiza os campos normais do espaço
+        $space->update($request->except(['images', 'imagesPreview', 'address']));
+
+        // Atualiza endereço, se enviado
+        if ($request->hasAny(['street', 'neighborhood', 'number', 'complement', 'city', 'state', 'postal_code', 'country'])) {
+            $space->address()->update($request->only([
+                'street', 'neighborhood', 'number', 'complement', 'city', 'state', 'postal_code', 'country'
+            ]));
+        }
+
+        // 1. Recebe as imagens que devem ser mantidas
+        $imagesPreview = $request->input('imagesPreview', []);
+        if (!is_array($imagesPreview)) {
+            $imagesPreview = [];
+        }
+
+        // 2. Remove imagens antigas que não estão em imagesPreview
+        $imagesToRemove = $space->images->filter(function ($img) use ($imagesPreview) {
+            return !in_array($img->image_path, $imagesPreview);
+        });
+
+        foreach ($imagesToRemove as $image) {
+            \Illuminate\Support\Facades\Storage::disk('public')->delete($image->image_path);
+            $image->delete();
+        }
+
+        // 3. Adiciona novas imagens, se houver
+        $images = array_filter($request->file('images') ?? [], function ($image) {
+            return $image !== null;
+        });
+        if (!empty($images)) {
+            foreach ($images as $image) {
+                $imagePath = $image->store('spaces', 'public');
+                $space->images()->create(['image_path' => $imagePath]);
+            }
+        }
 
         return response()->json([
             'message' => 'Space updated successfully',
-            'space' => $space
+            'space' => $space->load('images', 'address')
         ]);
     }
 
@@ -221,5 +264,11 @@ class SpaceController extends Controller
     public function getCapacities()
     {
         return response()->json(SpaceCapacityEnum::getValues());
+    }
+
+    public function getUserSpaces($id)
+    {
+        $spaces = Space::with(['address', 'images', 'ratings'])->where('user_id', $id)->get();
+        return response()->json($spaces);
     }
 }

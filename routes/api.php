@@ -15,10 +15,11 @@ Route::get('localities', [SpaceController::class, 'getLocalities'])->prefix('api
 Route::get('services', [SpaceController::class, 'getServices'])->prefix('api');
 Route::get('types', [SpaceController::class, 'getTypes'])->prefix('api');
 Route::get('capacities', [SpaceController::class, 'getCapacities'])->prefix('api');
+Route::get('users/{id}/spaces', [SpaceController::class, 'getUserSpaces'])->prefix('api');
 
 Route::middleware([
     EnsureFrontendRequestsAreStateful::class,
     'auth:sanctum'
-    ])->prefix('api')->group(function () {      
+    ])->prefix('api')->group(function () {
         Route::apiResource('spaces', SpaceController::class);
 });

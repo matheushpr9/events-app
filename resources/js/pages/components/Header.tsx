@@ -25,49 +25,37 @@ const Header = () => {
 
   if (isLoggedIn === null) return null;
 
+  const navLinkClass = "w-full md:w-auto text-indigo-700 hover:text-purple-700 font-semibold px-4 py-2 rounded transition-colors duration-200 underline underline-offset-4 focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2";
+  const actionButtonClass = "w-full md:w-auto bg-gradient-to-r from-indigo-800 to-purple-800 hover:from-indigo-900 hover:to-purple-900 text-white font-semibold px-6 py-2.5 rounded-lg shadow-md hover:shadow-lg transition-all duration-200 focus-visible:ring-2 focus-visible:ring-purple-800 focus-visible:ring-offset-2 pointer: cursor-pointer";
+
   const AuthButtons = () => (
     <>
       <span className="text-[#4e2780] font-medium opacity-85">Quer cadastrar seu espaço?</span>
-      <Button
-        variant="ghost"
-        onClick={() => window.location.href = '/login'}
-        className="w-full md:w-auto bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-semibold px-6 py-2.5 rounded-lg shadow-md hover:shadow-lg transition-all duration-200 focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2"
-        aria-label="Entrar"
-      >
-        Entrar
-      </Button>
-      <Button
-        onClick={() => window.location.href = '/register'}
-        className="w-full md:w-auto bg-gradient-to-r from-purple-600 to-indigo-500 hover:from-purple-700 hover:to-indigo-600 text-white font-semibold px-6 py-2.5 rounded-lg shadow-md hover:shadow-lg transition-all duration-200 focus-visible:ring-2 focus-visible:ring-purple-500 focus-visible:ring-offset-2"
-        aria-label="Cadastrar"
-      >
-        Cadastrar
-      </Button>
+      <a href="/login" className={navLinkClass} aria-label="Entrar">Entrar</a>
+      <a href="/register" className={navLinkClass} aria-label="Cadastrar">Cadastrar</a>
     </>
   );
 
   const LoggedButtons = () => (
     <>
-      <span className="text-[#4e2780] font-medium  opacity-85 ">Bem-vindo de volta!</span>
-      <Button
-        variant="ghost"
-        onClick={() => window.location.href = '/register-space'}
-        className="w-full md:w-auto bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-semibold px-6 py-2.5 rounded-lg shadow-md hover:shadow-lg transition-all duration-200 focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2"
-        aria-label="Cadastrar Espaço"
-      >
+      <span className="text-[#4e2780] font-medium opacity-85">Bem-vindo de volta!</span>
+      <a href="/my-spaces" className={navLinkClass} aria-label="Meus Espaços">Meus Espaços</a>
+      <a href="/account" className={navLinkClass} aria-label="Minha Conta">Minha Conta</a>
+      <a href="/register-space" className={navLinkClass} aria-label="Cadastrar Espaço">
         Cadastrar Espaço
-      </Button>
-      <Button
-         onClick={async () => {
-                  await initSanctum();
-                  await api.post('/logout');
-                  window.location.href = '/login';
-                }}
-        className="w-full md:w-auto bg-gradient-to-r from-indigo-800 to-purple-800 hover:from-indigo-900 hover:to-purple-900 text-white font-semibold px-6 py-2.5 rounded-lg shadow-md hover:shadow-lg transition-all duration-200 focus-visible:ring-2 focus-visible:ring-purple-800 focus-visible:ring-offset-2"
+      </a>
+      <button
+        onClick={async () => {
+          await initSanctum();
+          await api.post('/logout');
+          window.location.href = '/login';
+        }}
+        className={actionButtonClass}
         aria-label="Sair"
+        type="button"
       >
         Sair
-      </Button>
+      </button>
     </>
   );
 
@@ -79,7 +67,7 @@ const Header = () => {
           <Logo style={{ width: 200, height: 110, cursor: 'pointer' }} onClick={() => window.location.href = '/'} />
 
           {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center align-middle space-x-6" >
+          <nav className="hidden md:flex items-center align-middle space-x-4">
             {!isLoggedIn ? <AuthButtons /> : <LoggedButtons />}
           </nav>
 
