@@ -32,6 +32,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
             'id' => $id,
         ]);
     })->name('edit-space');
+    Route::get('/account', function () {
+        return Inertia::render('Spaces/Account');
+    })->name('account');
+    Route::get('/checkout', function () {
+        return Inertia::render('Spaces/Checkout');
+    })->name('checkout');
 });
 
 require __DIR__.'/settings.php';

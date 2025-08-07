@@ -11,8 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('space', function (Blueprint $table) {
-            $table->enum('status', ['active', 'inactive', 'pending payment'])->default('active')->after('image');
+        Schema::table('spaces', function (Blueprint $table) {
+            $table->enum('status', ['active', 'inactive', 'pending payment'])->default('active');
         });
     }
 
@@ -21,7 +21,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('space', function (Blueprint $table) {
+        Schema::table('spaces', function (Blueprint $table) {
             $table->dropColumn('status');
         });
     }

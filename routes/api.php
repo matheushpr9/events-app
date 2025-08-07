@@ -4,6 +4,10 @@ use App\Http\Controllers\RatingController;
 use App\Http\Controllers\SpaceController;
 use Illuminate\Support\Facades\Route;
 use Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful;
+use App\Http\Controllers\StripeWebhookController;
+use App\Http\Controllers\StripeCheckoutController;
+
+Route::post('/stripe/webhook', [StripeWebhookController::class, 'handle']);
 
 Route::get('spaces/filter', [SpaceController::class, 'filter'])->prefix('api');
 Route::get('spaces/{id}', [SpaceController::class, 'show'])->prefix('api');
@@ -22,4 +26,6 @@ Route::middleware([
     'auth:sanctum'
     ])->prefix('api')->group(function () {
         Route::apiResource('spaces', SpaceController::class);
+        Route::post('/stripe/checkout', [StripeCheckoutController::class, 'create']);
+        Route::get('/subscription/status', [\App\Http\Controllers\SubscriptionController::class, 'status']);
 });
