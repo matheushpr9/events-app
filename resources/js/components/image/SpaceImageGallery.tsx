@@ -1,14 +1,14 @@
-
 import { useState, useRef } from "react";
 import { ChevronLeft, ChevronRight, ZoomIn } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Image } from "@/interfaces/space";
 
-export const SpaceImageGallery = ({images}:{images : Image[]}) => {
+export const SpaceImageGallery = ({ images }: { images: Image[] }) => {
   const [activeIndex, setActiveIndex] = useState(0);
   const [isZoomed, setIsZoomed] = useState(false);
   const thumbsRef = useRef<HTMLDivElement>(null);
 
+  // Corrige o caminho das imagens se necessário
   images?.forEach((image) => {
     if (!image.image_path.startsWith('/storage/')) {
       image.image_path = `/storage/${image.image_path}`;
@@ -38,8 +38,8 @@ export const SpaceImageGallery = ({images}:{images : Image[]}) => {
 
   if (!images || images.length === 0) {
     return (
-      <div className="w-full h-[400px] md:h-[500px] bg-gradient-brand-soft rounded-2xl flex items-center justify-center">
-        <p className="text-brand-purple/60">Nenhuma imagem disponível</p>
+      <div className="w-full h-[400px] md:h-[500px] bg-gradient-to-br from-[#ede7f6] to-[#f4e6f3] rounded-2xl flex items-center justify-center">
+        <p className="text-[#4e2780]/60">Nenhuma imagem disponível</p>
       </div>
     );
   }
@@ -48,33 +48,35 @@ export const SpaceImageGallery = ({images}:{images : Image[]}) => {
     <div className="w-full space-y-4">
       {/* Main Image Container */}
       <div className="relative group">
-        <div className="aspect-[4/3] md:aspect-[16/10] overflow-hidden rounded-2xl bg-gradient-brand-soft shadow-brand">
+        <div className="aspect-[4/3] md:aspect-[16/10] overflow-hidden rounded-2xl bg-gradient-to-br from-[#ede7f6] to-[#f4e6f3] shadow-md">
           <img
             src={`${images[activeIndex].image_path}`}
             alt={`Imagem ${activeIndex + 1} de ${images.length}`}
             className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
           />
-          
+
           {/* Overlay with controls */}
           <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-          
+
           {/* Navigation arrows */}
           {images.length > 1 && (
             <>
               <Button
                 variant="ghost"
                 size="icon"
-                className="absolute left-4 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white text-brand-purple opacity-0 group-hover:opacity-100 transition-all duration-300 shadow-lg"
+                className="absolute left-4 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white text-[#4e2780] opacity-0 group-hover:opacity-100 transition-all duration-300 shadow-lg"
                 onClick={prevImage}
+                aria-label="Imagem anterior"
               >
                 <ChevronLeft className="h-5 w-5" />
               </Button>
-              
+
               <Button
                 variant="ghost"
                 size="icon"
-                className="absolute right-4 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white text-brand-purple opacity-0 group-hover:opacity-100 transition-all duration-300 shadow-lg"
+                className="absolute right-4 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white text-[#4e2780] opacity-0 group-hover:opacity-100 transition-all duration-300 shadow-lg"
                 onClick={nextImage}
+                aria-label="Próxima imagem"
               >
                 <ChevronRight className="h-5 w-5" />
               </Button>
@@ -85,8 +87,9 @@ export const SpaceImageGallery = ({images}:{images : Image[]}) => {
           <Button
             variant="ghost"
             size="icon"
-            className="absolute top-4 right-4 bg-white/90 hover:bg-white text-brand-purple opacity-0 group-hover:opacity-100 transition-all duration-300 shadow-lg"
+            className="absolute top-4 right-4 bg-white/90 hover:bg-white text-[#4e2780] opacity-0 group-hover:opacity-100 transition-all duration-300 shadow-lg"
             onClick={() => setIsZoomed(true)}
+            aria-label="Ampliar imagem"
           >
             <ZoomIn className="h-4 w-4" />
           </Button>
@@ -113,15 +116,16 @@ export const SpaceImageGallery = ({images}:{images : Image[]}) => {
               className={`
                 flex-shrink-0 w-20 h-20 md:w-24 md:h-24 rounded-xl overflow-hidden
                 border-2 transition-all duration-300
-                ${activeIndex === idx 
-                  ? "border-brand-purple shadow-brand" 
-                  : "border-transparent hover:border-brand-purple/50"
+                ${activeIndex === idx
+                  ? "border-[#4e2780] shadow-md"
+                  : "border-transparent hover:border-[#4e2780]/50"
                 }
               `}
               onClick={() => {
                 setActiveIndex(idx);
                 scrollToThumb(idx);
               }}
+              aria-label={`Selecionar imagem ${idx + 1}`}
             >
               <img
                 src={img.image_path}
@@ -135,7 +139,7 @@ export const SpaceImageGallery = ({images}:{images : Image[]}) => {
 
       {/* Zoom Modal */}
       {isZoomed && (
-        <div 
+        <div
           className="fixed inset-0 z-50 bg-black/90 flex items-center justify-center p-4"
           onClick={() => setIsZoomed(false)}
         >
@@ -150,6 +154,7 @@ export const SpaceImageGallery = ({images}:{images : Image[]}) => {
               size="icon"
               className="absolute top-4 right-4 bg-white/20 hover:bg-white/30 text-white"
               onClick={() => setIsZoomed(false)}
+              aria-label="Fechar zoom"
             >
               ×
             </Button>

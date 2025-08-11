@@ -1,10 +1,9 @@
-
 import { ArrowLeft, Star } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Textarea } from '@/components/ui/textarea';
-import {  useEffect, useState } from 'react';
-import { toast,ToastContainer } from 'react-toastify';
+import { useEffect, useState } from 'react';
+import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Header from '../components/Header';
 import { usePage } from '@inertiajs/react';
@@ -32,7 +31,6 @@ const SpaceReview = () => {
       });
   }, [id]);
 
-
   const [rating, setRating] = useState(0);
   const [hoveredRating, setHoveredRating] = useState(0);
   const [review, setReview] = useState('');
@@ -40,18 +38,9 @@ const SpaceReview = () => {
   const [email, setEmail] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-
-  const handleStarClick = (starRating: number) => {
-    setRating(starRating);
-  };
-
-  const handleStarHover = (starRating: number) => {
-    setHoveredRating(starRating);
-  };
-
-  const handleStarLeave = () => {
-    setHoveredRating(0);
-  };
+  const handleStarClick = (starRating: number) => setRating(starRating);
+  const handleStarHover = (starRating: number) => setHoveredRating(starRating);
+  const handleStarLeave = () => setHoveredRating(0);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -60,17 +49,14 @@ const SpaceReview = () => {
       toast.warn("Por favor, selecione uma classificação antes de enviar sua avaliação.");
       return;
     }
-
     if (review.trim().length < 3) {
       toast.warning("O comentário deve ter pelo menos 3 caracteres.");
       return;
     }
-
     if (name.trim().length < 2) {
       toast.warning("Por favor, digite seu nome completo.");
       return;
     }
-
     if (!email.trim() || !email.includes('@')) {
       toast.warning("Por favor, insira um e-mail válido.");
       return;
@@ -79,16 +65,13 @@ const SpaceReview = () => {
     setIsSubmitting(true);
 
     try {
-      // Here you would make the API call to submit the review
       const reviewData = {
         space_id: id,
-        rating: rating,
+        rating,
         review: review.trim(),
         name: name.trim(),
         email: email.trim(),
       };
-
-      console.log('Submitting review:', reviewData);
 
       await initSanctum();
       const response = await api.post(`/api/space/rating/${id}`, reviewData);
@@ -99,10 +82,7 @@ const SpaceReview = () => {
         throw new Error("Failed to submit review");
       }
 
-
       toast.success("Sua avaliação foi enviada com sucesso!");
-
-      // Navigate back to space details
       window.location.href = `/space/details/${id}`;
     } catch (error) {
       toast.error("Ocorreu um erro ao enviar sua avaliação. Por favor, tente novamente mais tarde.");
@@ -123,16 +103,16 @@ const SpaceReview = () => {
   };
 
   return (
-    <div className="min-h-screen bg-brand-cream">
-        <Header />
-        <ToastContainer />
+    <div className="min-h-screen bg-[#fff6f1]">
+      <Header />
+      <ToastContainer />
       {/* Navigation */}
-      <div className="bg-white/80 glass-effect sticky top-0 z-40 border-b border-brand-purple/10">
+      <div className="bg-white/80 sticky top-0 z-40 border-b border-[#4e2780]/10">
         <div className="container mx-auto max-w-4xl px-4 py-4">
           <Button
             variant="ghost"
             onClick={() => window.location.href = `/space/details/${id}`}
-            className="text-brand-purple hover:bg-brand-purple/10 transition-colors duration-300"
+            className="text-[#4e2780] hover:bg-[#ede7f6] transition-colors duration-300"
           >
             <ArrowLeft className="h-4 w-4 mr-2" />
             Voltar ao Espaço
@@ -145,32 +125,32 @@ const SpaceReview = () => {
         <div className="space-y-8">
           {/* Header */}
           <div className="text-center space-y-4">
-            <h1 className="text-3xl md:text-4xl font-bold text-brand-purple">
+            <h1 className="text-3xl md:text-4xl font-bold text-[#4e2780]">
               Avaliar Espaço
             </h1>
-            <p className="text-brand-purple/70 text-lg">
+            <p className="text-[#4e2780]/70 text-lg">
               Compartilhe sua experiência em <span className="font-semibold">{space?.name}</span>
             </p>
           </div>
           <SpaceImageGallery images={space?.images || []} />
 
           {/* Review Form */}
-          <Card className="border-0 shadow-brand bg-white rounded-2xl">
+          <Card className="border-0 shadow-md bg-white rounded-2xl">
             <CardHeader className="pb-6">
-              <CardTitle className="text-2xl font-bold text-brand-purple">
+              <CardTitle className="text-2xl font-bold text-[#4e2780]">
                 Sua Avaliação
               </CardTitle>
             </CardHeader>
             <CardContent>
-            <form onSubmit={handleSubmit} className="space-y-8">
+              <form onSubmit={handleSubmit} className="space-y-8">
                 {/* Personal Information */}
                 <div className="space-y-6">
-                  <h3 className="text-lg font-semibold text-brand-purple">
+                  <h3 className="text-lg font-semibold text-[#4e2780]">
                     Informações Pessoais
                   </h3>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-2">
-                      <label htmlFor="name" className="text-sm font-medium text-brand-purple">
+                      <label htmlFor="name" className="text-sm font-medium text-[#4e2780]">
                         Nome Completo *
                       </label>
                       <Input
@@ -179,12 +159,12 @@ const SpaceReview = () => {
                         placeholder="Digite seu nome completo"
                         value={name}
                         onChange={(e) => setName(e.target.value)}
-                        className="border-brand-purple/20 focus:border-brand-purple focus:ring-brand-purple rounded-xl"
+                        className="border-[#4e2780]/20 focus:border-[#4e2780] focus:ring-[#4e2780] rounded-xl"
                         required
                       />
                     </div>
                     <div className="space-y-2">
-                      <label htmlFor="email" className="text-sm font-medium text-brand-purple">
+                      <label htmlFor="email" className="text-sm font-medium text-[#4e2780]">
                         Email *
                       </label>
                       <Input
@@ -193,7 +173,7 @@ const SpaceReview = () => {
                         placeholder="Digite seu email"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
-                        className="border-brand-purple/20 focus:border-brand-purple focus:ring-brand-purple rounded-xl"
+                        className="border-[#4e2780]/20 focus:border-[#4e2780] focus:ring-[#4e2780] rounded-xl"
                         required
                       />
                     </div>
@@ -201,7 +181,7 @@ const SpaceReview = () => {
                 </div>
                 {/* Rating Stars */}
                 <div className="space-y-4">
-                  <label className="text-lg font-semibold text-brand-purple">
+                  <label className="text-lg font-semibold text-[#4e2780]">
                     Classificação *
                   </label>
                   <div className="flex items-center gap-2">
@@ -212,19 +192,19 @@ const SpaceReview = () => {
                         onClick={() => handleStarClick(star)}
                         onMouseEnter={() => handleStarHover(star)}
                         onMouseLeave={handleStarLeave}
-                        className="p-1 transition-transform duration-200 hover:scale-110 focus:outline-none focus:ring-2 focus:ring-brand-purple focus:ring-offset-2 rounded"
+                        className="p-1 transition-transform duration-200 hover:scale-110 focus:outline-none focus:ring-2 focus:ring-[#4e2780] focus:ring-offset-2 rounded"
                       >
                         <Star
                           className={`h-8 w-8 transition-colors duration-200 ${
                             star <= (hoveredRating || rating)
                               ? 'fill-yellow-400 text-yellow-400'
-                              : 'text-gray-300 hover:text-yellow-300'
+                              : 'text-[#ede7f6] hover:text-yellow-300'
                           }`}
                         />
                       </button>
                     ))}
                     {(hoveredRating || rating) > 0 && (
-                      <span className="ml-4 text-brand-purple font-medium">
+                      <span className="ml-4 text-[#4e2780] font-medium">
                         {getRatingText(hoveredRating || rating)}
                       </span>
                     )}
@@ -233,7 +213,7 @@ const SpaceReview = () => {
 
                 {/* Review Text */}
                 <div className="space-y-4">
-                  <label htmlFor="review" className="text-lg font-semibold text-brand-purple">
+                  <label htmlFor="review" className="text-lg font-semibold text-[#4e2780]">
                     Seu Comentário *
                   </label>
                   <Textarea
@@ -241,10 +221,10 @@ const SpaceReview = () => {
                     placeholder="Conte-nos sobre sua experiência neste espaço. O que você mais gostou? O que poderia ser melhorado?"
                     value={review}
                     onChange={(e) => setReview(e.target.value)}
-                    className="min-h-[120px] resize-none border-brand-purple/20 focus:border-brand-purple focus:ring-brand-purple rounded-xl"
+                    className="min-h-[120px] resize-none border-[#4e2780]/20 focus:border-[#4e2780] focus:ring-[#4e2780] rounded-xl"
                     maxLength={500}
                   />
-                  <div className="flex justify-between text-sm text-brand-purple/60">
+                  <div className="flex justify-between text-sm text-[#4e2780]/60">
                     <span>Mínimo 3 caracteres</span>
                     <span>{review.length}/500</span>
                   </div>
@@ -255,7 +235,7 @@ const SpaceReview = () => {
                   <Button
                     type="submit"
                     disabled={isSubmitting || rating === 0 || review.trim().length < 1}
-                    className="flex-1 gradient-brand text-white font-semibold py-3 rounded-xl hover:shadow-brand-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="flex-1 bg-[#4e2780] text-white font-semibold py-3 rounded-xl shadow-md hover:bg-[#3a1e5a] transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     {isSubmitting ? 'Enviando...' : 'Enviar Avaliação'}
                   </Button>
@@ -265,26 +245,26 @@ const SpaceReview = () => {
           </Card>
 
           {/* Guidelines */}
-          <Card className="border-0 shadow-brand bg-gradient-brand-soft rounded-2xl">
+          <Card className="border-0 shadow-md bg-gradient-to-br from-[#ede7f6] to-[#f4e6f3] rounded-2xl">
             <CardContent className="p-6">
-              <h3 className="font-semibold text-brand-purple mb-4">
+              <h3 className="font-semibold text-[#4e2780] mb-4">
                 Diretrizes para Avaliações
               </h3>
-              <ul className="space-y-2 text-brand-purple/70">
+              <ul className="space-y-2 text-[#4e2780]/70">
                 <li className="flex items-start gap-2">
-                  <span className="text-brand-purple mt-1">•</span>
+                  <span className="text-[#4e2780] mt-1">•</span>
                   Seja honesto e construtivo em sua avaliação
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="text-brand-purple mt-1">•</span>
+                  <span className="text-[#4e2780] mt-1">•</span>
                   Foque na sua experiência com o espaço e suas facilidades
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="text-brand-purple mt-1">•</span>
+                  <span className="text-[#4e2780] mt-1">•</span>
                   Evite linguagem ofensiva ou inadequada
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="text-brand-purple mt-1">•</span>
+                  <span className="text-[#4e2780] mt-1">•</span>
                   Sua avaliação ajuda outros usuários a escolher o melhor espaço
                 </li>
               </ul>

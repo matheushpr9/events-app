@@ -19,28 +19,28 @@ const ReviewCard = ({ review }: { review: Review }) => {
         className={`h-4 w-4 ${
           index < rating
             ? 'text-yellow-400 fill-yellow-400'
-            : 'text-gray-300'
+            : 'text-[#ede7f6]'
         }`}
       />
     ));
   };
 
   return (
-    <Card className="border-0 shadow-brand bg-white rounded-2xl h-full">
+    <Card className="border-0 shadow-md bg-white rounded-2xl h-full">
       <CardContent className="p-6 flex flex-col h-full">
         <div className="flex items-center space-x-1 mb-3">
           {renderStars(review.rating)}
         </div>
 
-        <p className="text-gray-700 mb-4 flex-grow italic">
+        <p className="text-[#4e2780]/80 mb-4 flex-grow italic">
           "{review.review}"
         </p>
 
-        <div className="border-t border-gray-100 pt-4">
-          <p className="font-semibold text-brand-purple text-lg">
+        <div className="border-t border-[#ede7f6] pt-4">
+          <p className="font-semibold text-[#4e2780] text-lg">
             {review.name}
           </p>
-          <p className="text-sm text-gray-500">
+          <p className="text-sm text-[#4e2780]/60">
             {review.createdAt ? new Date(review.createdAt).toLocaleDateString('pt-BR') : ''}
           </p>
         </div>
@@ -90,9 +90,9 @@ export const ReviewCarousel = ({ spaceId }: ReviewCarouselProps) => {
 
   if (loading) {
     return (
-      <Card className="border-0 shadow-brand bg-white rounded-2xl">
+      <Card className="border-0 shadow-md bg-white rounded-2xl">
         <CardContent className="p-8 text-center">
-          <p className="text-gray-500">Carregando avaliações...</p>
+          <p className="text-[#4e2780]/60">Carregando avaliações...</p>
         </CardContent>
       </Card>
     );
@@ -100,9 +100,9 @@ export const ReviewCarousel = ({ spaceId }: ReviewCarouselProps) => {
 
   if (!reviews || reviews.length === 0) {
     return (
-      <Card className="border-0 shadow-brand bg-white rounded-2xl">
+      <Card className="border-0 shadow-md bg-white rounded-2xl">
         <CardContent className="p-8 text-center">
-          <p className="text-gray-500">Ainda não há avaliações para este espaço.</p>
+          <p className="text-[#4e2780]/60">Ainda não há avaliações para este espaço.</p>
         </CardContent>
       </Card>
     );
@@ -121,10 +121,10 @@ export const ReviewCarousel = ({ spaceId }: ReviewCarouselProps) => {
   return (
     <div className="space-y-6">
       <div className="text-center">
-        <h2 className="text-3xl font-bold text-brand-purple mb-2">
+        <h2 className="text-3xl font-bold text-[#4e2780] mb-2">
           Avaliações dos Visitantes
         </h2>
-        <p className="text-brand-purple/70">
+        <p className="text-[#4e2780]/70">
           Veja o que outras pessoas acharam deste espaço
         </p>
       </div>
@@ -146,8 +146,8 @@ export const ReviewCarousel = ({ spaceId }: ReviewCarouselProps) => {
         </CarouselContent>
         <CarouselPrevious
           className="
-            bg-white border-brand-purple/20 text-brand-purple
-            hover:bg-brand-purple hover:text-white transition-colors duration-300
+            bg-white border-[#4e2780]/20 text-[#4e2780]
+            hover:bg-[#4e2780] hover:text-white transition-colors duration-300
             w-8 h-8 md:w-10 md:h-10
             -left-3 md:-left-5
             top-1/2 -translate-y-1/2
@@ -157,8 +157,8 @@ export const ReviewCarousel = ({ spaceId }: ReviewCarouselProps) => {
         />
         <CarouselNext
           className="
-            bg-white border-brand-purple/20 text-brand-purple
-            hover:bg-brand-purple hover:text-white transition-colors duration-300
+            bg-white border-[#4e2780]/20 text-[#4e2780]
+            hover:bg-[#4e2780] hover:text-white transition-colors duration-300
             w-8 h-8 md:w-10 md:h-10
             -right-3 md:-right-5
             top-1/2 -translate-y-1/2
