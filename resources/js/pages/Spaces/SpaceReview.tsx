@@ -221,8 +221,7 @@ const SpaceReview = () => {
                     placeholder="Conte-nos sobre sua experiência neste espaço. O que você mais gostou? O que poderia ser melhorado?"
                     value={review}
                     onChange={(e) => setReview(e.target.value)}
-                    className="min-h-[120px] resize-none border-[#4e2780]/20 focus:border-[#4e2780] focus:ring-[#4e2780] rounded-xl"
-                    maxLength={500}
+                    className="min-h-[120px] resize-none bg-white border-[#4e2780]/20 focus:border-[#4e2780] focus:ring-[#4e2780] rounded-xl text-[#4e2780]/80 placeholder:text-[#4e2780]/40"
                   />
                   <div className="flex justify-between text-sm text-[#4e2780]/60">
                     <span>Mínimo 3 caracteres</span>
@@ -234,8 +233,8 @@ const SpaceReview = () => {
                 <div className="flex flex-col sm:flex-row gap-4 pt-4">
                   <Button
                     type="submit"
-                    disabled={isSubmitting || rating === 0 || review.trim().length < 1}
-                    className="flex-1 bg-[#4e2780] text-white font-semibold py-3 rounded-xl shadow-md hover:bg-[#3a1e5a] transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                    disabled={isSubmitting || rating === 0 || review.trim().length < 3}
+                    className="flex-1 bg-[#4e2780] text-white font-semibold py-3 rounded-xl shadow-md hover:bg-[#3a1e5a] cursor-pointer transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     {isSubmitting ? 'Enviando...' : 'Enviar Avaliação'}
                   </Button>
