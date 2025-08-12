@@ -15,7 +15,7 @@ export const SpaceContact = (user: User) => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="group flex items-center gap-4 p-6 bg-gradient-to-br from-[#ede7f6] to-[#f4e6f3] rounded-xl hover:shadow-md transition-all duration-300">
             <div className="p-3 bg-white rounded-full group-hover:bg-[#4e2780] group-hover:text-white transition-colors duration-300">
-              <Phone className="h-6 w-6" />
+                <Phone className="h-6 w-6 text-[#4e2780] group-hover:text-white transition-colors duration-300" />
             </div>
             <div>
               <div className="font-semibold text-[#4e2780] text-lg">Telefone</div>
@@ -25,7 +25,7 @@ export const SpaceContact = (user: User) => {
 
           <div className="group flex items-center gap-4 p-6 bg-gradient-to-br from-[#ede7f6] to-[#f4e6f3] rounded-xl hover:shadow-md transition-all duration-300">
             <div className="p-3 bg-white rounded-full group-hover:bg-[#4e2780] group-hover:text-white transition-colors duration-300">
-              <Mail className="h-6 w-6" />
+                <Mail className="h-6 w-6 text-[#4e2780] group-hover:text-white transition-colors duration-300" />
             </div>
             <div>
               <div className="font-semibold text-[#4e2780] text-lg">E-mail</div>

@@ -11,6 +11,7 @@ import Header from '../components/Header';
 import { Star } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { ReviewCarousel } from '../components/ReviewCarousel';
+import { SpaceServices } from '@/components/SpaceServicesList';
 
 const Index = () => {
   const { id } = usePage().props as { [key: string]: any };
@@ -91,6 +92,9 @@ const Index = () => {
       {/* Amenities Section */}
       <section className="container mx-auto max-w-7xl px-2 sm:px-4 pb-8 md:pb-12">
         <SpaceAmenities amenities={space.amenities} />
+      </section>
+      <section className="container mx-auto max-w-7xl px-2 sm:px-4 pb-8 md:pb-12">
+        <SpaceServices services={space.services} />
       </section>
 
       {/* Reviews Section */}
