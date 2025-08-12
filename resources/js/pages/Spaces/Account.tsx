@@ -1,44 +1,77 @@
 import { useState, useEffect } from 'react';
-import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
 import { User, Mail, Phone, CreditCard, CheckCircle, XCircle, RefreshCw } from 'lucide-react';
 import Header from '../components/Header';
 import { toast, ToastContainer } from 'react-toastify';
+import getUserInfo from '../helpers/get-user-info';
+import { AuthenticatedUser, SubscriptionStatus } from '@/interfaces/user';
+import getSubscriptionStatus from '../helpers/get-subscription-status';
+import getSubscriptionPlan from '../helpers/get-subscription-plan';
+import getNextPaymentDate from '../helpers/get-next-payment';
 
 const Account = () => {
-  // Mock user data - in real app this would come from authentication context
-  const [userData] = useState({
-    name: 'João Silva Santos',
-    email: 'joao.silva@email.com',
-    phone_number: '(11) 99999-9999'
-  });
 
-  // Mock subscription status - in real app this would come from payment API
-  const [subscriptionStatus, setSubscriptionStatus] = useState({
-    isActive: false,
-    planName: 'Premium',
-    expiryDate: '2024-03-15',
-    isLoading: false
-  });
+  const [subscriptionStatus, setSubscriptionStatus] = useState<SubscriptionStatus | null>(null);
+  useEffect(() => {
+    getSubscriptionStatus()
+      .then(data => {
+        setSubscriptionStatus({
+          isActive: data.isActive,
+          plan: data.planName,
+          createdAt: data.createdAt,
+          isLoading: false
+        });
+      })
+      .catch(error => {
+        console.error("Erro ao buscar status da assinatura:", error);
+        setSubscriptionStatus({
+          isActive: false,
+          plan: null,
+          createdAt: null,
+          isLoading: false
+        });
+      });
+  }, []);
+  const [ userInfo, setUser ] = useState< AuthenticatedUser| null>(null);
+    useEffect(() => {
+        getUserInfo()
+        .then(setUser)
+        .catch((error) => {
+            console.error("Erro ao buscar informações do usuário:", error);
+            setUser(null);
+        });
+    }, []);
+
+
 
   const handleCheckoutRedirect = () => {
     toast.info("Redirecionando para o checkout...");
     setTimeout(() => {
       window.open('/checkout', '_blank');
-    }, 1000);
+    }, 100);
   };
 
   const refreshSubscriptionStatus = async () => {
-    setSubscriptionStatus(prev => ({ ...prev, isLoading: true }));
-    setTimeout(() => {
-      setSubscriptionStatus(prev => ({
-        ...prev,
-        isLoading: false,
-        isActive: Math.random() > 0.5 // Random for demo
-      }));
-      toast.info("Status da assinatura atualizado com sucesso!");
-    }, 2000);
+    getSubscriptionStatus()
+      .then(data => {
+        setSubscriptionStatus({
+          isActive: data.isActive,
+          plan: data.planName,
+          createdAt: data.createdAt,
+          isLoading: false
+        });
+         toast.info("Status da assinatura atualizado com sucesso!");
+      })
+      .catch(error => {
+        console.error("Erro ao buscar status da assinatura:", error);
+        setSubscriptionStatus({
+          isActive: false,
+          plan: null,
+          createdAt: null,
+          isLoading: false
+        });
+      });
+
   };
 
   useEffect(() => {
@@ -80,7 +113,7 @@ const Account = () => {
                     <User className="w-5 h-5 text-[#4e2780]" />
                     <div>
                       <p className="text-sm font-medium text-[#4e2780]/70">Nome completo</p>
-                      <p className="text-base font-semibold text-[#4e2780]">{userData.name}</p>
+                      <p className="text-base font-semibold text-[#4e2780]">{userInfo?.user?.name}</p>
                     </div>
                   </div>
 
@@ -88,7 +121,7 @@ const Account = () => {
                     <Mail className="w-5 h-5 text-[#4e2780]" />
                     <div>
                       <p className="text-sm font-medium text-[#4e2780]/70">Email</p>
-                      <p className="text-base font-semibold text-[#4e2780]">{userData.email}</p>
+                      <p className="text-base font-semibold text-[#4e2780]">{userInfo?.user?.email}</p>
                     </div>
                   </div>
 
@@ -96,7 +129,7 @@ const Account = () => {
                     <Phone className="w-5 h-5 text-[#4e2780]" />
                     <div>
                       <p className="text-sm font-medium text-[#4e2780]/70">Telefone</p>
-                      <p className="text-base font-semibold text-[#4e2780]">{userData.phone_number}</p>
+                      <p className="text-base font-semibold text-[#4e2780]">{userInfo?.user?.phone_number}</p>
                     </div>
                   </div>
                 </div>
@@ -128,12 +161,12 @@ const Account = () => {
                     <span className="text-sm font-medium text-[#4e2780]/70">Status atual:</span>
                     <span
                       className={`flex items-center gap-1 px-3 py-1 rounded-full text-sm font-semibold
-                        ${subscriptionStatus.isActive
+                        ${subscriptionStatus?.isActive
                           ? "bg-green-100 text-green-700"
                           : "bg-red-100 text-red-700"
                         }`}
                     >
-                      {subscriptionStatus.isActive ? (
+                      {subscriptionStatus?.isActive ? (
                         <>
                           <CheckCircle className="w-4 h-4" />
                           Ativa
@@ -151,14 +184,16 @@ const Account = () => {
                   <div className="p-4 bg-gradient-to-br from-[#ede7f6] to-[#f4e6f3] rounded-lg">
                     <div className="flex items-center justify-between mb-2">
                       <span className="text-sm font-medium text-[#4e2780]/70">Plano:</span>
-                      <span className="text-base font-semibold text-[#4e2780]">{subscriptionStatus.planName}</span>
+                      <span className="text-base font-semibold text-[#4e2780]">{subscriptionStatus?.plan ? `Plano ${getSubscriptionPlan(subscriptionStatus?.plan)}` : '--'}</span>
                     </div>
 
-                    {subscriptionStatus.isActive ? (
+                    {subscriptionStatus?.isActive ? (
                       <div className="flex items-center justify-between">
                         <span className="text-sm font-medium text-[#4e2780]/70">Próxima cobrança:</span>
                         <span className="text-base font-semibold text-[#4e2780]">
-                          {new Date(subscriptionStatus.expiryDate).toLocaleDateString('pt-BR')}
+                          {subscriptionStatus?.createdAt
+                            ? getNextPaymentDate(subscriptionStatus?.plan, subscriptionStatus?.createdAt)
+                            : '--'}
                         </span>
                       </div>
                     ) : (
@@ -173,9 +208,9 @@ const Account = () => {
                     <button
                       onClick={refreshSubscriptionStatus}
                       className="w-full px-4 py-2 border-2 border-[#4e2780] text-[#4e2780] font-semibold rounded-xl hover:bg-[#4e2780] hover:text-white transition-all duration-300 flex items-center justify-center"
-                      disabled={subscriptionStatus.isLoading}
+                      disabled={subscriptionStatus?.isLoading}
                     >
-                      {subscriptionStatus.isLoading ? (
+                      {subscriptionStatus?.isLoading ? (
                         <>
                           <RefreshCw className="w-4 h-4 mr-2 animate-spin" />
                           Verificando...
@@ -188,7 +223,7 @@ const Account = () => {
                       )}
                     </button>
 
-                    {!subscriptionStatus.isActive && (
+                    {!(subscriptionStatus?.isActive) && (
                       <button
                         onClick={handleCheckoutRedirect}
                         className="w-full px-4 py-2 bg-[#4e2780] text-white font-semibold rounded-xl shadow-md hover:bg-[#3a1e5a] transition-all duration-300 flex items-center justify-center"
@@ -198,10 +233,10 @@ const Account = () => {
                       </button>
                     )}
 
-                    {subscriptionStatus.isActive && (
+                    {subscriptionStatus?.isActive && (
                       <button
                         className="w-full px-4 py-2 border-2 border-[#4e2780] text-[#4e2780] font-semibold rounded-xl hover:bg-[#4e2780] hover:text-white transition-all duration-300"
-                        onClick={() => toast.info("Gerenciando assinatura...")}
+                        onClick={handleCheckoutRedirect}
                       >
                         Gerenciar Assinatura
                       </button>

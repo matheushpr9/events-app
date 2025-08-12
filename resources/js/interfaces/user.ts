@@ -1,4 +1,4 @@
-export interface User {
+export interface UserInfo {
   id: string;
   name: string;
   email: string;
@@ -10,5 +10,12 @@ export interface User {
 
 export interface AuthenticatedUser {
   authenticated: boolean;
-  user: User;
+  user: UserInfo;
+}
+
+export interface SubscriptionStatus {
+  isActive: boolean;
+  plan: string | null;
+  createdAt: string | null;
+  isLoading: boolean;
 }
