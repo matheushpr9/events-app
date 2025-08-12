@@ -64,7 +64,7 @@ const Header = () => {
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-20">
           {/* Logo */}
-          <Logo style={{ width: 200, height: 110, cursor: 'pointer' }} onClick={() => window.location.href = '/'} />
+          <Logo style={{ width: 260, height: 143, cursor: 'pointer' }} onClick={() => window.location.href = '/'} />
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center align-middle space-x-4">

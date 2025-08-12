@@ -51,7 +51,7 @@ export default function Index() {
     .then(setServicesOptions)
     .catch(() => setServicesOptions([]));
   },[]);
-  
+
   const [localityOptions, setLocalityOptions] = useState<string[]>([]);
 
   useEffect(() => {
@@ -261,6 +261,7 @@ export default function Index() {
     setTimeout(() => {
       toast.success('Espaço cadastrado com sucesso!', { /* ... */ });
     }, 100);
+    window.location.href = '/';
   } catch (err: unknown) {
   if (axios.isAxiosError(err)) {
     // err.response?.data.message, etc.
