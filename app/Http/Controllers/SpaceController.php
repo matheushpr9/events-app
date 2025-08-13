@@ -17,6 +17,7 @@ class  SpaceController extends Controller
     public function index()
     {
         return Space::with(['address', 'images', 'user', 'ratings'])
+            ->where('status', 'active')
             ->whereHas('user.subscriptions', function ($query) {
                 $query->where('stripe_status', 'active');
             })
@@ -296,5 +297,29 @@ class  SpaceController extends Controller
     {
         $spaces = Space::where('user_id', $id)->first();
         return response()->json($spaces !== null);
+    }
+
+    public function activateSpace($id)
+    {
+        $space = Space::findOrFail($id);
+        $space->status = 'active';
+        $space->save();
+
+        return response()->json([
+            'message' => 'Space activated successfully',
+            'space' => $space
+        ]);
+    }
+
+    public function deactivateSpace($id)
+    {
+        $space = Space::findOrFail($id);
+        $space->status = 'inactive';
+        $space->save();
+
+        return response()->json([
+            'message' => 'Space deactivated successfully',
+            'space' => $space
+        ]);
     }
 }

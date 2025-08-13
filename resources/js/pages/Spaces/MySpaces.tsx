@@ -15,6 +15,8 @@ import { api, initSanctum } from '@/api/api';
 import getSubscriptionStatus from '../helpers/get-subscription-status';
 import { Switch } from '../components/ui/switch';
 import userHasSpaces from '../helpers/user-has-spaces';
+import activateSpace from '../helpers/activate-space';
+import deactivateSpace from '../helpers/deactivate-space';
 
 const MySpaces = () => {
     const [subscriptionStatus, setSubscriptionStatus] = useState<SubscriptionStatus | null>(null);
@@ -65,16 +67,32 @@ const MySpaces = () => {
         });
     }, [subscriptionStatus]);
 
-    const handleToggleSpace = () => {
-        toast.info("Espaço atualizado com sucesso!", {
-            position: "top-right",
-            autoClose: 3000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-        });
+    const handleToggleSpace = async (id: number, status: string) => {
+        if (status === 'active') {
+            await deactivateSpace(id);
+            setSpaces(prevSpaces =>
+                prevSpaces.map(space =>
+                    space.id === id ? { ...space, status: 'inactive' } : space
+                )
+            );
+            toast.info("Espaço desativado com sucesso!", {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+            });
+        } else {
+            await activateSpace(id);
+            setSpaces(prevSpaces =>
+                prevSpaces.map(space =>
+                    space.id === id ? { ...space, status: 'active' } : space
+                )
+            );
+            toast.info("Espaço ativado com sucesso!", {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+            });
+        }
     };
 
     const handleDeleteSpace = async (spaceId: number) => {
@@ -273,7 +291,7 @@ const MySpaces = () => {
                                                 <div className="flex items-center gap-2">
                                                     <Switch
                                                         checked={space.status === 'active'}
-                                                        onCheckedChange={() => handleToggleSpace()}
+                                                        onCheckedChange={() => handleToggleSpace(space.id, space.status)}
                                                         disabled={!subscriptionStatus?.isActive}
                                                     />
 
