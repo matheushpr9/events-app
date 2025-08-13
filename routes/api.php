@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\RatingController;
 use App\Http\Controllers\SpaceController;
 use Illuminate\Support\Facades\Route;
@@ -31,4 +32,6 @@ Route::middleware([
     Route::get('/user/{id}/has-space', [SpaceController::class, 'userHasSpaces']);
     Route::post('/space/{id}/activate', [SpaceController::class, 'activateSpace']);
     Route::post('/space/{id}/deactivate', [SpaceController::class, 'deactivateSpace']);
+    Route::put('/auth/user', [RegisteredUserController::class, 'update']);
+    Route::post('auth/password', [RegisteredUserController::class, 'changePassword']);
 });

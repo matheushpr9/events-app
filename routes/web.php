@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 Route::get('/', function () {
     return Inertia::render('Spaces/Home');
 })->name('home');
-Route::get('/space/details/{id}', function ( $id) {
+Route::get('/space/details/{id}', function ($id) {
     return Inertia::render('Spaces/Details', [
         'id' => $id,
     ]);
@@ -38,7 +38,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/checkout', function () {
         return Inertia::render('Spaces/Checkout');
     })->name('checkout');
+    Route::get('/profile', function () {
+        return Inertia::render('auth/Profile');
+    })->name('profile');
 });
 
-require __DIR__.'/settings.php';
-require __DIR__.'/auth.php';
+require __DIR__ . '/settings.php';
+require __DIR__ . '/auth.php';
