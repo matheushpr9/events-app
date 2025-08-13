@@ -91,7 +91,7 @@ const SearchSection = ({ onResults, Spaces }: SearchSectionProps) => {
   }, []);
 
   const [spaceTypes, setSpaceTypes] = useState<string[]>([]);
-  
+
   useEffect(() => {
     getTypes()
       .then(setSpaceTypes)
@@ -142,10 +142,10 @@ const SearchSection = ({ onResults, Spaces }: SearchSectionProps) => {
         {/* Hero Section */}
         <div className="text-center mb-10 animate-fade-in">
           <h1 className="text-3xl md:text-5xl font-bold text-[#4e2780] mb-4 md:mb-6 leading-tight">
-            Seu casamento em um clique!
+            Seu evento em um clique!
           </h1>
           <p className="text-lg md:text-xl text-[#4e2780]/70 max-w-3xl mx-auto leading-relaxed">
-            Descubra espaços únicos e especiais para tornar seu casamento inesquecível.
+            Encontre espaços únicos e especiais para transformar seu evento em uma experiência inesquecível
           </p>
         </div>
 
@@ -249,7 +249,7 @@ const SearchSection = ({ onResults, Spaces }: SearchSectionProps) => {
                   }}
                   className="bg-white/80 border-[#4e2780]/20 text-[#4e2780] rounded-xl focus:ring-2 focus:ring-[#b39ddb]"
                 />
-                <Select 
+                <Select
                   closeMenuOnSelect={false}
                   components={makeAnimated()}
                   placeholder='Comodidades'

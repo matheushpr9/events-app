@@ -89,7 +89,7 @@ const Header = () => {
             >
               <div className="flex flex-col space-y-4 flex-1 items-center justify-self-start">
                 <Logo style={{ width: 280, height: 140, cursor: 'pointer', margin:0}}/>
-                <p className="text-center text-[#4e2780] text-sm opacity-85">- Seu casamento em um clique! -</p>
+                <p className="text-center text-[#4e2780] text-sm opacity-85">- Seu evento em um clique! -</p>
                 {!isLoggedIn ? <AuthButtons /> : <LoggedButtons />}
               </div>
             </SheetContent>
