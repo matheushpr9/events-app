@@ -15,7 +15,11 @@ use Illuminate\Validation\Rules\Enum;
 class SpaceController extends Controller
 {
     public function index(){
-        return Space::with(['address', 'images', 'user', 'ratings'])->get();
+        return Space::with(['address', 'images', 'user', 'ratings'])
+            ->whereHas('user.subscriptions', function ($query) {
+                $query->where('stripe_status', 'active');
+            })
+            ->get();
     }
 
     public function store(Request $request){
@@ -135,6 +139,12 @@ class SpaceController extends Controller
     public function filter(Request $request)
     {
         $query = Space::query();
+
+
+        // Filtro: apenas espaços de usuários com assinatura ativa
+        $query->whereHas('user.subscriptions', function ($q) {
+            $q->where('stripe_status', 'active');
+        });
 
         // Filtros simples
         if ($request->filled('people_capacity')) {

@@ -5,15 +5,40 @@ import { Badge } from '@/components/ui/badge';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../components/ui/table';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '../components/ui/alert-dialog';
 import { toast, ToastContainer } from 'react-toastify';
-import { Edit, Trash2, Eye, Plus, MapPin, Users, Star } from 'lucide-react';
+import { Edit, Trash2, Eye, Plus, MapPin, Users, Star, AlertTriangle, CreditCard } from 'lucide-react';
 import Header from '../components/Header';
 import getUserInfo from '../helpers/get-user-info';
-import { AuthenticatedUser } from '@/interfaces/user';
+import { AuthenticatedUser, SubscriptionStatus } from '@/interfaces/user';
 import getSpacesByUserId from '../helpers/get-spaces-by-user-id';
 import { Space } from '@/interfaces/space';
 import { api, initSanctum } from '@/api/api';
+import getSubscriptionStatus from '../helpers/get-subscription-status';
+import { Switch } from '../components/ui/switch';
 
 const MySpaces = () => {
+    const [subscriptionStatus, setSubscriptionStatus] = useState<SubscriptionStatus | null>(null);
+
+    useEffect(() => {
+        getSubscriptionStatus()
+        .then(data => {
+            setSubscriptionStatus({
+            isActive: data.isActive,
+            plan: data.planName,
+            createdAt: data.createdAt,
+            isLoading: false
+            });
+        })
+        .catch(error => {
+            console.error("Erro ao buscar status da assinatura:", error);
+            setSubscriptionStatus({
+            isActive: false,
+            plan: null,
+            createdAt: null,
+            isLoading: false
+            });
+        });
+    }, []);
+
   const [spaces, setSpaces] = useState<Space[]>([]);
 
   useEffect(() => {
@@ -23,6 +48,18 @@ const MySpaces = () => {
       });
     });
   }, []);
+
+  const handleToggleSpace = () => {
+    toast.info("Espaço atualizado com sucesso!", {
+      position: "top-right",
+      autoClose: 3000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+    });
+  };
 
   const handleDeleteSpace = async (spaceId: number) => {
     await initSanctum();
@@ -48,14 +85,15 @@ const MySpaces = () => {
     location.href = `/space/details/${spaceId}`;
   };
 
-  const getStatusBadge = (status: string) => {
-    switch (status) {
+  const getStatusBadge = (spaceStatus: string, subscriptionStatus: boolean | null) => {
+    if (!subscriptionStatus) {
+        return <Badge className="bg-yellow-100 text-yellow-700 border border-yellow-400">Pagamento Pendente</Badge>;
+    }
+    switch (spaceStatus) {
       case 'active':
         return <Badge className="bg-green-100 text-green-700">Ativo</Badge>;
       case 'inactive':
         return <Badge className="bg-[#ede7f6] text-[#4e2780]/70">Inativo</Badge>;
-      case 'pending payment':
-        return <Badge className="bg-yellow-100 text-yellow-700 border border-yellow-400">Pagamento Pendente</Badge>;
       default:
         return <Badge className="bg-[#ede7f6] text-[#4e2780]/70">{status}</Badge>;
     }
@@ -80,6 +118,34 @@ const MySpaces = () => {
             Cadastrar Novo Espaço
           </Button>
         </div>
+         {/* Warning for pending subscription */}
+        {!subscriptionStatus?.isActive && (
+          <Card className="mb-8 border-l-4 border-l-orange-500 bg-orange-50">
+            <CardContent className="p-6">
+              <div className="flex items-center gap-4">
+                <div className="p-2 bg-orange-100 rounded-full">
+                  <AlertTriangle className="h-6 w-6 text-orange-600" />
+                </div>
+                <div className="flex-1">
+                  <h3 className="text-lg font-semibold text-orange-800 mb-2">
+                    Pagamento Pendente
+                  </h3>
+                  <p className="text-orange-700 mb-4">
+                    Seus espaços não estão sendo exibidos pois ainda não identificamos o pagamento da sua assinatura.
+                    Complete o pagamento para que seus espaços fiquem visíveis para os clientes.
+                  </p>
+                  <Button
+                    onClick={() => window.location.href = '/checkout'}
+                    className="bg-orange-600 hover:bg-orange-700 text-white font-semibold px-6 py-2 rounded-lg"
+                  >
+                    <CreditCard className="h-4 w-4 mr-2" />
+                    Finalizar Pagamento
+                  </Button>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        )}
 
         {/* Estatísticas rápidas */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
@@ -185,7 +251,19 @@ const MySpaces = () => {
                         {(space.ratings.reduce((acc, r) => acc + r.rating, 0) / (space.ratings.length || 1)).toFixed(1)} ({space.ratings.length})
                       </div>
                     </TableCell>
-                    <TableCell>{getStatusBadge(space.status)}</TableCell>
+                    <TableCell>
+                      <div className="flex items-center gap-3">
+                        {getStatusBadge(space.status, subscriptionStatus?.isActive ?? null)}
+                        <div className="flex items-center gap-2">
+                          <Switch
+                            checked={space.status === 'active'}
+                            onCheckedChange={() => handleToggleSpace()}
+                            disabled={!subscriptionStatus?.isActive}
+                          />
+
+                        </div>
+                      </div>
+                    </TableCell>
                     <TableCell className="text-right">
                       <div className="flex justify-end space-x-2">
                         <Button
