@@ -11,7 +11,7 @@ Route::post('/stripe/webhook', [WebhookController::class, 'handleWebhook'])->pre
 
 Route::get('spaces/filter', [SpaceController::class, 'filter'])->prefix('api');
 Route::get('spaces/{id}', [SpaceController::class, 'show'])->prefix('api');
-Route::get('space/rating/{id}'   , [RatingController::class, 'show'])->prefix('api');
+Route::get('space/rating/{id}', [RatingController::class, 'show'])->prefix('api');
 Route::post('space/rating/{id}', [RatingController::class, 'store'])->prefix('api');
 Route::get('spaces', [SpaceController::class, 'index'])->prefix('api');
 Route::get('amenities', [SpaceController::class, 'getAmenities'])->prefix('api');
@@ -24,8 +24,9 @@ Route::get('users/{id}/spaces', [SpaceController::class, 'getUserSpaces'])->pref
 Route::middleware([
     EnsureFrontendRequestsAreStateful::class,
     'auth:sanctum'
-    ])->prefix('api')->group(function () {
-        Route::apiResource('spaces', SpaceController::class);
-        Route::post('/stripe/checkout', [StripeCheckoutController::class, 'create']);
-        Route::get('/subscription/status', [\App\Http\Controllers\SubscriptionController::class, 'status']);
+])->prefix('api')->group(function () {
+    Route::apiResource('spaces', SpaceController::class);
+    Route::post('/stripe/checkout', [StripeCheckoutController::class, 'create']);
+    Route::get('/subscription/status', [\App\Http\Controllers\SubscriptionController::class, 'status']);
+    Route::get('/user/{id}/has-space', [SpaceController::class, 'userHasSpaces']);
 });

@@ -12,9 +12,10 @@ use App\Models\Space;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rules\Enum;
 
-class SpaceController extends Controller
+class  SpaceController extends Controller
 {
-    public function index(){
+    public function index()
+    {
         return Space::with(['address', 'images', 'user', 'ratings'])
             ->whereHas('user.subscriptions', function ($query) {
                 $query->where('stripe_status', 'active');
@@ -22,9 +23,10 @@ class SpaceController extends Controller
             ->get();
     }
 
-    public function store(Request $request){
-         $user = $request->user();
-         logger()->info('User authenticated', [
+    public function store(Request $request)
+    {
+        $user = $request->user();
+        logger()->info('User authenticated', [
             'user_id' => $user->id,
             'user_email' => $user->email,
         ]);
@@ -32,7 +34,7 @@ class SpaceController extends Controller
         logger()->info('Creating space', [
             'request' => $request->all(),
         ]);
-         //validar erro na imagem
+        //validar erro na imagem
         $images = array_filter($request->file('images') ?? [], function ($image) {
             return $image !== null;
         });
@@ -47,7 +49,7 @@ class SpaceController extends Controller
             //validar erro na imagem
             'images' => 'required|array',
             'images.*' => 'image|mimes:jpeg,png,jpg,gif|max:204800', //validar tamanho máximo de 200MB
-            'people_capacity' => ['required', new Enum (SpaceCapacityEnum::class)],
+            'people_capacity' => ['required', new Enum(SpaceCapacityEnum::class)],
             'street' => 'nullable|string|max:255',
             'neighborhood' => 'nullable|string|max:255',
             'number' => 'nullable|string|max:50',
@@ -132,9 +134,9 @@ class SpaceController extends Controller
         ], 201);
     }
 
-    public function show($id){
+    public function show($id)
+    {
         return Space::with(['address', 'images', 'user', 'ratings'])->findOrFail($id);
-
     }
     public function filter(Request $request)
     {
@@ -212,7 +214,14 @@ class SpaceController extends Controller
         // Atualiza endereço, se enviado
         if ($request->hasAny(['street', 'neighborhood', 'number', 'complement', 'city', 'state', 'postal_code', 'country'])) {
             $space->address()->update($request->only([
-                'street', 'neighborhood', 'number', 'complement', 'city', 'state', 'postal_code', 'country'
+                'street',
+                'neighborhood',
+                'number',
+                'complement',
+                'city',
+                'state',
+                'postal_code',
+                'country'
             ]));
         }
 
@@ -249,7 +258,8 @@ class SpaceController extends Controller
         ]);
     }
 
-    public function destroy($id){
+    public function destroy($id)
+    {
         Space::destroy($id);
         return response()->json([
             'message' => 'Space deleted successfully'
@@ -280,5 +290,11 @@ class SpaceController extends Controller
     {
         $spaces = Space::with(['address', 'images', 'ratings'])->where('user_id', $id)->get();
         return response()->json($spaces);
+    }
+
+    public function userHasSpaces($id)
+    {
+        $spaces = Space::where('user_id', $id)->first();
+        return response()->json($spaces !== null);
     }
 }
