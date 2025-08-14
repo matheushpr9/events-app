@@ -20,9 +20,10 @@ import deactivateSpace from '../helpers/deactivate-space';
 
 const MySpaces = () => {
     const [subscriptionStatus, setSubscriptionStatus] = useState<SubscriptionStatus | null>(null);
-
     const [hasSpaces, setHasSpaces] = useState<boolean | null>(null);
+    const [spaces, setSpaces] = useState<Space[]>([]);
 
+    // Busca status da assinatura
     useEffect(() => {
         getSubscriptionStatus()
             .then(data => {
@@ -44,8 +45,7 @@ const MySpaces = () => {
             });
     }, []);
 
-    const [spaces, setSpaces] = useState<Space[]>([]);
-
+    // Busca espaços do usuário
     useEffect(() => {
         getUserInfo().then((authenticatedUser: AuthenticatedUser) => {
             getSpacesByUserId(authenticatedUser.user.id).then((spaces: Space[]) => {
@@ -54,6 +54,7 @@ const MySpaces = () => {
         });
     }, []);
 
+    // Verifica se o usuário tem espaços e assinatura ativa
     useEffect(() => {
         if (subscriptionStatus === null) return;
         getUserInfo().then((authenticatedUser: AuthenticatedUser) => {
@@ -67,6 +68,7 @@ const MySpaces = () => {
         });
     }, [subscriptionStatus]);
 
+    // Ativa/desativa espaço
     const handleToggleSpace = async (id: number, status: string) => {
         if (status === 'active') {
             await deactivateSpace(id);
@@ -95,6 +97,7 @@ const MySpaces = () => {
         }
     };
 
+    // Exclui espaço
     const handleDeleteSpace = async (spaceId: number) => {
         await initSanctum();
         api.delete(`/api/spaces/${spaceId}`).then(() => {
@@ -111,14 +114,17 @@ const MySpaces = () => {
         });
     };
 
+    // Edita espaço
     const handleEditSpace = (spaceId: number) => {
         location.href = `/edit-space/${spaceId}`;
     };
 
+    // Visualiza espaço
     const handleViewSpace = (spaceId: number) => {
         location.href = `/space/details/${spaceId}`;
     };
 
+    // Badge de status
     const getStatusBadge = (spaceStatus: string, subscriptionStatus: boolean | null) => {
         if (!subscriptionStatus) {
             return <Badge className="bg-yellow-100 text-yellow-700 border border-yellow-400">Pagamento Pendente</Badge>;
@@ -129,7 +135,7 @@ const MySpaces = () => {
             case 'inactive':
                 return <Badge className="bg-[#ede7f6] text-[#4e2780]/70">Inativo</Badge>;
             default:
-                return <Badge className="bg-[#ede7f6] text-[#4e2780]/70">{status}</Badge>;
+                return <Badge className="bg-[#ede7f6] text-[#4e2780]/70">{spaceStatus}</Badge>;
         }
     };
 
@@ -138,25 +144,26 @@ const MySpaces = () => {
             <Header />
             <ToastContainer />
 
-            <div className="container mx-auto px-4 py-8">
-                <div className="flex justify-between items-center mb-8">
+            <div className="container mx-auto px-2 sm:px-4 py-6 sm:py-8">
+                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
                     <div>
-                        <h1 className="text-3xl font-bold text-[#4e2780] mb-2">Meus Espaços</h1>
-                        <p className="text-[#4e2780]/70">Gerencie todos os seus espaços cadastrados</p>
+                        <h1 className="text-2xl sm:text-3xl font-bold text-[#4e2780] mb-2">Meus Espaços</h1>
+                        <p className="text-[#4e2780]/70 text-base">Gerencie todos os seus espaços cadastrados</p>
                     </div>
                     <Button
                         onClick={() => location.href = '/register-space'}
-                        className="px-6 py-3 bg-[#4e2780] text-white font-semibold rounded-xl shadow-md hover:bg-[#3a1e5a] transition-all duration-300"
+                        className="px-6 py-3 bg-[#4e2780] text-white font-semibold rounded-xl shadow-md hover:bg-[#3a1e5a] transition-all duration-300 w-full sm:w-auto"
                     >
                         <Plus className="h-5 w-5 mr-2" />
                         Cadastrar Novo Espaço
                     </Button>
                 </div>
-                {/* Warning for pending subscription */}
+
+                {/* Aviso de assinatura pendente */}
                 {!subscriptionStatus?.isActive && hasSpaces && (
                     <Card className="mb-8 border-l-4 border-l-orange-500 bg-orange-50">
                         <CardContent className="p-6">
-                            <div className="flex items-center gap-4">
+                            <div className="flex flex-col sm:flex-row items-center gap-4">
                                 <div className="p-2 bg-orange-100 rounded-full">
                                     <AlertTriangle className="h-6 w-6 text-orange-600" />
                                 </div>
@@ -182,7 +189,7 @@ const MySpaces = () => {
                 )}
 
                 {/* Estatísticas rápidas */}
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 mb-8">
                     <Card className="bg-white border-0 rounded-2xl shadow-md">
                         <CardContent className="p-6">
                             <div className="flex items-center">
@@ -196,7 +203,6 @@ const MySpaces = () => {
                             </div>
                         </CardContent>
                     </Card>
-
                     <Card className="bg-white border-0 rounded-2xl shadow-md">
                         <CardContent className="p-6">
                             <div className="flex items-center">
@@ -217,7 +223,6 @@ const MySpaces = () => {
                             </div>
                         </CardContent>
                     </Card>
-
                     <Card className="bg-white border-0 rounded-2xl shadow-md">
                         <CardContent className="p-6">
                             <div className="flex items-center">
@@ -236,124 +241,144 @@ const MySpaces = () => {
                 </div>
 
                 {/* Lista de espaços */}
-                <Card className="bg-white border-0 rounded-2xl shadow-md">
+                <Card className="bg-white border-0 rounded-2xl shadow-md overflow-x-auto">
                     <CardHeader>
                         <CardTitle className="text-[#4e2780]">Lista de Espaços</CardTitle>
                     </CardHeader>
                     <CardContent>
-                        <Table>
-                            <TableHeader>
-                                <TableRow>
-                                    <TableHead>Espaço</TableHead>
-                                    <TableHead>Tipo</TableHead>
-                                    <TableHead>Localização</TableHead>
-                                    <TableHead>Capacidade</TableHead>
-                                    <TableHead>Avaliação</TableHead>
-                                    <TableHead>Status</TableHead>
-                                    <TableHead className="text-right">Ações</TableHead>
-                                </TableRow>
-                            </TableHeader>
-                            <TableBody>
-                                {spaces.map((space) => (
-                                    <TableRow key={space.id}>
-                                        <TableCell className="font-medium">
-                                            <div className="flex items-center space-x-3">
-                                                <img
-                                                    src={`storage/${space.images[0].image_path}`}
-                                                    alt={space.name}
-                                                    className="w-12 h-12 rounded-lg object-cover"
-                                                />
-                                                <div>
-                                                    <p className="font-semibold text-[#4e2780]">{space.name}</p>
-                                                    <p className="text-sm text-[#4e2780]/70 max-w-xs truncate">
-                                                        {space.description}
-                                                    </p>
-                                                </div>
-                                            </div>
-                                        </TableCell>
-                                        <TableCell className="text-[#4e2780]/80">{space.type}</TableCell>
-                                        <TableCell className="text-[#4e2780]/80">{space.locality}</TableCell>
-                                        <TableCell>
-                                            <div className="flex items-center text-[#4e2780]/80">
-                                                <Users className="h-4 w-4 mr-1" />
-                                                {space.people_capacity}
-                                            </div>
-                                        </TableCell>
-                                        <TableCell>
-                                            <div className="flex items-center">
-                                                <Star className="h-4 w-4 mr-1 text-yellow-400 fill-current" />
-                                                {(space.ratings.reduce((acc, r) => acc + r.rating, 0) / (space.ratings.length || 1)).toFixed(1)} ({space.ratings.length})
-                                            </div>
-                                        </TableCell>
-                                        <TableCell>
-                                            <div className="flex items-center gap-3">
-                                                {getStatusBadge(space.status, subscriptionStatus?.isActive ?? null)}
-                                                <div className="flex items-center gap-2">
-                                                    <Switch
-                                                        checked={space.status === 'active'}
-                                                        onCheckedChange={() => handleToggleSpace(space.id, space.status)}
-                                                        disabled={!subscriptionStatus?.isActive}
-                                                    />
-
-                                                </div>
-                                            </div>
-                                        </TableCell>
-                                        <TableCell className="text-right">
-                                            <div className="flex justify-end space-x-2">
-                                                <Button
-                                                    variant="ghost"
-                                                    size="sm"
-                                                    onClick={() => handleViewSpace(space.id)}
-                                                    className="text-[#4e2780] hover:text-white hover:bg-[#4e2780]/80"
-                                                >
-                                                    <Eye className="h-4 w-4" />
-                                                </Button>
-                                                <Button
-                                                    variant="ghost"
-                                                    size="sm"
-                                                    onClick={() => handleEditSpace(space.id)}
-                                                    className="text-green-700 hover:text-white hover:bg-green-600"
-                                                >
-                                                    <Edit className="h-4 w-4" />
-                                                </Button>
-                                                <AlertDialog>
-                                                    <AlertDialogTrigger asChild>
-                                                        <Button
-                                                            variant="ghost"
-                                                            size="sm"
-                                                            className="text-red-600 hover:text-white hover:bg-red-600"
-                                                        >
-                                                            <Trash2 className="h-4 w-4" />
-                                                        </Button>
-                                                    </AlertDialogTrigger>
-                                                    <AlertDialogContent>
-                                                        <AlertDialogHeader>
-                                                            <AlertDialogTitle>Confirmar exclusão</AlertDialogTitle>
-                                                            <AlertDialogDescription>
-                                                                Tem certeza que deseja excluir o espaço "{space.name}"?
-                                                                Esta ação não pode ser desfeita.
-                                                            </AlertDialogDescription>
-                                                        </AlertDialogHeader>
-                                                        <AlertDialogFooter>
-                                                            <AlertDialogCancel>Cancelar</AlertDialogCancel>
-                                                            <AlertDialogAction
-                                                                onClick={() => handleDeleteSpace(space.id)}
-                                                                className="bg-red-600 hover:bg-red-700"
-                                                            >
-                                                                Excluir
-                                                            </AlertDialogAction>
-                                                        </AlertDialogFooter>
-                                                    </AlertDialogContent>
-                                                </AlertDialog>
-                                            </div>
-                                        </TableCell>
+                        <div className="w-full overflow-x-auto">
+                            <Table>
+                                <TableHeader>
+                                    <TableRow>
+                                        <TableHead>Espaço</TableHead>
+                                        <TableHead>Tipo</TableHead>
+                                        <TableHead>Localização</TableHead>
+                                        <TableHead>Capacidade</TableHead>
+                                        <TableHead>Avaliação</TableHead>
+                                        <TableHead>Status</TableHead>
+                                        <TableHead className="text-right">Ações</TableHead>
                                     </TableRow>
-                                ))}
-                            </TableBody>
-                        </Table>
+                                </TableHeader>
+                                <TableBody>
+                                    {spaces.map((space) => (
+                                        <TableRow key={space.id}>
+                                            <TableCell className="font-medium max-w-[160px] sm:max-w-[220px] whitespace-normal break-words align-top">
+                                                <div className="flex items-center space-x-3">
+                                                    <img
+                                                        src={`storage/${space.images[0].image_path}`}
+                                                        alt={space.name}
+                                                        className="w-12 h-12 rounded-lg object-cover flex-shrink-0"
+                                                    />
+                                                    <div className="min-w-0">
+                                                        <p
+                                                            className="font-semibold text-[#4e2780] text-sm sm:text-base whitespace-normal break-words leading-tight"
+                                                            style={{
+                                                                display: '-webkit-box',
+                                                                WebkitLineClamp: 2,
+                                                                WebkitBoxOrient: 'vertical',
+                                                                overflow: 'hidden',
+                                                            }}
+                                                            title={space.name}
+                                                        >
+                                                            {space.name}
+                                                        </p>
+                                                        <p className="text-xs text-[#4e2780]/70 max-w-[120px] sm:max-w-[180px] truncate" title={space.description}>
+                                                            {space.description}
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </TableCell>
+                                            <TableCell className="text-[#4e2780]/80 text-xs sm:text-sm whitespace-normal break-words max-w-[80px] sm:max-w-[120px]" title={space.type}>
+                                                {space.type}
+                                            </TableCell>
+                                            <TableCell className="text-[#4e2780]/80 text-xs sm:text-sm whitespace-normal break-words max-w-[80px] sm:max-w-[120px]" title={space.locality}>
+                                                {space.locality}
+                                            </TableCell>
+                                            <TableCell>
+                                                <div className="flex items-center text-[#4e2780]/80">
+                                                    <Users className="h-4 w-4 mr-1" />
+                                                    {space.people_capacity}
+                                                </div>
+                                            </TableCell>
+                                            <TableCell>
+                                                <div className="flex items-center">
+                                                    <Star className="h-4 w-4 mr-1 text-yellow-400 fill-current" />
+                                                    {(space.ratings.reduce((acc, r) => acc + r.rating, 0) / (space.ratings.length || 1)).toFixed(1)} ({space.ratings.length})
+                                                </div>
+                                            </TableCell>
+                                            <TableCell>
+                                                <div className="flex items-center gap-3">
+                                                    {getStatusBadge(space.status, subscriptionStatus?.isActive ?? null)}
+                                                    <div className="flex items-center gap-2">
+                                                        <Switch
+                                                            checked={space.status === 'active'}
+                                                            onCheckedChange={() => handleToggleSpace(space.id, space.status)}
+                                                            disabled={!subscriptionStatus?.isActive}
+                                                        />
+                                                    </div>
+                                                </div>
+                                            </TableCell>
+                                            <TableCell className="text-right">
+                                                <div className="flex justify-end space-x-2">
+                                                    <Button
+                                                        variant="ghost"
+                                                        size="sm"
+                                                        onClick={() => handleViewSpace(space.id)}
+                                                        className="text-[#4e2780] hover:text-white hover:bg-[#4e2780]/80"
+                                                        aria-label="Visualizar espaço"
+                                                    >
+                                                        <Eye className="h-4 w-4" />
+                                                    </Button>
+                                                    <Button
+                                                        variant="ghost"
+                                                        size="sm"
+                                                        onClick={() => handleEditSpace(space.id)}
+                                                        className="text-green-700 hover:text-white hover:bg-green-600"
+                                                        aria-label="Editar espaço"
+                                                    >
+                                                        <Edit className="h-4 w-4" />
+                                                    </Button>
+                                                    <AlertDialog>
+                                                        <AlertDialogTrigger asChild>
+                                                            <Button
+                                                                variant="ghost"
+                                                                size="sm"
+                                                                className="text-red-600 hover:text-white hover:bg-red-600"
+                                                                aria-label="Excluir espaço"
+                                                            >
+                                                                <Trash2 className="h-4 w-4" />
+                                                            </Button>
+                                                        </AlertDialogTrigger>
+                                                        <AlertDialogContent>
+                                                            <AlertDialogHeader>
+                                                                <AlertDialogTitle>Confirmar exclusão</AlertDialogTitle>
+                                                                <AlertDialogDescription>
+                                                                    Tem certeza que deseja excluir o espaço "{space.name}"?
+                                                                    Esta ação não pode ser desfeita.
+                                                                </AlertDialogDescription>
+                                                            </AlertDialogHeader>
+                                                            <AlertDialogFooter>
+                                                                <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                                                                <AlertDialogAction
+                                                                    onClick={() => handleDeleteSpace(space.id)}
+                                                                    className="bg-red-600 hover:bg-red-700"
+                                                                >
+                                                                    Excluir
+                                                                </AlertDialogAction>
+                                                            </AlertDialogFooter>
+                                                        </AlertDialogContent>
+                                                    </AlertDialog>
+                                                </div>
+                                            </TableCell>
+                                        </TableRow>
+                                    ))}
+                                </TableBody>
+                            </Table>
+                        </div>
                     </CardContent>
                 </Card>
 
+                {/* Nenhum espaço cadastrado */}
                 {spaces.length === 0 && (
                     <Card className="bg-white border-0 rounded-2xl shadow-md text-center py-12">
                         <CardContent>

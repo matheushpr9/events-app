@@ -125,7 +125,7 @@ const Profile = () => {
                                             value={userInfo?.user?.name || ''}
                                             onChange={(e) => setUser(userInfo ? { ...userInfo, user: { ...userInfo.user, name: e.target.value } } : userInfo)}
                                             required
-                                            className="bg-white text-[#4e2780] border border-[#b39ddb] placeholder:text-[#7c5ca3] focus:ring-2 focus:ring-[#b39ddb]"
+                                            className="bg-white text-gray-900 border border-[#b39ddb] placeholder:text-[#7c5ca3] focus:ring-2 focus:ring-[#b39ddb]"
                                         />
                                         {errors.name && <span className="text-red-500 text-sm">{errors.name}</span>}
                                     </div>
@@ -143,7 +143,7 @@ const Profile = () => {
                                                 value={userInfo?.user?.email || ''}
                                                 onChange={(e) => setUser(userInfo ? { ...userInfo, user: { ...userInfo.user, email: e.target.value } } : userInfo)}
                                                 required
-                                                className="bg-white text-[#4e2780] border border-[#b39ddb] placeholder:text-[#7c5ca3] focus:ring-2 focus:ring-[#b39ddb]"
+                                                className="bg-white text-gray-900 border border-[#b39ddb] placeholder:text-[#7c5ca3] focus:ring-2 focus:ring-[#b39ddb]"
                                             />
                                             {errors.email && <span className="text-red-500 text-sm">{errors.email}</span>}
                                         </div>
@@ -160,7 +160,7 @@ const Profile = () => {
                                                 value={userInfo?.user?.phone_number || ''}
                                                 onChange={(e) => setUser(userInfo ? { ...userInfo, user: { ...userInfo.user, phone_number: e.target.value } } : userInfo)}
                                                 required
-                                                className="bg-white text-[#4e2780] border border-[#b39ddb] placeholder:text-[#7c5ca3] focus:ring-2 focus:ring-[#b39ddb]"
+                                                className="bg-white text-gray-900 border border-[#b39ddb] placeholder:text-[#7c5ca3] focus:ring-2 focus:ring-[#b39ddb]"
                                             />
                                             {errors.phone_number && <span className="text-red-500 text-sm">{errors.phone_number}</span>}
                                         </div>
