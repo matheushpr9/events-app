@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useForm } from '@inertiajs/react';
+import { Head, useForm } from '@inertiajs/react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -21,12 +21,16 @@ const Cadastro = () => {
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         post(route('register'), {
-            onFinish: () => post('/logout'),
+            onSuccess: () => {
+                // Redireciona para a página de logout após o registro
+                window.location.href = '/logout';
+            },
         });
     };
 
     return (
         <div>
+            <Head title="Criar conta" />
             <Header />
             <div className="min-h-screen bg-[#fff6f1] py-10 px-4">
                 <div className="container mx-auto max-w-2xl">

@@ -5,7 +5,7 @@ import { Badge } from '@/components/ui/badge';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../components/ui/table';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '../components/ui/alert-dialog';
 import { toast, ToastContainer } from 'react-toastify';
-import { Edit, Trash2, Eye, Plus, MapPin, Users, Star, AlertTriangle, CreditCard } from 'lucide-react';
+import { Edit, Trash2, Eye, Plus, MapPin, Users, Star, AlertTriangle, CreditCard, MailCheck, Mail } from 'lucide-react';
 import Header from '../components/Header';
 import getUserInfo from '../helpers/get-user-info';
 import { AuthenticatedUser, SubscriptionStatus } from '@/interfaces/user';
@@ -17,10 +17,12 @@ import { Switch } from '../components/ui/switch';
 import userHasSpaces from '../helpers/user-has-spaces';
 import activateSpace from '../helpers/activate-space';
 import deactivateSpace from '../helpers/deactivate-space';
+import { Head } from '@inertiajs/react';
 
 const MySpaces = () => {
     const [subscriptionStatus, setSubscriptionStatus] = useState<SubscriptionStatus | null>(null);
     const [hasSpaces, setHasSpaces] = useState<boolean | null>(null);
+    const [emailIsVerified, setEmailIsVerified] = useState<boolean | null>(null);
     const [spaces, setSpaces] = useState<Space[]>([]);
 
     // Busca status da assinatura
@@ -58,6 +60,11 @@ const MySpaces = () => {
     useEffect(() => {
         if (subscriptionStatus === null) return;
         getUserInfo().then((authenticatedUser: AuthenticatedUser) => {
+            if (authenticatedUser.user.email_verified_at) {
+                setEmailIsVerified(true);
+            } else {
+                setEmailIsVerified(false);
+            }
             userHasSpaces(authenticatedUser.user.id).then((hasSpaces) => {
                 if (!subscriptionStatus.isActive && hasSpaces) {
                     setHasSpaces(true);
@@ -141,6 +148,7 @@ const MySpaces = () => {
 
     return (
         <div className="min-h-screen bg-[#fff6f1]">
+            <Head title="Meus Espaços" />
             <Header />
             <ToastContainer />
 
@@ -158,6 +166,36 @@ const MySpaces = () => {
                         Cadastrar Novo Espaço
                     </Button>
                 </div>
+
+                {/* Aviso de confirmação de e-mail pendente */}
+                {!emailIsVerified && (
+                    <Card className="mb-8 border-l-4 border-l-blue-500 bg-blue-50">
+                        <CardContent className="p-6">
+                            <div className="flex flex-col sm:flex-row items-center gap-4">
+                                <div className="p-2 bg-blue-100 rounded-full">
+                                    <Mail className="h-6 w-6 text-blue-600" />
+                                </div>
+                                <div className="flex-1">
+                                    <h3 className="text-lg font-semibold text-blue-800 mb-2">
+                                        Confirmação de E-mail Pendente
+                                    </h3>
+                                    <p className="text-blue-700 mb-4">
+                                        Você precisa confirmar seu endereço de e-mail para ativar sua conta e exibir seus espaços.
+                                        Verifique sua caixa de entrada (ou a pasta de spam) e siga as instruções no e-mail que enviamos.
+                                    </p>
+                                    <Button
+                                        onClick={() => window.location.href = '/verify-email'}
+                                        className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-2 rounded-lg"
+                                    >
+                                        <MailCheck className="h-4 w-4 mr-2" />
+                                        Reenviar E-mail de Confirmação
+                                    </Button>
+                                </div>
+                            </div>
+                        </CardContent>
+                    </Card>
+                )}
+
 
                 {/* Aviso de assinatura pendente */}
                 {!subscriptionStatus?.isActive && hasSpaces && (

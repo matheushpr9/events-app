@@ -9,6 +9,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import { AuthenticatedUser } from '@/interfaces/user';
 import getUserInfo from '../helpers/get-user-info';
 import { api, initSanctum } from '@/api/api';
+import { Head } from '@inertiajs/react';
 
 
 const Profile = () => {
@@ -89,6 +90,7 @@ const Profile = () => {
 
     return (
         <div>
+            <Head title="Meu Perfil" />
             <Header />
             <ToastContainer />
             <div className="min-h-screen bg-[#fff6f1] py-10 px-4">

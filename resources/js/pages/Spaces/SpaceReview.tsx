@@ -6,7 +6,7 @@ import { useEffect, useState } from 'react';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Header from '../components/Header';
-import { usePage } from '@inertiajs/react';
+import { Head, usePage } from '@inertiajs/react';
 import { Input } from '@/components/ui/input';
 import { Space } from '@/interfaces/space';
 import getSpace from '../helpers/get-space';
@@ -104,6 +104,7 @@ const SpaceReview = () => {
 
     return (
         <div className="min-h-screen bg-[#fff6f1]">
+            <Head title={`Avaliar Espaço - ${space?.name || 'Carregando...'}`} />
             <Header />
             <ToastContainer />
             {/* Navigation */}

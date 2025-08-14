@@ -1,5 +1,5 @@
 import { useState, useEffect, ChangeEvent, FormEventHandler } from 'react';
-import { usePage } from '@inertiajs/react';
+import { Head, usePage } from '@inertiajs/react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -279,6 +279,7 @@ export default function EditSpace() {
 
     return (
         <div>
+            <Head title="Editar Espaço" />
             <Header />
             <ToastContainer />
             <div className="min-h-screen bg-[#fff6f1] py-6 px-2 sm:px-4">

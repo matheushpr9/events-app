@@ -37,6 +37,10 @@ class RegisteredUserController extends Controller
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
 
+        if ($request->email !== strtolower($request->email)) {
+            return redirect()->back()->withErrors(['email' => 'O email deve estar em letras minúsculas.']);
+        }
+
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,

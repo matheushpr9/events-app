@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
+import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { User, Mail, Phone, CreditCard, CheckCircle, XCircle, RefreshCw } from 'lucide-react';
+import { User, Mail, Phone, CreditCard, CheckCircle, XCircle, RefreshCw, Shield } from 'lucide-react';
 import Header from '../components/Header';
 import { toast, ToastContainer } from 'react-toastify';
 import getUserInfo from '../helpers/get-user-info';
@@ -8,6 +9,8 @@ import { AuthenticatedUser, SubscriptionStatus } from '@/interfaces/user';
 import getSubscriptionStatus from '../helpers/get-subscription-status';
 import getSubscriptionPlan from '../helpers/get-subscription-plan';
 import getNextPaymentDate from '../helpers/get-next-payment';
+import { Badge } from '@/components/ui/badge';
+import { Head } from '@inertiajs/react';
 
 const Account = () => {
     const [subscriptionStatus, setSubscriptionStatus] = useState<SubscriptionStatus | null>(null);
@@ -77,9 +80,23 @@ const Account = () => {
             });
         }
     };
+    const refreshEmailVerification = async () => {
+        toast.info("Atualizando status de verificação de email...");
+        const updatedUser = await getUserInfo();
+        setUser(updatedUser);
+        toast.success("Status de verificação de email atualizado!");
+    };
+
+    const handleVerifyEmail = () => {
+        toast.info("Redirecionando para a verificação de email...");
+        setTimeout(() => {
+            window.location.href = '/verify-email';
+        }, 1000);
+    };
 
     return (
         <div>
+            <Head title="Minha Conta" />
             <Header />
             <ToastContainer />
 
@@ -126,6 +143,49 @@ const Account = () => {
                                             <div>
                                                 <p className="text-xs sm:text-sm font-medium text-[#4e2780]/70">Email</p>
                                                 <p className="text-base font-semibold text-[#4e2780]">{userInfo?.user?.email || '--'}</p>
+                                            </div>
+                                        </div>
+                                        <div className="flex items-center gap-3 p-3 sm:p-4 bg-gradient-to-br from-[#ede7f6] to-[#f4e6f3] rounded-lg">
+                                            <Shield className="w-5 h-5 text-[#4e2780]" />
+                                            <div className="flex-1">
+                                                <p className="text-xs sm:text-sm font-medium text-[#4e2780]/70">Status do Email</p>
+                                                <div className="flex items-center gap-2">
+                                                    <Badge
+                                                        variant={userInfo?.user.email_verified_at ? "default" : "destructive"}
+                                                        className="flex items-center gap-1"
+                                                    >
+                                                        {userInfo?.user.email_verified_at ? (
+                                                            <>
+                                                                <CheckCircle className="w-3 h-3" />
+                                                                Verificado
+                                                            </>
+                                                        ) : (
+                                                            <>
+                                                                <XCircle className="w-3 h-3" />
+                                                                Não Verificado
+                                                            </>
+                                                        )}
+                                                    </Badge>
+                                                </div>
+                                            </div>
+                                            <div className="flex gap-2">
+                                                <Button
+                                                    onClick={refreshEmailVerification}
+                                                    variant="ghost"
+                                                    size="sm"
+                                                    className="p-2 text-[#4e2780] cursor-pointer"
+                                                >
+                                                    <RefreshCw className="w-4 h-4" />
+                                                </Button>
+                                                {!userInfo?.user.email_verified_at && (
+                                                    <Button
+                                                        onClick={handleVerifyEmail}
+                                                        size="sm"
+                                                        className="text-[#4e2780] cursor-pointer hover:bg-[#fff] transition-colors duration-200"
+                                                    >
+                                                        Verificar
+                                                    </Button>
+                                                )}
                                             </div>
                                         </div>
                                         <div className="flex items-center gap-3 p-3 sm:p-4 bg-gradient-to-br from-[#ede7f6] to-[#f4e6f3] rounded-lg">

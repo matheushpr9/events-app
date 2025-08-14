@@ -16,6 +16,7 @@ import getLocalities from '../helpers/get-localities';
 import getAmenities from '../helpers/get-amenties';
 import getServices from '../helpers/get-services';
 import getCapacities from '../helpers/get-capacities';
+import { Head } from '@inertiajs/react';
 
 type SpaceFormType = {
     name: string;
@@ -311,6 +312,7 @@ export default function Index() {
 
     return (
         <div>
+            <Head title="Cadastrar Espaço" />
             <Header />
             <ToastContainer />
 

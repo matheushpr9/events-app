@@ -1,4 +1,4 @@
-import { usePage } from '@inertiajs/react';
+import { Head, usePage } from '@inertiajs/react';
 import { useState, useEffect } from 'react';
 import { SpaceImageGallery } from '../../components/image/SpaceImageGallery';
 import { SpaceInfoCard } from '../../components/SpaceInfoCard';
@@ -69,6 +69,7 @@ const Index = () => {
 
     return (
         <div className="min-h-screen bg-[#fff6f1] flex flex-col">
+            <Head title={space.name} />
             <Header />
 
             {/* Hero Section */}
