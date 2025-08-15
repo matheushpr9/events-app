@@ -128,6 +128,8 @@ export default function Checkout() {
             }
         } catch (error) {
             toast.error('Erro ao iniciar o checkout. Tente novamente.', { position: 'bottom-center' });
+            console.error('Checkout error:', error);
+        } finally {
             setIsProcessing(false);
         }
     };
@@ -148,8 +150,10 @@ export default function Checkout() {
             setShowPlanChange(false);
         } catch (error) {
             toast.error('Erro ao cancelar assinatura.', { position: 'bottom-center' });
+            console.error('Cancel subscription error:', error);
+        } finally {
+            setIsProcessing(false);
         }
-        setIsProcessing(false);
     };
 
     const onPlanKeyDown = (e: React.KeyboardEvent<HTMLDivElement>, planId: string, disabled?: boolean) => {

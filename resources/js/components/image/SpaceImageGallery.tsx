@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect, KeyboardEvent } from "react";
+import { useState, useRef, useEffect } from "react";
 import { ChevronLeft, ChevronRight, ZoomIn, X as CloseIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Image } from "@/interfaces/space";
@@ -17,13 +17,13 @@ export const SpaceImageGallery = ({ images }: { images: Image[] }) => {
 
     useEffect(() => {
         if (!isZoomed) return;
-        const handleKey = (e: KeyboardEvent | KeyboardEventInit) => {
+        const handleKey = (e: KeyboardEvent) => {
             if (e.key === "Escape") setIsZoomed(false);
             if (e.key === "ArrowLeft") prevImage();
             if (e.key === "ArrowRight") nextImage();
         };
-        window.addEventListener("keydown", handleKey as any);
-        return () => window.removeEventListener("keydown", handleKey as any);
+        window.addEventListener("keydown", handleKey);
+        return () => window.removeEventListener("keydown", handleKey);
         // eslint-disable-next-line
     }, [isZoomed, activeIndex]);
 

@@ -41,6 +41,7 @@ const Account = () => {
                     createdAt: null,
                     isLoading: false
                 });
+                console.error("Erro ao buscar informações:", error);
             } finally {
                 setLoading(false);
             }
