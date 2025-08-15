@@ -51,7 +51,7 @@ const Profile = () => {
             console.log("Informações do usuário atualizadas:", response.data);
             setUser(AuthenticatedUser => AuthenticatedUser ? { ...AuthenticatedUser, user: response.data } : AuthenticatedUser);
             toast.info("Informações atualizadas com sucesso!");
-        } catch (error) {
+        } catch {
             toast.error("Ocorreu um erro ao atualizar suas informações.");
         } finally {
             setProcessing(false);
@@ -81,7 +81,7 @@ const Profile = () => {
                 password_confirmation: ''
             });
             setShowPasswordSection(false);
-        } catch (error) {
+        } catch {
             toast.error("Ocorreu um erro ao alterar sua senha.");
         } finally {
             setChangingPassword(false);

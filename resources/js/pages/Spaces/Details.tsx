@@ -10,11 +10,7 @@ import Header from '../components/Header';
 import { Star } from "lucide-react";
 import { ReviewCarousel } from '../components/ReviewCarousel';
 import { SpaceServices } from '@/components/SpaceServicesList';
-
-interface PageProps {
-  id: string;
-  [key: string]: unknown;
-}
+import PageProps from '@/interfaces/page-props';
 
 const Index = () => {
     const { id } = usePage<PageProps>().props;

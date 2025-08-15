@@ -10,6 +10,7 @@ import {
 import { getRating } from '../helpers/get-ratings';
 import { useEffect, useRef, useState } from 'react';
 import { Review, ReviewCarouselProps } from '@/interfaces/review';
+import type { EmblaCarouselType } from 'embla-carousel';
 
 const ReviewCard = ({ review }: { review: Review }) => {
     const renderStars = (rating: number) => {
@@ -52,7 +53,7 @@ const ReviewCard = ({ review }: { review: Review }) => {
 export const ReviewCarousel = ({ spaceId }: ReviewCarouselProps) => {
     const [reviews, setReviews] = useState<Review[] | null>(null);
     const [loading, setLoading] = useState(true);
-    const [embla, setEmbla] = useState<any>(null);
+    const [embla, setEmbla] = useState<EmblaCarouselType | null>(null);
     const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
     const startAutoplay = () => {
@@ -135,7 +136,7 @@ export const ReviewCarousel = ({ spaceId }: ReviewCarouselProps) => {
                     align: "start",
                     loop: true,
                 }}
-                setApi={setEmbla}
+                setApi={(api) => setEmbla(api ?? null)}
                 className="w-full"
             >
                 <CarouselContent className="-ml-2 md:-ml-4">

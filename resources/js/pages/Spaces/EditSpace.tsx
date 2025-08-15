@@ -17,6 +17,7 @@ import getServices from '../helpers/get-services';
 import getCapacities from '../helpers/get-capacities';
 import { api, initSanctum } from '@/api/api';
 import getSpace from '../helpers/get-space';
+import PageProps from '@/interfaces/page-props';
 
 function getSelectedPeopleCapacity(capacity: number): string {
     if (capacity > 450)
@@ -46,7 +47,7 @@ type SpaceFormType = {
 };
 
 export default function EditSpace() {
-    const { id } = usePage().props as { [key: string]: any };
+    const { id } = usePage<PageProps>().props;
 
     // Opções dinâmicas
     const [amenitiesOptions, setAmenitiesOptions] = useState<string[]>([]);
@@ -131,7 +132,7 @@ export default function EditSpace() {
                     country: 'Brasil',
                 }));
             }
-        } catch (err) {
+        } catch {
             toast.error('Erro ao buscar endereço. Verifique o CEP informado.');
         }
     };
