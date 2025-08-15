@@ -12,9 +12,10 @@ import { Space } from '@/interfaces/space';
 import getSpace from '../helpers/get-space';
 import { SpaceImageGallery } from '@/components/image/SpaceImageGallery';
 import { api, initSanctum } from '@/api/api';
+import PageProps from '@/interfaces/page-props';
 
 const SpaceReview = () => {
-    const { id } = usePage().props as { [key: string]: any };
+    const { id } = usePage<PageProps>().props;
 
     const [space, setSpace] = useState<Space | null>(null);
 
@@ -84,7 +85,7 @@ const SpaceReview = () => {
 
             toast.success("Sua avaliação foi enviada com sucesso!");
             window.location.href = `/space/details/${id}`;
-        } catch (error) {
+        } catch {
             toast.error("Ocorreu um erro ao enviar sua avaliação. Por favor, tente novamente mais tarde.");
         } finally {
             setIsSubmitting(false);
