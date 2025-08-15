@@ -3,9 +3,6 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent } from '@/components/ui/card';
 import { Search, MapPin, Filter, ChevronDown } from 'lucide-react';
-import { api, initSanctum } from '@/api/api';
-import { Space } from '../../interfaces/space'
-import { SearchFilters } from '../../interfaces/search-filters';
 import getTypes from '../helpers/get-types';
 import getLocalities from '../helpers/get-localities';
 import getAmenities from '../helpers/get-amenties';
@@ -13,15 +10,16 @@ import getServices from '../helpers/get-services';
 import Select from 'react-select';
 import makeAnimated from 'react-select/animated';
 import getCapacities from '../helpers/get-capacities';
+import { SearchFilters } from '../../interfaces/search-filters';
 
 import './search-section-mobile.css';
 
 interface SearchSectionProps {
-    onResults: (spaces: Space[]) => void;
-    Spaces?: Space[];
+    onSearch: (filters: SearchFilters) => void;
+    loading: boolean;
 }
 
-const SearchSection = ({ onResults, Spaces }: SearchSectionProps) => {
+const SearchSection = ({ onSearch, loading }: SearchSectionProps) => {
     const [filters, setFilters] = useState<SearchFilters>({
         city: '',
         state: '',
@@ -29,9 +27,9 @@ const SearchSection = ({ onResults, Spaces }: SearchSectionProps) => {
         locality: '',
         amenities: [],
         services: [],
-        capacity: ''
+        capacity: '',
+        sort_by: '',
     });
-    const [loading, setLoading] = useState(false);
     const [showAdvanced, setShowAdvanced] = useState(false);
 
     // Dados dinâmicos
@@ -61,41 +59,9 @@ const SearchSection = ({ onResults, Spaces }: SearchSectionProps) => {
     ];
 
     // Função de busca
-    const handleSearch = async () => {
-        setLoading(true);
-        try {
-            if (Spaces && Spaces.length > 0) {
-                const filtered = Spaces.filter(space => {
-                    const matchCity = !filters.city || space.address.city.toLowerCase().includes(filters.city.toLowerCase());
-                    const matchType = !filters.type || space.type.toLowerCase() === filters.type.toLowerCase();
-                    const matchAmenities = !(filters.amenities.length > 0) || space.amenities.some(amenity =>
-                        filters.amenities.includes(amenity.toLowerCase())
-                    );
-                    const matchServices = !(filters.services.length > 0) || space.services.some(service =>
-                        filters.services.includes(service.toLowerCase())
-                    );
-                    return matchCity && matchType && matchAmenities && matchServices;
-                });
-                onResults(filtered);
-            } else {
-                await initSanctum();
-                const params = new URLSearchParams();
-                if (filters.city) params.append('city', filters.city);
-                if (filters.type) params.append('type', filters.type);
-                if (filters.amenities.length > 0) params.append('amenities', filters.amenities.join(','));
-                if (filters.services.length > 0) params.append('services', filters.services.join(','));
-                if (filters.locality) params.append('locality', filters.locality);
-                if (filters.state) params.append('state', filters.state);
-                if (filters.capacity) params.append('people_capacity', filters.capacity);
-                const response = await api.get(`/api/spaces/filter?${params.toString()}`);
-                onResults(response.data);
-            }
-        } catch (error) {
-            console.error('Erro ao buscar espaços:', error);
-            onResults([]);
-        } finally {
-            setLoading(false);
-        }
+    const handleSearch = (e?: React.FormEvent) => {
+        if (e) e.preventDefault();
+        onSearch(filters);
     };
 
     return (
@@ -120,10 +86,7 @@ const SearchSection = ({ onResults, Spaces }: SearchSectionProps) => {
                         {/* Main Search */}
                         <form
                             className="flex flex-col gap-3 md:gap-6 mb-4"
-                            onSubmit={e => {
-                                e.preventDefault();
-                                handleSearch();
-                            }}
+                            onSubmit={handleSearch}
                             aria-label="Formulário de busca de espaços"
                         >
                             <div className="flex flex-col gap-3 md:flex-row md:gap-4">
@@ -142,6 +105,27 @@ const SearchSection = ({ onResults, Spaces }: SearchSectionProps) => {
                                         }}
                                         classNamePrefix="react-select"
                                         aria-label="Selecionar Estado"
+                                        styles={{
+                                            menu: (provided) => ({
+                                                ...provided,
+                                                backgroundColor: '#fff',
+                                                color: '#4e2780',
+                                            }),
+                                            option: (provided, state) => ({
+                                                ...provided,
+                                                backgroundColor: state.isFocused ? '#f4e6f3' : '#fff',
+                                                color: '#4e2780',
+                                                cursor: 'pointer',
+                                            }),
+                                            singleValue: (provided) => ({
+                                                ...provided,
+                                                color: '#4e2780',
+                                            }),
+                                            placeholder: (provided) => ({
+                                                ...provided,
+                                                color: '#4e2780aa',
+                                            }),
+                                        }}
                                     />
                                 </div>
 
@@ -217,6 +201,27 @@ const SearchSection = ({ onResults, Spaces }: SearchSectionProps) => {
                                         }}
                                         classNamePrefix="react-select"
                                         aria-label="Tipo de espaço"
+                                        styles={{
+                                            menu: (provided) => ({
+                                                ...provided,
+                                                backgroundColor: '#fff',
+                                                color: '#4e2780',
+                                            }),
+                                            option: (provided, state) => ({
+                                                ...provided,
+                                                backgroundColor: state.isFocused ? '#f4e6f3' : '#fff',
+                                                color: '#4e2780',
+                                                cursor: 'pointer',
+                                            }),
+                                            singleValue: (provided) => ({
+                                                ...provided,
+                                                color: '#4e2780',
+                                            }),
+                                            placeholder: (provided) => ({
+                                                ...provided,
+                                                color: '#4e2780aa',
+                                            }),
+                                        }}
                                     />
 
                                     <Select
@@ -232,10 +237,31 @@ const SearchSection = ({ onResults, Spaces }: SearchSectionProps) => {
                                         }}
                                         classNamePrefix="react-select"
                                         aria-label="Localização"
+                                        styles={{
+                                            menu: (provided) => ({
+                                                ...provided,
+                                                backgroundColor: '#fff',
+                                                color: '#4e2780',
+                                            }),
+                                            option: (provided, state) => ({
+                                                ...provided,
+                                                backgroundColor: state.isFocused ? '#f4e6f3' : '#fff',
+                                                color: '#4e2780',
+                                                cursor: 'pointer',
+                                            }),
+                                            singleValue: (provided) => ({
+                                                ...provided,
+                                                color: '#4e2780',
+                                            }),
+                                            placeholder: (provided) => ({
+                                                ...provided,
+                                                color: '#4e2780aa',
+                                            }),
+                                        }}
                                     />
 
                                     <Select
-                                        closeMenuOnSelect={false}
+                                        closeMenuOnSelect={true}
                                         components={makeAnimated()}
                                         placeholder="Comodidades"
                                         isMulti
@@ -249,10 +275,31 @@ const SearchSection = ({ onResults, Spaces }: SearchSectionProps) => {
                                         }}
                                         classNamePrefix="react-select"
                                         aria-label="Comodidades"
+                                        styles={{
+                                            menu: (provided) => ({
+                                                ...provided,
+                                                backgroundColor: '#fff',
+                                                color: '#4e2780',
+                                            }),
+                                            option: (provided, state) => ({
+                                                ...provided,
+                                                backgroundColor: state.isFocused ? '#f4e6f3' : '#fff',
+                                                color: '#4e2780',
+                                                cursor: 'pointer',
+                                            }),
+                                            singleValue: (provided) => ({
+                                                ...provided,
+                                                color: '#4e2780',
+                                            }),
+                                            placeholder: (provided) => ({
+                                                ...provided,
+                                                color: '#4e2780aa',
+                                            }),
+                                        }}
                                     />
 
                                     <Select
-                                        closeMenuOnSelect={false}
+                                        closeMenuOnSelect={true}
                                         components={makeAnimated()}
                                         placeholder="Serviços"
                                         isMulti
@@ -266,6 +313,27 @@ const SearchSection = ({ onResults, Spaces }: SearchSectionProps) => {
                                         }}
                                         classNamePrefix="react-select"
                                         aria-label="Serviços"
+                                        styles={{
+                                            menu: (provided) => ({
+                                                ...provided,
+                                                backgroundColor: '#fff',
+                                                color: '#4e2780',
+                                            }),
+                                            option: (provided, state) => ({
+                                                ...provided,
+                                                backgroundColor: state.isFocused ? '#f4e6f3' : '#fff',
+                                                color: '#4e2780',
+                                                cursor: 'pointer',
+                                            }),
+                                            singleValue: (provided) => ({
+                                                ...provided,
+                                                color: '#4e2780',
+                                            }),
+                                            placeholder: (provided) => ({
+                                                ...provided,
+                                                color: '#4e2780aa',
+                                            }),
+                                        }}
                                     />
 
                                     <Select
@@ -297,6 +365,76 @@ const SearchSection = ({ onResults, Spaces }: SearchSectionProps) => {
                                         }}
                                         classNamePrefix="react-select"
                                         aria-label="Capacidade"
+                                        styles={{
+                                            menu: (provided) => ({
+                                                ...provided,
+                                                backgroundColor: '#fff',
+                                                color: '#4e2780',
+                                            }),
+                                            option: (provided, state) => ({
+                                                ...provided,
+                                                backgroundColor: state.isFocused ? '#f4e6f3' : '#fff',
+                                                color: '#4e2780',
+                                                cursor: 'pointer',
+                                            }),
+                                            singleValue: (provided) => ({
+                                                ...provided,
+                                                color: '#4e2780',
+                                            }),
+                                            placeholder: (provided) => ({
+                                                ...provided,
+                                                color: '#4e2780aa',
+                                            }),
+                                        }}
+
+                                    />
+                                    {/* Sort Order */}
+                                    <Select
+                                        closeMenuOnSelect
+                                        isMulti={false}
+                                        isClearable
+                                        components={makeAnimated()}
+                                        placeholder="Ordenar por"
+                                        options={[
+                                            { value: 'most_relevant', label: 'Mais Relevantes' },
+                                            { value: 'least_relevant', label: 'Menos Relevantes' },
+                                            { value: 'newest', label: 'Cadastrados há menos tempo' },
+                                            { value: 'oldest', label: 'Cadastrados há mais tempo' }
+                                        ]}
+                                        value={
+                                            [
+                                                { value: 'most_relevant', label: 'Mais Relevantes' },
+                                                { value: 'least_relevant', label: 'Menos Relevantes' },
+                                                { value: 'newest', label: 'Cadastrados há menos tempo' },
+                                                { value: 'oldest', label: 'Cadastrados há mais tempo' }
+                                            ].find(option => option.value === filters.sort_by) || null
+                                        }
+                                        onChange={selectedOption => {
+                                            setFilters({ ...filters, sort_by: selectedOption ? selectedOption.value : '' });
+                                        }}
+                                        classNamePrefix="react-select"
+                                        aria-label="Ordenar por"
+                                        styles={{
+                                            menu: (provided) => ({
+                                                ...provided,
+                                                backgroundColor: '#fff',
+                                                color: '#4e2780',
+                                            }),
+                                            option: (provided, state) => ({
+                                                ...provided,
+                                                backgroundColor: state.isFocused ? '#f4e6f3' : '#fff',
+                                                color: '#4e2780',
+                                                cursor: 'pointer',
+                                            }),
+                                            singleValue: (provided) => ({
+                                                ...provided,
+                                                color: '#4e2780',
+                                            }),
+                                            placeholder: (provided) => ({
+                                                ...provided,
+                                                color: '#4e2780aa',
+                                            }),
+                                        }}
                                     />
                                 </div>
                             </div>

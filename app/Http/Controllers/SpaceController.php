@@ -17,11 +17,15 @@ class  SpaceController extends Controller
     public function index()
     {
         return Space::with(['address', 'images', 'user', 'ratings'])
+            ->withAvg('ratings', 'rating')
+            ->withCount('ratings') // Adicione esta linha
             ->where('status', 'active')
             ->whereHas('user.subscriptions', function ($query) {
                 $query->where('stripe_status', 'active');
             })
-            ->get();
+            ->orderBy('ratings_avg_rating', 'desc')   // 1º critério: média
+            ->orderBy('ratings_count', 'desc')        // 2º critério: quantidade
+            ->paginate(24);
     }
 
     public function store(Request $request)
@@ -143,7 +147,6 @@ class  SpaceController extends Controller
     {
         $query = Space::query();
 
-
         // Filtro: apenas espaços de usuários com assinatura ativa
         $query->whereHas('user.subscriptions', function ($q) {
             $q->where('stripe_status', 'active');
@@ -192,11 +195,42 @@ class  SpaceController extends Controller
                 $query->whereJsonContains('services', $service);
             }
         }
+        // Ordenação
+        $query->withAvg('ratings', 'rating')
+            ->withCount('ratings');
 
 
-        $spaces = $query->with(['address', 'images', 'user', 'ratings'])->get();
+        if ($request->filled('sort_by')) {
+            $sortBy = $request->sort_by;
+            switch ($sortBy) {
+                case 'most_relevant':
+                    $query->orderBy('ratings_avg_rating', 'desc')
+                        ->orderBy('ratings_count', 'desc');
+                    break;
 
-        return response()->json($spaces);
+                case 'least_relevant':
+                    $query->orderBy('ratings_avg_rating', 'asc')
+                        ->orderBy('ratings_count', 'asc');
+                    break;
+
+                case 'newest':
+                    $query->orderBy('created_at', 'desc');
+                    break;
+                case 'oldest':
+                    $query->orderBy('created_at', 'asc');
+                    break;
+                default:
+                    return response()->json(['error' => 'Invalid sort field'], 400);
+            }
+        } else {
+            $query->orderBy('ratings_avg_rating', 'desc')
+                ->orderBy('ratings_count', 'desc');
+        }
+
+
+    $spaces = $query->with(['address', 'images', 'user', 'ratings'])->paginate(24);
+
+    return response()->json($spaces);
     }
 
     public function update(Request $request, $id)
