@@ -1,6 +1,6 @@
 FROM php:8.3
 
-# system dependencies
+# Instala dependências do sistema
 RUN apt-get update && apt-get install -y \
     curl \
     git \
@@ -12,34 +12,42 @@ RUN apt-get update && apt-get install -y \
     libfreetype6-dev \
     libonig-dev \
     libxml2-dev \
-    procps
+    procps \
+    && rm -rf /var/lib/apt/lists/*
 
-# install node and npm
+# Instala Node.js 20 e npm
 RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
-    && apt-get install -y nodejs
+    && apt-get install -y nodejs \
+    && npm install -g npm@latest
 
-# update npm to the latest version
-RUN npm install -g npm@latest
+# Instala extensões PHP
+RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
+    && docker-php-ext-install gd pdo pdo_mysql zip exif bcmath opcache pcntl
 
-# Install PHP extensions
-RUN docker-php-ext-configure gd --with-freetype --with-jpeg
-RUN docker-php-ext-install gd pdo pdo_mysql zip exif bcmath opcache pcntl
-
-# Install Composer
+# Instala Composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
-# Install Laravel Installer globally
-RUN composer global require laravel/installer
-
 WORKDIR /app
+
+# Copia o código da aplicação
 COPY . .
 
-RUN npm install -g npm@latest
-RUN git config --global --add safe.directory /app
+# Instala dependências PHP (sem dev) e otimiza autoloader
+RUN composer install --no-dev --optimize-autoloader --no-interaction
 
+# Instala dependências JS e faz build de produção do frontend
+RUN npm ci && npm run build
 
+# Remove node_modules para produção (opcional, se não precisar de npm em runtime)
+RUN rm -rf node_modules
+
+# Permissões (ajuste conforme sua necessidade)
+RUN chown -R www-data:www-data /app/storage /app/bootstrap/cache
+
+# Entrypoint customizado (opcional)
 COPY .docker/entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
-
 ENTRYPOINT ["/entrypoint.sh"]
-CMD ["composer", "run", "dev"]
+
+# Comando padrão: serve Laravel (ajuste para php-fpm/nginx se preferir)
+CMD ["sh", "-lc", "php artisan migrate --force && php artisan optimize && php artisan serve --host=0.0.0.0 --port=8000"]

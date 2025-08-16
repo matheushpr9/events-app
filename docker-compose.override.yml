@@ -1,0 +1,45 @@
+
+services:
+  app:
+    ports:
+      - "8000:8000"
+    environment:
+      - APP_ENV=local
+      - APP_DEBUG=true
+      - APP_URL=http://localhost:8000
+      # Se usar Sanctum no dev:
+      - SANCTUM_STATEFUL_DOMAINS=localhost,localhost:8000,localhost:5173
+    volumes:
+      - .:/app
+      - ./.docker/uploads.ini:/usr/local/etc/php/conf.d/uploads.ini
+    # Para dev: garanta deps e suba o servidor (ajuste conforme seu projeto)
+    command: >
+      sh -lc "
+        composer install &&
+        php artisan migrate &&
+        php artisan serve --host=0.0.0.0 --port=8000
+      "
+    networks:
+      - default
+    # Remover da rede proxy no local
+    # (estamos substituindo a lista de redes para apenas 'default')
+
+  # Opcional: Vite com hot reload
+  node:
+    image: node:20
+    working_dir: /app
+    volumes:
+      - .:/app
+    ports:
+      - "5173:5173"
+    command: sh -lc "npm install && npm run dev -- --host 0.0.0.0 --port 5173"
+    depends_on:
+      - app
+    networks:
+      - default
+
+  # Não iniciar proxy/letsencrypt no local
+  nginx-proxy:
+    profiles: ["prod"]
+  letsencrypt:
+    profiles: ["prod"]

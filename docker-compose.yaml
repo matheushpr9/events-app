@@ -1,26 +1,27 @@
 services:
-  app: &base
+  app:
     build:
       context: .
       dockerfile: .docker/Dockerfile
     working_dir: /app
-    volumes:
-      - .:/app
-      - ./.docker/uploads.ini:/usr/local/etc/php/conf.d/uploads.ini
-    ports:
-      - "8000:8000"
-      - "5173:5173"
+    expose:
+      - "8000"
     environment:
-      - APP_ENV=dev
-      - APP_DEBUG=true
-      - APP_URL=http://localhost:8000
+      - APP_ENV=production
+      - APP_DEBUG=false
+      - APP_URL=https://oficialfloov.com.br
+      - VIRTUAL_HOST=oficialfloov.com.br,www.oficialfloov.com.br
+      - VIRTUAL_PORT=8000
+      - LETSENCRYPT_HOST=oficialfloov.com.br,www.oficialfloov.com.br
+      - LETSENCRYPT_EMAIL=oficialfloov@gmail.com
     depends_on:
       db:
         condition: service_healthy
-
-  migrations:
-    <<: *base
-    command: ["php", "artisan", "migrate"]
+    networks:
+      - proxy-tier
+      - default
+    restart: unless-stopped
+    # Usa ENTRYPOINT/CMD do Dockerfile (migrate --force, optimize e serve)
 
   db:
     image: mysql:8.0
@@ -29,8 +30,6 @@ services:
       MYSQL_DATABASE: floov
       MYSQL_USER: floov
       MYSQL_PASSWORD: floov
-    ports:
-      - "3306:3306"
     volumes:
       - db_data:/var/lib/mysql
     healthcheck:
@@ -38,7 +37,50 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+    networks:
+      - default
+
+  nginx-proxy:
+    image: jwilder/nginx-proxy:alpine
+    container_name: nginx-proxy
+    profiles: ["prod"]     # só inicia com --profile prod
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./vhost.d:/etc/nginx/vhost.d
+      - ./html:/usr/share/nginx/html
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+      - ./certs:/etc/nginx/certs:ro
+    networks:
+      - proxy-tier
+    restart: unless-stopped
+
+  letsencrypt:
+    image: nginxproxy/acme-companion
+    container_name: nginx-proxy-letsencrypt
+    profiles: ["prod"]     # só inicia com --profile prod
+    depends_on:
+      - nginx-proxy
+    environment:
+      - DEFAULT_EMAIL=oficialfloov@gmail.com
+      - NGINX_PROXY_CONTAINER=nginx-proxy
+      # Para testar sem rate limit, descomente a linha abaixo até validar
+      # - ACME_CA_URI=https://acme-staging-v02.api.letsencrypt.org/directory
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./certs:/etc/nginx/certs:rw
+      - ./vhost.d:/etc/nginx/vhost.d
+      - ./html:/usr/share/nginx/html
+    networks:
+      - proxy-tier
+    restart: unless-stopped
 
 volumes:
   db_data:
-    driver: local
+
+networks:
+  proxy-tier:
+    external: false
+  default:
+    driver: bridge
