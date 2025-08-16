@@ -110,6 +110,65 @@ const Index = () => {
     useEffect(() => {
         if (subscriptionStatus === null) return;
         getUserInfo().then((authenticatedUser: AuthenticatedUser) => {
+            if (!authenticatedUser.authenticated) {
+                toast(
+                    <div
+                        style={{
+                            display: 'flex',
+                            flexDirection: 'column',
+                            alignItems: 'center',
+                            gap: 12,
+                            padding: 20,
+                            borderRadius: 12,
+                            background: '#fff',
+                            boxShadow: '0 2px 12px rgba(37, 99, 235, 0.08)',
+                            maxWidth: 320,
+                            margin: '0 auto',
+                        }}
+                    >
+                        <p
+                            style={{
+                                margin: 0,
+                                textAlign: 'center',
+                                color: '#2563eb',
+                                fontWeight: 700,
+                                fontSize: 16,
+                                lineHeight: 1.4,
+                            }}
+                        >
+                            Quer cadastrar seu espaço?
+                        </p>
+                        <span
+                            style={{
+                                color: '#2563eb',
+                                fontSize: 14,
+                                textAlign: 'center',
+                            }}
+                        >
+                            Faça login ou cadastre-se para aproveitar todos os benefícios!
+                        </span>
+                        <button
+                            onClick={() => (window.location.href = '/login')}
+                            style={{
+                                width: '100%',
+                                background: '#2563eb',
+                                color: '#fff',
+                                border: 'none',
+                                borderRadius: 8,
+                                padding: '14px 0',
+                                fontSize: 16,
+                                fontWeight: 600,
+                                marginTop: 8,
+                                cursor: 'pointer',
+                                boxShadow: '0 1px 4px rgba(37, 99, 235, 0.10)',
+                                transition: 'background 0.2s',
+                            }}
+                        >
+                            Fazer login ou cadastrar-se
+                        </button>
+                    </div>
+                );
+            }
             if (authenticatedUser.user.email_verified_at === null) {
                 toast(
                     <div>
