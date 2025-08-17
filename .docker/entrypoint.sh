@@ -6,6 +6,10 @@ if [ ! -f /app/.env ]; then
   cp /app/.env.example /app/.env
 fi
 
+if [ "${APP_ENV}" = "production" ]; then
+    rm -f /app/public/hot
+fi
+
 # Se montou volume e não tem vendor, instala
 if [ ! -f /app/vendor/autoload.php ]; then
   composer install --no-interaction --prefer-dist
