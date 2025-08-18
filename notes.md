@@ -23,5 +23,5 @@ STRIPE_WEBHOOK_SECRET
 Configure DNS de oficialfloov.com.br e www.oficialfloov.com.br para o IP do seu servidor.
 Garanta APP_URL=https://oficialfloov.com.br no .env de produção.
 Suba com proxy e Let’s Encrypt:
-docker compose --profile prod up -d
+docker compose --profile prod -f docker-compose.yaml up -d
 Se estiver em fase de testes de SSL, ative ACME staging na seção do letsencrypt (para não bater rate limit), valide tudo, depois remova a variável e recrie os serviços.
