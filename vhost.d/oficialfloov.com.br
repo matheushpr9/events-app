@@ -1,4 +1,4 @@
-proxy_buffer_size          512k;
-proxy_buffers              16 512k;
-proxy_busy_buffers_size    512k;
-large_client_header_buffers 32 128k;
+proxy_buffer_size          2048k;
+proxy_buffers              32 2048k;
+proxy_busy_buffers_size    2048k;
+large_client_header_buffers 64 512k;
