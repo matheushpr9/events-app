@@ -2,56 +2,75 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Phone, Mail, MessageCircle } from "lucide-react";
 import { User } from '@/interfaces/space';
 
+function formatPhone(phone: string = "") {
+    const digits = phone.replace(/\D/g, "");
+    if (digits.length === 11) {
+        // Formato (99) 99999-9999
+        return digits.replace(/(\d{2})(\d{5})(\d{4})/, "($1) $2-$3");
+    }
+    if (digits.length === 10) {
+        // Formato (99) 9999-9999
+        return digits.replace(/(\d{2})(\d{4})(\d{4})/, "($1) $2-$3");
+    }
+    return phone;
+}
+
 export const SpaceContact = (user: User) => {
+    const whatsappNumber = user.phone_number?.replace(/\D/g, '');
+    const whatsappLink = `https://wa.me/${whatsappNumber}`;
+
     return (
         <Card className="border-0 shadow-md bg-white rounded-2xl">
-            <CardHeader className="pb-4 sm:pb-6">
-                <CardTitle className="text-xl sm:text-2xl md:text-3xl font-bold text-[#4e2780]">
-                    Informações de Contato
+            <CardHeader className="pb-3">
+                <CardTitle className="text-lg sm:text-2xl font-bold text-[#4e2780]">
+                    Contato Rápido
                 </CardTitle>
             </CardHeader>
-            <CardContent className="space-y-6">
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+            <CardContent className="space-y-4">
+                {/* Dados de contato */}
+                <div className="flex flex-col gap-3">
                     {/* Telefone */}
-                    <div className="group flex items-center gap-4 p-4 sm:p-6 bg-gradient-to-br from-[#ede7f6] to-[#f4e6f3] rounded-xl hover:shadow-md transition-all duration-300">
-                        <div className="p-3 bg-white rounded-full group-hover:bg-[#4e2780] group-hover:text-white transition-colors duration-300" aria-hidden="true">
-                            <Phone className="h-6 w-6 text-[#4e2780] group-hover:text-white transition-colors duration-300" />
-                        </div>
-                        <div>
-                            <div className="font-semibold text-[#4e2780] text-base sm:text-lg">Telefone</div>
-                            <div className="text-[#4e2780]/70 text-sm sm:text-base">{user.phone_number}</div>
-                        </div>
+                    <div className="flex items-center gap-3 p-3 bg-gradient-to-br from-[#ede7f6] to-[#f4e6f3] rounded-xl">
+                        <Phone className="h-5 w-5 text-[#4e2780]" />
+                        <span className="font-medium text-[#4e2780] text-base">{formatPhone(user.phone_number ?? undefined)}</span>
                     </div>
-
                     {/* E-mail */}
-                    <div className="group flex items-center gap-4 p-4 sm:p-6 bg-gradient-to-br from-[#ede7f6] to-[#f4e6f3] rounded-xl hover:shadow-md transition-all duration-300">
-                        <div className="p-3 bg-white rounded-full group-hover:bg-[#4e2780] group-hover:text-white transition-colors duration-300" aria-hidden="true">
-                            <Mail className="h-6 w-6 text-[#4e2780] group-hover:text-white transition-colors duration-300" />
-                        </div>
-                        <div>
-                            <div className="font-semibold text-[#4e2780] text-base sm:text-lg">E-mail</div>
-                            <div className="text-[#4e2780]/70 text-sm sm:text-base">{user.email}</div>
-                        </div>
+                    <div className="flex items-center gap-3 p-3 bg-gradient-to-br from-[#ede7f6] to-[#f4e6f3] rounded-xl">
+                        <Mail className="h-5 w-5 text-[#4e2780]" />
+                        <span className="font-medium text-[#4e2780] text-base break-all">{user.email}</span>
                     </div>
                 </div>
 
                 {/* Botões de ação */}
-                <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
+                <div className="flex flex-col gap-3 mt-2">
+                    {/* WhatsApp */}
                     <a
-                        href={`mailto:${user.email}`}
-                        className="flex-1 px-4 py-3 bg-[#4e2780] text-white font-semibold rounded-xl shadow-md hover:bg-[#3a1e5a] focus:outline-none focus:ring-2 focus:ring-[#b39ddb] focus:ring-offset-2 transition-all duration-300 flex items-center justify-center"
-                        aria-label="Enviar mensagem por e-mail"
+                        href={whatsappLink}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center justify-center gap-2 px-4 py-3 bg-[#25D366] text-white font-semibold rounded-xl shadow-md hover:bg-[#1ebe57] transition-all duration-300"
+                        aria-label="Conversar no WhatsApp"
                     >
-                        <MessageCircle className="h-5 w-5 mr-2" />
-                        Enviar Mensagem
+                        <MessageCircle className="h-5 w-5" />
+                        WhatsApp
                     </a>
+                    {/* Ligar Agora */}
                     <a
                         href={`tel:${user.phone_number}`}
-                        className="flex-1 px-4 py-3 border-2 border-[#4e2780] text-[#4e2780] font-semibold rounded-xl hover:bg-[#4e2780] hover:text-white transition-all duration-300 flex items-center justify-center"
+                        className="flex items-center justify-center gap-2 px-4 py-3 border-2 border-[#4e2780] text-[#4e2780] font-semibold rounded-xl hover:bg-[#4e2780] hover:text-white transition-all duration-300"
                         aria-label="Ligar agora"
                     >
-                        <Phone className="h-5 w-5 mr-2" />
+                        <Phone className="h-5 w-5" />
                         Ligar Agora
+                    </a>
+                    {/* E-mail */}
+                    <a
+                        href={`mailto:${user.email}`}
+                        className="flex items-center justify-center gap-2 px-4 py-3 bg-[#4e2780] text-white font-semibold rounded-xl shadow-md hover:bg-[#3a1e5a] transition-all duration-300"
+                        aria-label="Enviar e-mail"
+                    >
+                        <Mail className="h-5 w-5" />
+                        Enviar E-mail
                     </a>
                 </div>
             </CardContent>
