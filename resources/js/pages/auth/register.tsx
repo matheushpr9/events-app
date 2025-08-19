@@ -20,12 +20,7 @@ const Cadastro = () => {
 
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        post(route('register'), {
-            onSuccess: () => {
-                // Redireciona para a página de logout após o registro
-                window.location.href = '/logout';
-            },
-        });
+        post(route('register'), {});
     };
 
     return (

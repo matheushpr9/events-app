@@ -6,10 +6,10 @@ enum SpaceLocalityEnum: string
 {
     case URBANO = 'Urbano';
     case RURAL = 'Rural';
-    case PRAIA = 'Praia';
+    case PRAIA = 'Praia/Litorâneo';
     case MONTANHA = 'Montanha';
-    case LITORANEO = 'Litorâneo';
     case INTERIOR = 'Interior';
+    case LAGO = 'Beira de lago/represa';
     case OUTRO = 'Outro';
 
     public static function getValues(): array
