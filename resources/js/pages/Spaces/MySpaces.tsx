@@ -38,7 +38,7 @@
                         isLoading: false
                     });
                 })
-                .catch(error => {
+                .catch(() => {
                     setSubscriptionStatus({
                         isActive: false,
                         plan: null,
