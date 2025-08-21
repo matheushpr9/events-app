@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { AlertTriangle, MapPin } from 'lucide-react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
+import TermsConsentModal from '../components/TermsConsentModal';
 import SearchSection from '../components/SearchSection';
 import SpaceCard from '../components/SpaceCard';
 import { api, initSanctum } from '@/api/api';
@@ -277,6 +278,7 @@ const Index = () => {
         <div className="min-h-screen bg-[#fff6f1] flex flex-col">
             <Head title="Home" />
             <Header />
+            <TermsConsentModal />
             <ToastContainer />
             <main className="flex-1">
                 <SearchSection

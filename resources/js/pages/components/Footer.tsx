@@ -12,7 +12,7 @@ const Footer = () => {
           <ul className="flex flex-col md:flex-row gap-4 md:gap-8 items-start md:items-center">
             <li>
               <a
-                href="/politica-de-privacidade"
+                href="/privacy-policy"
                 className="text-[#4e2780] font-semibold hover:text-[#3a1e5a] transition-colors text-base"
               >
                 Política de Privacidade
@@ -20,7 +20,7 @@ const Footer = () => {
             </li>
             <li>
               <a
-                href="/termos-de-uso"
+                href="/terms-of-use"
                 className="text-[#4e2780] font-semibold hover:text-[#3a1e5a] transition-colors text-base"
               >
                 Termos de Uso

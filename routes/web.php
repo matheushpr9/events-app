@@ -43,5 +43,13 @@ Route::middleware(['auth', 'verified'])->group(function () {
     })->name('profile');
 });
 
+Route::get('/privacy-policy', function () {
+    return Inertia::render('auth/PrivacyPolicy');
+})->name('privacy-policy');
+
+Route::get('/terms-of-use', function () {
+    return Inertia::render('auth/TermsOfUse');
+})->name('terms-of-use');
+
 require __DIR__ . '/settings.php';
 require __DIR__ . '/auth.php';
