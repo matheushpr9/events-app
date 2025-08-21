@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { AlertTriangle, MapPin } from 'lucide-react';
 import Header from '../components/Header';
+import Footer from '../components/Footer';
 import SearchSection from '../components/SearchSection';
 import SpaceCard from '../components/SpaceCard';
 import { api, initSanctum } from '@/api/api';
@@ -360,6 +361,7 @@ const Index = () => {
                     </div>
                 </section>
             </main>
+            <Footer />
         </div>
     );
 };
