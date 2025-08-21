@@ -44,7 +44,7 @@ const plans: Plan[] = [
         period: 'mês',
         description: 'Assinatura mensal, flexibilidade total.',
         stripePriceId: 'price_1RtGLnKf1zEbOh7NrdTmChtJ',
-        features: ['Acesso completo', 'Suporte prioritário', 'Cancelamento a qualquer momento']
+        features: ['Acesso completo', 'Até 5 fotos por espaço', 'Suporte prioritário via Email', 'Cancelamento a qualquer momento']
     },
     {
         id: 'semiannual',
@@ -53,7 +53,7 @@ const plans: Plan[] = [
         period: 'mês',
         description: 'Economize assinando por 6 meses.',
         stripePriceId: 'price_1RtGNPKf1zEbOh7N0NkyjD6q',
-        features: ['Acesso completo', 'Suporte prioritário', 'Economia garantida']
+        features: ['Acesso completo','Até 15 fotos por espaço' , 'Suporte prioritário via Email ou WhatsApp', 'Economia garantida', ]
     },
     {
         id: 'annual',
@@ -64,7 +64,7 @@ const plans: Plan[] = [
         popular: true,
         description: 'O melhor custo-benefício para o ano todo.',
         stripePriceId: 'price_1RtGOGKf1zEbOh7NKf129uqk',
-        features: ['Acesso completo', 'Suporte prioritário', 'Economia máxima']
+        features: ['Acesso completo', 'Fotos ilimitadas','Suporte prioritário via Email ou WhatsApp', 'Economia máxima','Relatórios personalizados' ,'Calendário de disponibilidade (Em breve)']
     }
 ];
 
@@ -510,7 +510,7 @@ export default function Checkout() {
                                                     <ul className="space-y-3">
                                                         {plan.features.map((feature, index) => (
                                                             <li key={index} className="flex items-center gap-3">
-                                                                <CheckIcon className="w-4 h-4 text-[#4e2780] flex-shrink-0" aria-hidden />
+                                                                <CheckIcon className="w-5 h-5 text-[#4e2780] flex-shrink-0" aria-hidden />
                                                                 <span className="text-sm text-[#4e2780]">{feature}</span>
                                                             </li>
                                                         ))}
