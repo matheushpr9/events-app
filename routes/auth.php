@@ -75,5 +75,7 @@ Route::get('auth/google/callback', function () {
 
     Auth::login($user);
 
+    $user->sendEmailVerificationNotification();
+
     return redirect('/');
 });
