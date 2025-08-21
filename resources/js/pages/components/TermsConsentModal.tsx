@@ -48,7 +48,7 @@ export default function TermsConsentModal() {
             <strong>Última atualização:</strong> [preencher data]
           </p>
           <p>
-            Bem-vindo à Floov, plataforma online de intermediação de espaços para eventos. Ao acessar ou utilizar nosso site, você concorda com nossos <a href="/termos-de-uso" className="underline text-[#4e2780] hover:text-[#3a1e5a]" target="_blank" rel="noopener noreferrer">Termos de Uso</a> e <a href="/politica-de-privacidade" className="underline text-[#4e2780] hover:text-[#3a1e5a]" target="_blank" rel="noopener noreferrer">Política de Privacidade</a>.
+            Bem-vindo à Floov, plataforma online de intermediação de espaços para eventos. Ao acessar ou utilizar nosso site, você concorda com nossos <a href="/terms-of-use" className="underline text-[#4e2780] hover:text-[#3a1e5a]" target="_blank" rel="noopener noreferrer">Termos de Uso</a> e <a href="/privacy-policy" className="underline text-[#4e2780] hover:text-[#3a1e5a]" target="_blank" rel="noopener noreferrer">Política de Privacidade</a>.
           </p>
           <ul className="list-disc pl-5 space-y-1">
             <li>Você deve fornecer informações verdadeiras e manter sua conta segura.</li>
