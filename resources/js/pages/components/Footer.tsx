@@ -1,11 +1,11 @@
-import { Mail, HelpCircle, Instagram, Facebook, Phone, ArrowUp } from 'lucide-react';
+import {HelpCircle, Instagram, Facebook, Phone, ArrowUp } from 'lucide-react';
 import { useMemo } from 'react';
 
 const Footer = () => {
   const year = useMemo(() => new Date().getFullYear(), []);
 
   return (
-    <footer className="w-full bg-white border-t border-[#ede7f6] mt-12">
+    <footer className="w-full bg-white border-t">
       <div className="container mx-auto max-w-7xl px-4 py-10 flex flex-col md:flex-row md:justify-between md:items-start gap-10">
         {/* Links institucionais */}
         <nav aria-label="Links institucionais" className="w-full md:w-auto">

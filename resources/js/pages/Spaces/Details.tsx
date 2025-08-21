@@ -11,6 +11,7 @@ import { Star } from "lucide-react";
 import { ReviewCarousel } from '../components/ReviewCarousel';
 import { SpaceServices } from '@/components/SpaceServicesList';
 import PageProps from '@/interfaces/page-props';
+import Footer from '../components/Footer';
 
 const Index = () => {
     const { id } = usePage<PageProps>().props;
@@ -69,63 +70,65 @@ const Index = () => {
     }
 
     return (
-        <div className="min-h-screen bg-[#fff6f1] flex flex-col">
+        <>
             <Head title={space.name} />
             <Header />
-
-            {/* Hero Section */}
-            <section className="container mx-auto max-w-7xl px-2 sm:px-4 py-6 md:py-10">
-                <div className="grid grid-cols-1 xl:grid-cols-5 gap-6 lg:gap-12 animate-fade-in">
-                    {/* Image Gallery */}
-                    <div className="xl:col-span-3 space-y-6">
-                        <SpaceImageGallery images={space.images} />
-                    </div>
-                    {/* Space Information */}
-                    <div className="xl:col-span-2">
-                        <SpaceInfoCard {...space} />
-                    </div>
-                </div>
-            </section>
-
-            {/* Contact Section */}
-            <section className="container mx-auto max-w-7xl px-2 sm:px-4 pb-8 md:pb-12">
-                <SpaceContact {...space.user} />
-            </section>
-
-            {/* Amenities Section */}
-            <section className="container mx-auto max-w-7xl px-2 sm:px-4 pb-8 md:pb-12">
-                <SpaceAmenities amenities={space.amenities} />
-            </section>
-
-            {/* Services Section */}
-            <section className="container mx-auto max-w-7xl px-2 sm:px-4 pb-8 md:pb-12">
-                <SpaceServices services={space.services} />
-            </section>
-
-            {/* Reviews Section */}
-            <section className="container mx-auto max-w-7xl px-2 sm:px-4 pb-10 md:pb-16">
-                <ReviewCarousel spaceId={space.id} />
-            </section>
-
-            {/* Rating Card */}
-            <section className="container mx-auto max-w-7xl px-2 sm:px-4 pb-8 md:pb-12">
-                <div className="bg-white rounded-2xl shadow-md border-0">
-                    <div className="p-6 sm:p-8 text-center space-y-6">
-                        <div className="text-2xl sm:text-4xl font-bold text-[#4e2780] mb-2">
-                            Já visitou este espaço?
+            <div className="min-h-screen bg-[#fff6f1] flex flex-col">
+                {/* Hero Section */}
+                <section className="container mx-auto max-w-7xl px-2 sm:px-4 py-6 md:py-10">
+                    <div className="grid grid-cols-1 xl:grid-cols-5 gap-6 lg:gap-12 animate-fade-in">
+                        {/* Image Gallery */}
+                        <div className="xl:col-span-3 space-y-6">
+                            <SpaceImageGallery images={space.images} />
                         </div>
-                        <button
-                            className="w-full px-8 py-4 text-base sm:text-lg font-semibold rounded-xl bg-[#4e2780] text-white shadow-md hover:bg-[#3a1e5a] focus:outline-none focus:ring-2 focus:ring-[#b39ddb] focus:ring-offset-2 transition-all duration-300 flex items-center justify-center"
-                            onClick={() => window.location.href = `/space/review/${space.id}`}
-                            aria-label="Faça sua avaliação"
-                        >
-                            <Star className="h-5 w-5 mr-2" />
-                            Faça sua avaliação
-                        </button>
+                        {/* Space Information */}
+                        <div className="xl:col-span-2">
+                            <SpaceInfoCard {...space} />
+                        </div>
                     </div>
-                </div>
-            </section>
-        </div>
+                </section>
+
+                {/* Contact Section */}
+                <section className="container mx-auto max-w-7xl px-2 sm:px-4 pb-8 md:pb-12">
+                    <SpaceContact {...space.user} />
+                </section>
+
+                {/* Amenities Section */}
+                <section className="container mx-auto max-w-7xl px-2 sm:px-4 pb-8 md:pb-12">
+                    <SpaceAmenities amenities={space.amenities} />
+                </section>
+
+                {/* Services Section */}
+                <section className="container mx-auto max-w-7xl px-2 sm:px-4 pb-8 md:pb-12">
+                    <SpaceServices services={space.services} />
+                </section>
+
+                {/* Reviews Section */}
+                <section className="container mx-auto max-w-7xl px-2 sm:px-4 pb-10 md:pb-16">
+                    <ReviewCarousel spaceId={space.id} />
+                </section>
+
+                {/* Rating Card */}
+                <section className="container mx-auto max-w-7xl px-2 sm:px-4 pb-8 md:pb-12">
+                    <div className="bg-white rounded-2xl shadow-md border-0">
+                        <div className="p-6 sm:p-8 text-center space-y-6">
+                            <div className="text-2xl sm:text-4xl font-bold text-[#4e2780] mb-2">
+                                Já visitou este espaço?
+                            </div>
+                            <button
+                                className="w-full px-8 py-4 text-base sm:text-lg font-semibold rounded-xl bg-[#4e2780] text-white shadow-md hover:bg-[#3a1e5a] focus:outline-none focus:ring-2 focus:ring-[#b39ddb] focus:ring-offset-2 transition-all duration-300 flex items-center justify-center"
+                                onClick={() => window.location.href = `/space/review/${space.id}`}
+                                aria-label="Faça sua avaliação"
+                            >
+                                <Star className="h-5 w-5 mr-2" />
+                                Faça sua avaliação
+                            </button>
+                        </div>
+                    </div>
+                </section>
+            </div>
+            <Footer />
+        </>
     );
 };
 

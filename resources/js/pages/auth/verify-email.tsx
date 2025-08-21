@@ -7,6 +7,7 @@ import TextLink from '@/components/text-link';
 import { Button } from '@/components/ui/button';
 import AuthLayout from '@/layouts/auth-layout';
 import Header from '../components/Header';
+import Footer from '../components/Footer';
 
 export default function VerifyEmail({ status }: { status?: string }) {
     const { post, processing } = useForm({});
@@ -47,6 +48,7 @@ export default function VerifyEmail({ status }: { status?: string }) {
                     </TextLink>
                 </form>
             </AuthLayout>
+            <Footer />
         </>
     );
 }

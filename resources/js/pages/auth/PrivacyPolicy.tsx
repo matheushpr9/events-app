@@ -1,12 +1,13 @@
 import { Head } from '@inertiajs/react';
 import Header from '../components/Header';
+import Footer from '../components/Footer';
 
 export default function PrivacyPolicy() {
     return (
         <>
             <Header />
+            <Head title="Política de Privacidade - Floov" />
             <div className="min-h-screen bg-[#fff6f1] py-8 px-2 sm:px-4">
-                <Head title="Política de Privacidade - Floov" />
                 <div className="container mx-auto max-w-3xl bg-white rounded-2xl shadow-md p-6 sm:p-10">
                     <h1 className="text-2xl sm:text-3xl font-bold text-[#4e2780] mb-4">Política de Privacidade</h1>
                     <p className="text-[#4e2780]/70 mb-6 text-sm">Última atualização: [preencher data]</p>
@@ -65,6 +66,7 @@ export default function PrivacyPolicy() {
                     </section>
                 </div>
             </div>
+            <Footer />
         </>
     );
 }

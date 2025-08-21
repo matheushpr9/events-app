@@ -5,6 +5,7 @@ import { FormEventHandler } from 'react';
 import InputError from '@/components/input-error';
 import TextLink from '@/components/text-link';
 import Header from '../components/Header';
+import Footer from '../components/Footer';
 
 export default function ForgotPassword({ status }: { status?: string }) {
     const { data, setData, post, processing, errors } = useForm<Required<{ email: string }>>({
@@ -85,6 +86,7 @@ export default function ForgotPassword({ status }: { status?: string }) {
                     </section>
                 </main>
             </div>
+            <Footer />
         </>
     );
 }
