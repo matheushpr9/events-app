@@ -24,4 +24,5 @@ Configure DNS de oficialfloov.com.br e www.oficialfloov.com.br para o IP do seu 
 Garanta APP_URL=https://oficialfloov.com.br no .env de produção.
 Suba com proxy e Let’s Encrypt:
 docker compose --profile prod -f docker-compose.yaml up -d
+docker compose --profile prod -f docker-compose.yaml up --build -d node 
 Se estiver em fase de testes de SSL, ative ACME staging na seção do letsencrypt (para não bater rate limit), valide tudo, depois remova a variável e recrie os serviços.
