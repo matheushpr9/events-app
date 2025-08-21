@@ -52,6 +52,7 @@ const Profile = () => {
             console.log("Informações do usuário atualizadas:", response.data);
             setUser(AuthenticatedUser => AuthenticatedUser ? { ...AuthenticatedUser, user: response.data } : AuthenticatedUser);
             toast.info("Informações atualizadas com sucesso!");
+            window.location.href = '/account';
         } catch {
             toast.error("Ocorreu um erro ao atualizar suas informações.");
         } finally {

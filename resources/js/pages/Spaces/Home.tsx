@@ -171,6 +171,49 @@ const Index = () => {
                     </div>
                 );
             }
+            if (authenticatedUser.user.phone_number === "") {
+                toast(
+                    <div>
+                        <span style={{ color: '#c2410c', fontWeight: 700 }}>
+                            Atenção: seu perfil está sem número de telefone!
+                        </span>
+                        <br />
+                        <span style={{ color: '#c2410c' }}>
+                            Adicione agora para não perder contatos de clientes interessados nos seus espaços.
+                        </span>
+                        <br />
+                        <button
+                            onClick={() => (window.location.href = '/profile')}
+                            style={{
+                                marginTop: 10,
+                                background: '#ea580c',
+                                color: '#fff',
+                                border: 'none',
+                                borderRadius: 6,
+                                padding: '8px 16px',
+                                cursor: 'pointer',
+                                fontWeight: 600,
+                            }}
+                            aria-label="Ir para página de perfil para adicionar telefone"
+                            title="Adicionar número de telefone agora"
+                        >
+                            Adicionar número agora
+                        </button>
+                    </div>,
+                    {
+                        position: 'top-right',
+                        autoClose: 10000,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress: undefined,
+                        theme: 'light',
+                    }
+                );
+                return;
+
+            }
             if (authenticatedUser.user.email_verified_at === null) {
                 toast(
                     <div>
