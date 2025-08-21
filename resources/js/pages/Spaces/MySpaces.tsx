@@ -240,8 +240,6 @@ const MySpaces = () => {
             <Header />
             <div className="min-h-screen bg-[#fff6f1]">
 
-                <ToastContainer />
-
                 <div className="container mx-auto px-2 sm:px-4 py-6 sm:py-8">
                     <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
                         <div>

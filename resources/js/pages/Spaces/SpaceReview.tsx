@@ -109,8 +109,6 @@ const SpaceReview = () => {
             <Head title={`Avaliar Espaço - ${space?.name || 'Carregando...'}`} />
             <Header />
             <div className="min-h-screen bg-[#fff6f1]">
-
-                <ToastContainer />
                 {/* Navigation */}
                 <div className="bg-white/80 sticky top-0 z-40 border-b border-[#4e2780]/10">
                     <div className="container mx-auto max-w-4xl px-4 py-4">

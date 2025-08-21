@@ -323,7 +323,6 @@ const Index = () => {
             <Header />
             <div className="min-h-screen bg-[#fff6f1] flex flex-col">
                 <TermsConsentModal />
-                <ToastContainer />
                 <main className="flex-1">
                     <SearchSection
                         onSearch={handleSearch}

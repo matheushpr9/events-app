@@ -316,8 +316,6 @@ export default function Index() {
             <Head title="Cadastrar Espaço" />
             <Header />
             <div>
-                <ToastContainer />
-
                 <div className="min-h-screen bg-[#fff6f1] py-10 px-4">
                     <div className="container mx-auto max-w-3xl">
                         <div className="text-center mb-10">

@@ -18,6 +18,13 @@ const Account = () => {
     const [userInfo, setUser] = useState<AuthenticatedUser | null>(null);
     const [loading, setLoading] = useState(true);
 
+    useEffect(() => {
+        const params = new URLSearchParams(window.location.search);
+        if (params.get('verified') === '1') {
+            toast.success('Email verificado com sucesso!');
+        }
+    }, []);
+
     // Busca informações do usuário e assinatura
     useEffect(() => {
         async function fetchData() {
@@ -101,9 +108,6 @@ const Account = () => {
             <Head title="Minha Conta" />
             <Header />
             <div>
-
-                <ToastContainer />
-
                 <main className="min-h-screen bg-[#fff6f1] py-6 px-2 sm:px-4">
                     <div className="container mx-auto max-w-4xl">
                         <div className="text-center mb-8">

@@ -95,7 +95,6 @@ const Profile = () => {
             <Head title="Meu Perfil" />
             <Header />
             <div>
-                <ToastContainer />
                 <div className="min-h-screen bg-[#fff6f1] py-10 px-4">
                     <div className="container mx-auto max-w-2xl">
                         <div className="text-center mb-10">

@@ -174,8 +174,6 @@ export default function Checkout() {
             <Head title="Assinatura" />
             <Header />
             <div>
-
-                <ToastContainer />
                 <div className="min-h-screen bg-[#fff6f1] py-6 px-2 sm:px-4">
                     <div className="container mx-auto max-w-6xl">
                         {isLoadingStatus ? (

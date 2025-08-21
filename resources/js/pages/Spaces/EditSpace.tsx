@@ -284,7 +284,6 @@ export default function EditSpace() {
             <Head title="Editar Espaço" />
             <Header />
             <div>
-                <ToastContainer />
                 <div className="min-h-screen bg-[#fff6f1] py-6 px-2 sm:px-4">
                     <div className="container mx-auto max-w-3xl">
                         <div className="text-center mb-8">
