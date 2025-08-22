@@ -66,10 +66,16 @@ Route::get('auth/google/callback', function () {
     try {
         $googleUser = Socialite::driver('google')->stateless()->user();
 
+        // Verifique se o e-mail veio
+        $email = $googleUser->getEmail();
+        if (!$email) {
+            throw new \Exception('Google não retornou e-mail.');
+        }
+
         $user = User::firstOrCreate(
-            ['email' => $googleUser->getEmail()],
+            ['email' => $email],
             [
-                'name' => $googleUser->getName(),
+                'name' => $googleUser->getName() ?? 'Usuário Google',
                 'password' => bcrypt(uniqid()),
             ]
         );
@@ -85,6 +91,6 @@ Route::get('auth/google/callback', function () {
             'trace' => $e->getTraceAsString(),
             'googleUser' => isset($googleUser) ? (array)$googleUser : null,
         ]);
-        abort(500, 'Erro no login Google');
+        return redirect('/login')->with('error', 'Erro ao autenticar com o Google: ' . $e->getMessage());
     }
 });
