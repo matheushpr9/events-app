@@ -63,19 +63,28 @@ Route::get('auth/google', function () {
 })->name('google.login');
 
 Route::get('auth/google/callback', function () {
-    $googleUser = Socialite::driver('google')->stateless()->user();
+    try {
+        $googleUser = Socialite::driver('google')->stateless()->user();
 
-    $user = User::firstOrCreate(
-        ['email' => $googleUser->getEmail()],
-        [
-            'name' => $googleUser->getName(),
-            'password' => bcrypt(uniqid()),
-        ]
-    );
+        $user = User::firstOrCreate(
+            ['email' => $googleUser->getEmail()],
+            [
+                'name' => $googleUser->getName(),
+                'password' => bcrypt(uniqid()),
+            ]
+        );
 
-    Auth::login($user);
+        Auth::login($user);
 
-    $user->sendEmailVerificationNotification();
+        $user->sendEmailVerificationNotification();
 
-    return redirect('/');
+        return redirect('/');
+    } catch (\Throwable $e) {
+        \Log::error('Erro no login Google', [
+            'msg' => $e->getMessage(),
+            'trace' => $e->getTraceAsString(),
+            'googleUser' => isset($googleUser) ? (array)$googleUser : null,
+        ]);
+        abort(500, 'Erro no login Google');
+    }
 });
