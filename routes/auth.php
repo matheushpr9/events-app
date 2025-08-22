@@ -66,7 +66,6 @@ Route::get('auth/google/callback', function () {
     try {
         $googleUser = Socialite::driver('google')->stateless()->user();
 
-        // Verifique se o e-mail veio
         $email = $googleUser->getEmail();
         if (!$email) {
             throw new \Exception('Google não retornou e-mail.');

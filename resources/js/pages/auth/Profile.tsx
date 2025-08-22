@@ -1,11 +1,11 @@
-import { useState, useEffect } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Eye, EyeOff, LoaderCircle, User, Mail, Phone, Lock, Save } from 'lucide-react';
 import Header from '../components/Header';
-import { ToastContainer, toast } from 'react-toastify';
+import { toast } from 'react-toastify';
 import { AuthenticatedUser } from '@/interfaces/user';
 import getUserInfo from '../helpers/get-user-info';
 import { api, initSanctum } from '@/api/api';
@@ -15,6 +15,8 @@ import Footer from '../components/Footer';
 
 const Profile = () => {
     const [userInfo, setUser] = useState<AuthenticatedUser | null>(null);
+    const [highlightPhone, setHighlightPhone] = useState(false);
+    const phoneInputRef = useRef<HTMLInputElement>(null);
     useEffect(() => {
         getUserInfo()
             .then(setUser)
@@ -23,6 +25,15 @@ const Profile = () => {
                 setUser(null);
             });
     }, []);
+    useEffect(() => {
+        if (userInfo && (!userInfo.user.phone_number || userInfo.user.phone_number.trim() === '')) {
+            phoneInputRef.current?.focus();
+            setHighlightPhone(true);
+
+        } else {
+            setHighlightPhone(false);
+        }
+    }, [userInfo]);
     const [passwordData, setPasswordData] = useState({
         current_password: '',
         password: '',
@@ -162,11 +173,23 @@ const Profile = () => {
                                                     type="tel"
                                                     placeholder="(11) 99999-9999"
                                                     value={userInfo?.user?.phone_number || ''}
-                                                    onChange={(e) => setUser(userInfo ? { ...userInfo, user: { ...userInfo.user, phone_number: e.target.value } } : userInfo)}
+                                                    onChange={(e) => {
+                                                        setUser(userInfo ? { ...userInfo, user: { ...userInfo.user, phone_number: e.target.value } } : userInfo);
+                                                        if (e.target.value.trim() !== '') setHighlightPhone(false);
+                                                    }}
                                                     required
-                                                    className="bg-white text-gray-900 border border-[#b39ddb] placeholder:text-[#7c5ca3] focus:ring-2 focus:ring-[#b39ddb]"
+                                                    ref={phoneInputRef}
+                                                    className={`bg-white text-gray-900 border ${highlightPhone ? 'border-red-500 ring-2 ring-red-300' : 'border-[#b39ddb]'} placeholder:text-[#7c5ca3] focus:ring-2 focus:ring-[#b39ddb]`}
+                                                    aria-invalid={highlightPhone}
                                                 />
-                                                {errors.phone_number && <span className="text-red-500 text-sm">{errors.phone_number}</span>}
+                                                {highlightPhone && (
+                                                    <span className="text-red-500 text-sm flex items-center mt-1">
+                                                        <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                                        </svg>
+                                                        Preencha o número de telefone
+                                                    </span>
+                                                )}
                                             </div>
                                         </div>
                                     </div>
