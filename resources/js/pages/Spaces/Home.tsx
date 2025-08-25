@@ -9,11 +9,12 @@ import { api, initSanctum } from '@/api/api';
 import { Space } from '../../interfaces/space';
 import { AuthenticatedUser, SubscriptionStatus } from '@/interfaces/user';
 import getSubscriptionStatus from '../helpers/get-subscription-status';
-import { toast, ToastContainer } from 'react-toastify';
+import { toast } from 'react-toastify';
 import userHasSpaces from '../helpers/user-has-spaces';
 import getUserInfo from '../helpers/get-user-info';
 import { Head } from '@inertiajs/react';
 import { SearchFilters } from '../../interfaces/search-filters';
+import BannerAlert from '../components/BannerAlert';
 
 type PaginatedSpaces = {
     current_page: number;
@@ -112,147 +113,6 @@ const Index = () => {
     useEffect(() => {
         if (subscriptionStatus === null) return;
         getUserInfo().then((authenticatedUser: AuthenticatedUser) => {
-            if (!authenticatedUser.authenticated) {
-                toast(
-                    <div
-                        style={{
-                            display: 'flex',
-                            flexDirection: 'column',
-                            alignItems: 'center',
-                            gap: 12,
-                            padding: 20,
-                            borderRadius: 12,
-                            background: '#fff',
-                            boxShadow: '0 2px 12px rgba(37, 99, 235, 0.08)',
-                            maxWidth: 320,
-                            margin: '0 auto',
-                        }}
-                    >
-                        <p
-                            style={{
-                                margin: 0,
-                                textAlign: 'center',
-                                color: '#2563eb',
-                                fontWeight: 700,
-                                fontSize: 16,
-                                lineHeight: 1.4,
-                            }}
-                        >
-                            Quer cadastrar seu espaço?
-                        </p>
-                        <span
-                            style={{
-                                color: '#2563eb',
-                                fontSize: 14,
-                                textAlign: 'center',
-                            }}
-                        >
-                            Faça login ou cadastre-se para aproveitar todos os benefícios!
-                        </span>
-                        <button
-                            onClick={() => (window.location.href = '/login')}
-                            style={{
-                                width: '100%',
-                                background: '#2563eb',
-                                color: '#fff',
-                                border: 'none',
-                                borderRadius: 8,
-                                padding: '14px 0',
-                                fontSize: 16,
-                                fontWeight: 600,
-                                marginTop: 8,
-                                cursor: 'pointer',
-                                boxShadow: '0 1px 4px rgba(37, 99, 235, 0.10)',
-                                transition: 'background 0.2s',
-                            }}
-                        >
-                            Fazer login ou cadastrar-se
-                        </button>
-                    </div>
-                );
-            }
-            if (authenticatedUser.user.phone_number === "") {
-                toast(
-                    <div>
-                        <span style={{ color: '#c2410c', fontWeight: 700 }}>
-                            Atenção: seu perfil está sem número de telefone!
-                        </span>
-                        <br />
-                        <span style={{ color: '#c2410c' }}>
-                            Adicione agora para não perder contatos de clientes interessados nos seus espaços.
-                        </span>
-                        <br />
-                        <button
-                            onClick={() => (window.location.href = '/profile')}
-                            style={{
-                                marginTop: 10,
-                                background: '#ea580c',
-                                color: '#fff',
-                                border: 'none',
-                                borderRadius: 6,
-                                padding: '8px 16px',
-                                cursor: 'pointer',
-                                fontWeight: 600,
-                            }}
-                            aria-label="Ir para página de perfil para adicionar telefone"
-                            title="Adicionar número de telefone agora"
-                        >
-                            Adicionar número agora
-                        </button>
-                    </div>,
-                    {
-                        position: 'top-right',
-                        autoClose: 10000,
-                        hideProgressBar: false,
-                        closeOnClick: true,
-                        pauseOnHover: true,
-                        draggable: true,
-                        progress: undefined,
-                        theme: 'light',
-                    }
-                );
-                return;
-
-            }
-            if (authenticatedUser.user.email_verified_at === null) {
-                toast(
-                    <div>
-                        <span style={{ color: '#b91c1c', fontWeight: 600 }}>
-                            Seu e-mail ainda não foi verificado!
-                        </span>
-                        <br />
-                        <span style={{ color: '#b91c1c' }}>
-                            Por favor, verifique seu e-mail para acessar todas as funcionalidades.
-                        </span>
-                        <br />
-                        <button
-                            onClick={() => window.location.href = '/verify-email'}
-                            style={{
-                                marginTop: 10,
-                                background: '#b91c1c',
-                                color: '#fff',
-                                border: 'none',
-                                borderRadius: 6,
-                                padding: '8px 16px',
-                                cursor: 'pointer',
-                            }}
-                        >
-                            Verificar E-mail
-                        </button>
-                    </div>,
-                    {
-                        position: "top-right",
-                        autoClose: 10000,
-                        hideProgressBar: false,
-                        closeOnClick: true,
-                        pauseOnHover: true,
-                        draggable: true,
-                        progress: undefined,
-                        theme: "light",
-                    }
-                );
-                return;
-            }
             userHasSpaces(authenticatedUser.user.id).then((hasSpaces) => {
                 if (subscriptionStatus && !subscriptionStatus.isActive && hasSpaces) {
                     toast.warn(
@@ -316,6 +176,21 @@ const Index = () => {
         setCurrentPage(1);
         setFilters(null);
     };
+    const [showLoginBanner, setShowLoginBanner] = useState(false);
+    const [showPhoneBanner, setShowPhoneBanner] = useState(false);
+    const [showEmailBanner, setShowEmailBanner] = useState(false);
+
+    useEffect(() => {
+        getUserInfo().then((authenticatedUser: AuthenticatedUser) => {
+            if (!authenticatedUser.authenticated) {
+                setShowLoginBanner(true);
+            } else {
+                setShowLoginBanner(false);
+                setShowPhoneBanner(authenticatedUser.user.phone_number === "");
+                setShowEmailBanner(authenticatedUser.user.email_verified_at === null);
+            }
+        });
+    }, [subscriptionStatus]);
 
     return (
         <>
@@ -323,6 +198,34 @@ const Index = () => {
             <Header />
             <div className="min-h-screen bg-[#fff6f1] flex flex-col">
                 <TermsConsentModal />
+                {/* Banners de alerta */}
+                {showLoginBanner && (
+                    <BannerAlert
+                        type="info"
+                        message="Quer cadastrar seu espaço?"
+                        description="Faça login ou cadastre-se para aproveitar todos os benefícios."
+                        actionLabel="Entrar ou Cadastrar"
+                        onAction={() => window.location.href = '/login'}
+                    />
+                )}
+                {showPhoneBanner && (
+                    <BannerAlert
+                        type="warning"
+                        message="Seu perfil está sem número de telefone."
+                        description="Adicione agora para não perder contatos de clientes interessados nos seus espaços."
+                        actionLabel="Adicionar número"
+                        onAction={() => window.location.href = '/profile'}
+                    />
+                )}
+                {showEmailBanner && (
+                    <BannerAlert
+                        type="error"
+                        message="Seu e-mail ainda não foi verificado!"
+                        description="Por favor, verifique seu e-mail para acessar todas as funcionalidades."
+                        actionLabel="Verificar e-mail"
+                        onAction={() => window.location.href = '/verify-email'}
+                    />
+                )}
                 <main className="flex-1">
                     <SearchSection
                         onSearch={handleSearch}
