@@ -32,7 +32,7 @@ const Header = () => {
     // Botões para usuários não autenticados
     const AuthButtons = () => (
         <div className="flex flex-col md:flex-row md:items-center gap-2 md:gap-4 w-full">
-            <span className="text-[#4e2780] font-medium opacity-85 text-base md:text-lg">Quer cadastrar seu espaço?</span>
+            <span className="text-[#4e2780] font-medium opacity-85 text-base md:text-lg">Cadastre seu espaço!</span>
             <a href="/login" className={navLinkClass} aria-label="Entrar">Entrar</a>
             <a href="/register" className={navLinkClass} aria-label="Cadastrar">Cadastrar</a>
         </div>

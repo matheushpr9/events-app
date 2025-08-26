@@ -202,7 +202,7 @@ const Index = () => {
                 {showLoginBanner && (
                     <BannerAlert
                         type="info"
-                        message="Quer cadastrar seu espaço?"
+                        message="Cadastre seu espaço!"
                         description="Faça login ou cadastre-se para aproveitar todos os benefícios."
                         actionLabel="Entrar ou Cadastrar"
                         onAction={() => window.location.href = '/login'}
@@ -221,7 +221,7 @@ const Index = () => {
                     <BannerAlert
                         type="error"
                         message="Seu e-mail ainda não foi verificado!"
-                        description="Por favor, verifique seu e-mail para acessar todas as funcionalidades."
+                        description="Por favor, verifique seu e-mail para aproveitar todas as nossas funcionalidades!"
                         actionLabel="Verificar e-mail"
                         onAction={() => window.location.href = '/verify-email'}
                     />
