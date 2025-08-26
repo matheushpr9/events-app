@@ -179,7 +179,8 @@ export default function Login({ status, canResetPassword }: LoginProps) {
                                 Não tem uma conta?{' '}
                                 <a
                                     href={route('register')}
-                                    className="text-[#4e2780] font-semibold hover:underline focus:outline-none focus:ring-2 focus:ring-[#b39ddb] rounded"
+                                    className="text-[#4e2780] font-semibold underline hover:underline focus:outline-none focus:ring-2 focus:ring-[#b39ddb] rounded"
+                                    style={{ textDecoration: 'underline', fontWeight: 'bold' }}
                                 >
                                     Cadastre-se
                                 </a>

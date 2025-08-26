@@ -252,7 +252,7 @@ const Cadastro = () => {
                                             href="/login"
                                             className="text-white font-semibold hover:underline focus:outline-none focus:ring-2 focus:ring-[#b39ddb] rounded"
                                         >
-                                            Faça login
+                                            <u><b>Faça login</b></u>
                                         </a>
                                     </div>
                                 </CardContent>
