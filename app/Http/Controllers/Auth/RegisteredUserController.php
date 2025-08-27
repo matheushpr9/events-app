@@ -52,7 +52,9 @@ class RegisteredUserController extends Controller
 
         Auth::login($user);
 
-        $user->sendEmailVerificationNotification();
+        if (!$user->hasVerifiedEmail()) {
+            $user->sendEmailVerificationNotification();
+        }
 
         return redirect()->intended(route('register-space', absolute: false));
     }
