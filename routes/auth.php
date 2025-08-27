@@ -81,7 +81,9 @@ Route::get('auth/google/callback', function () {
 
         Auth::login($user);
 
-        $user->sendEmailVerificationNotification();
+        if (!$user->hasVerifiedEmail()) {
+            $user->sendEmailVerificationNotification();
+        }
 
         return redirect('/');
     } catch (\Throwable $e) {
