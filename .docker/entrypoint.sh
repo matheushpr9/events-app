@@ -20,7 +20,7 @@ if ! grep -q "APP_KEY=" /app/.env || grep -q "APP_KEY=$" /app/.env; then
   php artisan key:generate --force
 fi
 
-# Execute migrations (se quiser aqui; veja observação abaixo)
-# php artisan migrate --force
+# Execute migrations
+php artisan migrate
 
 exec "$@"
