@@ -7,14 +7,15 @@ services:
     expose:
       - "8000"
     environment:
-      - APP_ENV=production
-      - APP_DEBUG=false
-      - APP_URL=https://www.oficialfloov.com.br
-      - VIRTUAL_HOST=www.oficialfloov.com.br
-      - VIRTUAL_PORT=8000
-      - LETSENCRYPT_HOST=www.oficialfloov.com.br
-      - LETSENCRYPT_EMAIL=oficialfloov@gmail.com
-      - APP_TIMEZONE=America/Sao_Paulo
+    - APP_ENV=production
+    - APP_DEBUG=false
+    - APP_URL=https://www.oficialfloov.com.br
+    - VIRTUAL_HOST=www.oficialfloov.com.br
+    - VIRTUAL_PORT=8000
+    - LETSENCRYPT_HOST=www.oficialfloov.com.br
+    - LETSENCRYPT_EMAIL=oficialfloov@gmail.com
+    - APP_TIMEZONE=America/Sao_Paulo
+    - TRUSTED_PROXIES=*
     depends_on:
       db:
         condition: service_healthy
