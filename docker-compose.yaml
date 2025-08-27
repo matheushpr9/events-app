@@ -10,10 +10,11 @@ services:
       - APP_ENV=production
       - APP_DEBUG=false
       - APP_URL=https://www.oficialfloov.com.br
-      - VIRTUAL_HOST=oficialfloov.com.br,www.oficialfloov.com.br
+      - VIRTUAL_HOST=www.oficialfloov.com.br
       - VIRTUAL_PORT=8000
-      - LETSENCRYPT_HOST=oficialfloov.com.br,www.oficialfloov.com.br
+      - LETSENCRYPT_HOST=www.oficialfloov.com.br
       - LETSENCRYPT_EMAIL=oficialfloov@gmail.com
+      - APP_TIMEZONE=America/Sao_Paulo
     depends_on:
       db:
         condition: service_healthy
