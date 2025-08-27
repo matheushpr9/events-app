@@ -9,7 +9,7 @@ services:
     environment:
       - APP_ENV=production
       - APP_DEBUG=false
-      - APP_URL=https://oficialfloov.com.br
+      - APP_URL=https://www.oficialfloov.com.br
       - VIRTUAL_HOST=oficialfloov.com.br,www.oficialfloov.com.br
       - VIRTUAL_PORT=8000
       - LETSENCRYPT_HOST=oficialfloov.com.br,www.oficialfloov.com.br
