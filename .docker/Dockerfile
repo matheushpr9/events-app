@@ -1,4 +1,4 @@
-FROM php:8.3
+FROM php:8.3-fpm
 
 # Instala dependências do sistema
 RUN apt-get update && apt-get install -y \
@@ -50,4 +50,4 @@ RUN chmod +x /entrypoint.sh
 ENTRYPOINT ["/entrypoint.sh"]
 
 # Comando padrão: serve Laravel (ajuste para php-fpm/nginx se preferir)
-CMD ["sh", "-lc", "php artisan migrate --force && php artisan optimize && php artisan serve --host=0.0.0.0 --port=8000"]
+CMD ["sh", "-lc", "php artisan migrate --force && php artisan optimize && php-fpm"]
