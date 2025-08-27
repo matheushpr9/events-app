@@ -50,4 +50,4 @@ RUN chmod +x /entrypoint.sh
 ENTRYPOINT ["/entrypoint.sh"]
 
 # Comando padrão: serve Laravel (ajuste para php-fpm/nginx se preferir)
-CMD ["sh", "-lc", "php artisan migrate --force && php artisan optimize && php-fpm"]
+CMD ["php-fpm"]
