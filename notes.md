@@ -14,9 +14,9 @@ Faça login no Stripe CLI
 bash
 stripe login
 Inicie o listener para webhooks
-Supondo que seu endpoint local seja http://localhost:8000/api/stripe/webhook:
+Supondo que seu endpoint local seja http://localhost:8000/stripe/webhook:
 bash
-stripe listen --forward-to localhost:8000/api/stripe/webhook
+stripe listen --forward-to localhost:8000/stripe/webhook
 
 Sera exibida a chave secret para o webhook, devemos cadastrala no .env:
 STRIPE_WEBHOOK_SECRET
