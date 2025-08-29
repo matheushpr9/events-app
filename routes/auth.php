@@ -3,16 +3,12 @@
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\EmailVerificationNotificationController;
 use App\Http\Controllers\Auth\EmailVerificationPromptController;
+use App\Http\Controllers\Auth\GoogleAuthController;
 use App\Http\Controllers\Auth\NewPasswordController;
 use App\Http\Controllers\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\Auth\VerifyEmailController;
 use Illuminate\Support\Facades\Route;
-
-use Laravel\Socialite\Facades\Socialite;
-use App\Models\User;
-use Illuminate\Support\Facades\Auth;
-
 
 Route::middleware('guest')->group(function () {
     Route::get('register', [RegisteredUserController::class, 'create'])
@@ -58,40 +54,6 @@ Route::get('/auth/user', [AuthenticatedSessionController::class, 'user']);
 
 
 
-Route::get('auth/google', function () {
-    return Socialite::driver('google')->redirect();
-})->name('google.login');
+Route::get('auth/google', [GoogleAuthController::class, 'redirectToGoogle'])->name('google.login');
 
-Route::get('auth/google/callback', function () {
-    try {
-        $googleUser = Socialite::driver('google')->stateless()->user();
-
-        $email = $googleUser->getEmail();
-        if (!$email) {
-            throw new \Exception('Google não retornou e-mail.');
-        }
-
-        $user = User::firstOrCreate(
-            ['email' => $email],
-            [
-                'name' => $googleUser->getName() ?? 'Usuário Google',
-                'password' => bcrypt(uniqid()),
-            ]
-        );
-
-        Auth::login($user);
-
-        if (!$user->hasVerifiedEmail()) {
-            $user->sendEmailVerificationNotification();
-        }
-
-        return redirect('/');
-    } catch (\Throwable $e) {
-        \Log::error('Erro no login Google', [
-            'msg' => $e->getMessage(),
-            'trace' => $e->getTraceAsString(),
-            'googleUser' => isset($googleUser) ? (array)$googleUser : null,
-        ]);
-        return redirect('/login')->with('error', 'Erro ao autenticar com o Google: ' . $e->getMessage());
-    }
-});
+Route::get('auth/google/callback', [GoogleAuthController::class, 'handleGoogleCallback']);
