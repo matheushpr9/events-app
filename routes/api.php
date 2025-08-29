@@ -29,6 +29,7 @@ Route::middleware([
     Route::apiResource('spaces', SpaceController::class);
     Route::post('/stripe/checkout', [StripeCheckoutController::class, 'create']);
     Route::get('/subscription/status', [\App\Http\Controllers\SubscriptionController::class, 'status']);
+    Route::post('/stripe/cancel-subscription', [\App\Http\Controllers\SubscriptionController::class, 'cancel']);
     Route::get('/user/{id}/has-space', [SpaceController::class, 'userHasSpaces']);
     Route::post('/space/{id}/activate', [SpaceController::class, 'activateSpace']);
     Route::post('/space/{id}/deactivate', [SpaceController::class, 'deactivateSpace']);

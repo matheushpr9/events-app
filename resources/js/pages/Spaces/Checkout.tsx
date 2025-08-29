@@ -16,7 +16,7 @@ import {
     X
 } from 'lucide-react';
 import Header from '../components/Header';
-import { toast, ToastContainer } from 'react-toastify';
+import { toast } from 'react-toastify';
 import { api, initSanctum } from '@/api/api';
 import { SubscriptionStatus } from '@/interfaces/user';
 import getSubscriptionStatus from '../helpers/get-subscription-status';
@@ -53,7 +53,7 @@ const plans: Plan[] = [
         period: 'mês',
         description: 'Economize assinando por 6 meses.',
         stripePriceId: 'price_1RtGNPKf1zEbOh7N0NkyjD6q',
-        features: ['Acesso completo','Até 15 fotos por espaço' , 'Suporte prioritário via Email ou WhatsApp', 'Economia garantida', ]
+        features: ['Acesso completo', 'Até 15 fotos por espaço', 'Suporte prioritário via Email ou WhatsApp', 'Economia garantida',]
     },
     {
         id: 'annual',
@@ -64,7 +64,7 @@ const plans: Plan[] = [
         popular: true,
         description: 'O melhor custo-benefício para o ano todo.',
         stripePriceId: 'price_1RtGOGKf1zEbOh7NKf129uqk',
-        features: ['Acesso completo', 'Fotos ilimitadas','Suporte prioritário via Email ou WhatsApp', 'Economia máxima','Relatórios personalizados' ,'Calendário de disponibilidade (Em breve)']
+        features: ['Acesso completo', 'Fotos ilimitadas', 'Suporte prioritário via Email ou WhatsApp', 'Economia máxima', 'Relatórios personalizados', 'Calendário de disponibilidade (Em breve)']
     }
 ];
 
@@ -78,6 +78,7 @@ export default function Checkout() {
         isActive: false,
         plan: null,
         createdAt: null,
+        endsAt: null,
         isLoading: true
     });
     const [showPlanChange, setShowPlanChange] = useState(false);
@@ -89,6 +90,7 @@ export default function Checkout() {
                     isActive: data.isActive,
                     plan: data.planName,
                     createdAt: data.createdAt,
+                    endsAt: data.endsAt,
                     isLoading: false
                 });
             })
@@ -97,6 +99,7 @@ export default function Checkout() {
                     isActive: false,
                     plan: null,
                     createdAt: null,
+                    endsAt: null,
                     isLoading: false
                 });
             });
@@ -140,12 +143,16 @@ export default function Checkout() {
         setIsProcessing(true);
         try {
             await initSanctum();
-            await api.post('/api/stripe/cancel-subscription');
-            toast.success('Assinatura cancelada com sucesso!', { position: 'bottom-center' });
+            const cancelResp = await api.post('/api/stripe/cancel-subscription');
+            toast.success(cancelResp.data.message || 'Assinatura cancelada com sucesso!', { position: 'bottom-center' });
+
+            // Refetch status para refletir o estado real (ativa, grace period, etc)
+            const statusResp = await api.get('/api/subscription/status');
             setSubscriptionStatus({
-                isActive: false,
-                plan: null,
-                createdAt: null,
+                isActive: statusResp.data.isActive,
+                plan: statusResp.data.planName,
+                createdAt: statusResp.data.createdAt,
+                endsAt: statusResp.data.endsAt,
                 isLoading: false
             });
             setShowPlanChange(false);
@@ -214,6 +221,13 @@ export default function Checkout() {
                                             </CardDescription>
                                         </CardHeader>
                                         <CardContent className="text-center space-y-6">
+                                            {/* ALERTA DE PERÍODO DE CARÊNCIA */}
+                                            {subscriptionStatus.endsAt && (
+                                                <div className="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4 my-4 rounded" role="alert">
+                                                    Sua assinatura será encerrada em <b>{new Date(subscriptionStatus.endsAt).toLocaleDateString('pt-BR')}</b>.
+                                                    Você continuará tendo acesso até essa data.
+                                                </div>
+                                            )}
                                             <div className="bg-white/80 rounded-xl p-6 backdrop-blur-sm">
                                                 <div className="text-3xl font-bold mb-2 text-[#4e2780]">
                                                     {formatBRL(currentPlan?.price || 49.9)}
@@ -227,7 +241,6 @@ export default function Checkout() {
                                                 </div>
                                             </div>
                                             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                                                {/* Gerenciar Plano - NOVAS CORES */}
                                                 <Button
                                                     type="button"
                                                     className="bg-white border border-[#7c5ca3] text-[#4e2780] hover:bg-[#ede7f6] hover:border-[#4e2780] focus-visible:ring-2 focus-visible:ring-[#4e2780] disabled:opacity-60"
@@ -237,8 +250,6 @@ export default function Checkout() {
                                                     <Settings className="w-4 h-4 mr-2" aria-hidden />
                                                     {showPlanChange ? 'Ocultar Opções' : 'Gerenciar Plano'}
                                                 </Button>
-
-                                                {/* Cancelar Assinatura - NOVAS CORES */}
                                                 <Button
                                                     type="button"
                                                     className="bg-white border border-red-400 text-red-700 hover:bg-red-50 hover:border-red-500 focus-visible:ring-2 focus-visible:ring-red-600 disabled:opacity-60"
@@ -257,7 +268,6 @@ export default function Checkout() {
                                             </div>
                                         </CardContent>
                                     </Card>
-
                                     {showPlanChange && (
                                         <Card className="mt-6 border-[#4e2780]/20 bg-white border-0 rounded-2xl shadow-md">
                                             <CardHeader>

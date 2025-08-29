@@ -18,4 +18,5 @@ export interface SubscriptionStatus {
   plan: string | null;
   createdAt: string | null;
   isLoading: boolean;
+  endsAt: string | null;
 }
