@@ -8,7 +8,7 @@ use Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful;
 use Laravel\Cashier\Http\Controllers\WebhookController;
 use App\Http\Controllers\StripeCheckoutController;
 
-Route::post('/stripe/webhook', [WebhookController::class, 'handleWebhook'])->prefix('api');
+Route::post('/stripe/webhook', [WebhookController::class, 'handleWebhook']);
 
 Route::get('spaces/filter', [SpaceController::class, 'filter'])->prefix('api');
 Route::get('spaces/{id}', [SpaceController::class, 'show'])->prefix('api');
