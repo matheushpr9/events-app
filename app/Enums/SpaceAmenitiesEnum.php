@@ -19,8 +19,8 @@ enum SpaceAmenitiesEnum: string
     case PISCINA = 'Piscina';
     case MOBILIARIO = 'Mobiliário disponível';
     case SOM = 'Sistema de som';
-    case PROJETOR = 'Projetor/Telão';
-    case BAR = 'Bar/Copa';
+    case PROJETOR = 'Projetor / Telão';
+    case BAR = 'Bar / Copa';
     case CAMARIM = 'Camarim';
     case SEGURANCA = 'Segurança';
     case VESTIARIO = 'Vestiário';

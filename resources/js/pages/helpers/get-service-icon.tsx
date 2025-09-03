@@ -21,9 +21,9 @@ import {
 
 const getServiceIcon = (service: string): React.ReactElement | null => {
     switch (service.toLowerCase()) {
-        case 'música ao vivo/dj':
+        case 'música ao vivo / dj':
             return <Music className="h-6 w-6 text-[#4e2780] group-hover:text-white transition-colors duration-300" aria-label="Música ao vivo/DJ" />;
-        case 'cerimonial/assessoria':
+        case 'cerimonial / assessoria':
             return <PartyPopper className="h-6 w-6 text-[#4e2780] group-hover:text-white transition-colors duration-300" aria-label="Cerimonial/Assessoria" />;
         case 'decoração e ambientação':
             return <Sparkles className="h-6 w-6 text-[#4e2780] group-hover:text-white transition-colors duration-300" aria-label="Decoração e ambientação" />;
@@ -39,12 +39,12 @@ const getServiceIcon = (service: string): React.ReactElement | null => {
             return <Film className="h-6 w-6 text-[#4e2780] group-hover:text-white transition-colors duration-300" aria-label="Filmagem" />;
         case 'iluminação cênica':
             return <Lightbulb className="h-6 w-6 text-[#4e2780] group-hover:text-white transition-colors duration-300" aria-label="Iluminação cênica" />;
-        case 'espaço kids/monitores':
-            return <Smile className="h-6 w-6 text-[#4e2780] group-hover:text-white transition-colors duration-300" aria-label="Espaço Kids/Monitores" />;
-        case 'transporte/transfer para convidados':
-            return <Bus className="h-6 w-6 text-[#4e2780] group-hover:text-white transition-colors duration-300" aria-label="Transporte/Transfer para convidados" />;
-        case 'valet/manobrista':
-            return <CarFront className="h-6 w-6 text-[#4e2780] group-hover:text-white transition-colors duration-300" aria-label="Valet/Manobrista" />;
+        case 'espaço kids / monitores':
+            return <Smile className="h-6 w-6 text-[#4e2780] group-hover:text-white transition-colors duration-300" aria-label="Espaço Kids / Monitores" />;
+        case 'transporte / transfer para convidados':
+            return <Bus className="h-6 w-6 text-[#4e2780] group-hover:text-white transition-colors duration-300" aria-label="Transporte / Transfer para convidados" />;
+        case 'valet / manobrista':
+            return <CarFront className="h-6 w-6 text-[#4e2780] group-hover:text-white transition-colors duration-300" aria-label="Valet / Manobrista" />;
         case 'gerador de energia':
             return <Zap className="h-6 w-6 text-[#4e2780] group-hover:text-white transition-colors duration-300" aria-label="Gerador de energia" />;
         case 'segurança':

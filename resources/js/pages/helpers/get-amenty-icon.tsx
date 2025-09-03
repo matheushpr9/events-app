@@ -54,9 +54,9 @@ const getAmenityIcon = (amenity: string): React.ReactElement | null => {
             return <Sofa className="h-6 w-6 text-[#4e2780] group-hover:text-white transition-colors duration-300" aria-label="Mobiliário disponível" />;
         case 'sistema de som':
             return <Speaker className="h-6 w-6 text-[#4e2780] group-hover:text-white transition-colors duration-300" aria-label="Sistema de som" />;
-        case 'projetor/telão':
+        case 'projetor / telão':
             return <Projector className="h-6 w-6 text-[#4e2780] group-hover:text-white transition-colors duration-300" aria-label="Projetor/Telão" />;
-        case 'bar/copa':
+        case 'bar / copa':
             return <GlassWater className="h-6 w-6 text-[#4e2780] group-hover:text-white transition-colors duration-300" aria-label="Bar/Copa" />;
         case 'camarim':
             return <UserCog className="h-6 w-6 text-[#4e2780] group-hover:text-white transition-colors duration-300" aria-label="Camarim" />;
