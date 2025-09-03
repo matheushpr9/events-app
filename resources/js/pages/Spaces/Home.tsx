@@ -231,7 +231,7 @@ const Index = () => {
                         onSearch={handleSearch}
                         loading={loading}
                     />
-                    <section className="py-8 sm:py-12 px-2 sm:px-4">
+                    <section className="py-6 sm:py-12 px-2 sm:px-4">
                         <div className="container mx-auto max-w-7xl">
                             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-8 sm:mb-10 animate-fade-in">
                                 <div>

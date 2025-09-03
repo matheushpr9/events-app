@@ -140,7 +140,7 @@ const SearchSection = ({ onSearch, loading, onToast }: SearchSectionProps) => {
                                         placeholder="Digite a cidade, bairro ou endereço..."
                                         value={filters.city}
                                         onChange={e => setFilters({ ...filters, city: e.target.value })}
-                                        className="pl-12 bg-white/95 border-[#4e2780]/20 text-[#4e2780] h-12 rounded-xl focus:ring-2 focus:ring-[#b39ddb] placeholder:text-[#4e2780]/50 text-base sm:text-lg"
+                                        className="pl-12 bg-white/95 border-[#4e2780]/20 text-[#4e2780] h-10 rounded-xl focus:ring-2 focus:ring-[#b39ddb] placeholder:text-[#4e2780]/50 text-base sm:text-lg"
                                         aria-label="Buscar por cidade, bairro ou endereço"
                                     />
                                 </div>
