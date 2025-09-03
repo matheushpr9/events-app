@@ -5,10 +5,18 @@ use App\Http\Controllers\RatingController;
 use App\Http\Controllers\SpaceController;
 use Illuminate\Support\Facades\Route;
 use Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful;
-use Laravel\Cashier\Http\Controllers\WebhookController;
+// use Laravel\Cashier\Http\Controllers\WebhookController;
 use App\Http\Controllers\StripeCheckoutController;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
-Route::post('/stripe/webhook', [WebhookController::class, 'handleWebhook']);
+Route::post('/stripe/webhook', function (Request $request) {
+    Log::info('Stripe Webhook recebido', [
+        'headers' => $request->headers->all(),
+        'body' => $request->getContent(),
+    ]);
+    return app(\Laravel\Cashier\Http\Controllers\WebhookController::class)->handleWebhook($request);
+});
 
 Route::get('spaces/filter', [SpaceController::class, 'filter'])->prefix('api');
 Route::get('spaces/{id}', [SpaceController::class, 'show'])->prefix('api');
