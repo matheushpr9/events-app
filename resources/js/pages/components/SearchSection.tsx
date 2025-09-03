@@ -80,7 +80,7 @@ const SearchSection = ({ onSearch, loading, onToast }: SearchSectionProps) => {
                         Seu evento em um clique!
                     </h1>
                     <p className="text-base md:text-lg text-[#4e2780]/70 max-w-2xl mx-auto leading-relaxed">
-                        Busque, compare e reserve.
+                        Seu evento começa aqui.
                     </p>
                 </div>
 

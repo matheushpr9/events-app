@@ -203,7 +203,7 @@ const Index = () => {
                     <BannerAlert
                         type="info"
                         message="Cadastre seu espaço!"
-                        description="Faça login ou cadastre-se para aproveitar todos os benefícios."
+                        description="Faça login para aproveitar todos os benefícios."
                         actionLabel="Entrar ou Cadastrar"
                         onAction={() => window.location.href = '/login'}
                     />
