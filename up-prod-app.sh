@@ -7,4 +7,4 @@ if [[ "$1" == "--certs" ]]; then
 fi
 
 chmod -R 777 ./storage
-docker compose --profile prod -f docker-compose.yaml up -d
+docker compose --profile prod -f docker-compose.yaml up --build -d
