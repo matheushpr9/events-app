@@ -21,12 +21,14 @@ services:
     restart: unless-stopped
     volumes:
       - public-build:/app/public
+      - ./storage/app/public:/app/storage/app/public
 
   nginx:
     image: nginx:alpine
     volumes:
       - ./nginx.local.prod.conf:/etc/nginx/conf.d/default.conf
       - public-build:/app/public
+      - ./storage/app/public:/app/storage/app/public
     expose:
       - "80"
     depends_on:
