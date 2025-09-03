@@ -24,7 +24,7 @@ export default function BannerAlert({
     if (!visible) return null;
     const color = COLORS[type];
     return (
-        <div className={`w-full flex items-center justify-between px-4 py-3 border-l-4 ${color.bg} ${color.text} ${color.border} shadow-sm`}>
+        <div className={`w-full flex items-center justify-between px-4 py-2 border-l-4 ${color.bg} ${color.text} ${color.border} shadow-sm`}>
             <div>
                 <p className="font-semibold">{message}</p>
                 {description && <p className="text-sm opacity-80">{description}</p>}

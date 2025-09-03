@@ -75,7 +75,7 @@ const SearchSection = ({ onSearch, loading, onToast }: SearchSectionProps) => {
         >
             <div className="container mx-auto max-w-6xl">
                 {/* Hero Section */}
-                <div className="text-center mb-4 animate-fade-in">
+                <div className="text-center mb-2 animate-fade-in">
                     <h1 className="text-2xl md:text-4xl font-bold text-[#4e2780] mb-2 md:mb-4 leading-tight">
                         Seu evento em um clique!
                     </h1>
