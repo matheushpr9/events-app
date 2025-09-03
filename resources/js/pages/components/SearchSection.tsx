@@ -70,7 +70,7 @@ const SearchSection = ({ onSearch, loading, onToast }: SearchSectionProps) => {
 
     return (
         <section
-            className="bg-[#f4e6f3] bg-gradient-to-b from-[#f4e6f3] to-[#fff6f1] py-4 px-2 sm:px-4"
+            className="bg-[#f4e6f3] bg-gradient-to-b from-[#f4e6f3] to-[#fff6f1] py-2 px-2 sm:px-4"
             aria-label="Seção de busca de espaços"
         >
             <div className="container mx-auto max-w-6xl">

@@ -231,9 +231,9 @@ const Index = () => {
                         onSearch={handleSearch}
                         loading={loading}
                     />
-                    <section className="py-6 sm:py-12 px-2 sm:px-4">
+                    <section className="py-2 sm:py-12 px-2 sm:px-4">
                         <div className="container mx-auto max-w-7xl">
-                            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-8 sm:mb-10 animate-fade-in">
+                            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-2 sm:mb-10 animate-fade-in">
                                 <div>
                                     <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-[#4e2780] mb-2 sm:mb-3">
                                         Espaços Disponíveis
