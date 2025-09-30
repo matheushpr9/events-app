@@ -16,7 +16,7 @@ const SpaceCard = ({ space }: SpaceCardProps) => {
                 const averageRating = totalRatings > 0 ? sumRatings / totalRatings : 0;
 
   return (
-    <Card className="group overflow-hidden bg-white shadow-lg hover:shadow-2xl transition-all duration-500 border-0 rounded-2xl focus-within:ring-2 focus-within:ring-[#b39ddb]">
+    <Card className="group overflow-hidden bg-white shadow-lg hover:shadow-2xl transition-all duration-500 border-0 rounded-2xl focus-within:ring-2 focus-within:ring-[#b39ddb]" onClick={() => window.location.href = `/space/details/${space.id}`}>
       {/* Image Section */}
       <div className="aspect-[4/3] bg-[#f4e6f3] relative overflow-hidden">
         <img
@@ -27,12 +27,12 @@ const SpaceCard = ({ space }: SpaceCardProps) => {
           loading="lazy"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
-        
+
         {/* Type Badge */}
         <Badge className="absolute top-4 left-4 bg-white/90 text-[#4e2780] border-0 font-semibold shadow-sm">
           {space.type}
         </Badge>
-        
+
         {/* Rating Badge */}
         <div className="absolute top-4 right-4 bg-white/90 rounded-full px-3 py-1.5 flex items-center gap-1 shadow-sm">
           <Star className="h-3.5 w-3.5 fill-yellow-400 text-yellow-400" aria-label="Nota" />
@@ -52,7 +52,7 @@ const SpaceCard = ({ space }: SpaceCardProps) => {
             </div>
           </div>
         </div>
-        
+
         <CardDescription className="text-[#4e2780]/70 line-clamp-2 leading-relaxed">
           {space.description}
         </CardDescription>
@@ -70,9 +70,9 @@ const SpaceCard = ({ space }: SpaceCardProps) => {
         {/* Amenities */}
         <div className="flex flex-wrap gap-2 mb-6">
           {space.amenities.slice(0, 3).map((amenity, index) => (
-            <Badge 
-              key={index} 
-              variant="secondary" 
+            <Badge
+              key={index}
+              variant="secondary"
               className="text-xs bg-[#4e2780]/10 text-[#4e2780] border-0 font-medium px-3 py-1 flex items-center gap-1.5"
             >
               {getAmenityIcon(amenity)}
@@ -80,8 +80,8 @@ const SpaceCard = ({ space }: SpaceCardProps) => {
             </Badge>
           ))}
           {space.amenities.length > 3 && (
-            <Badge 
-              variant="outline" 
+            <Badge
+              variant="outline"
               className="text-xs border-[#4e2780]/20 text-[#4e2780]/70 font-medium px-3 py-1"
             >
               +{space.amenities.length - 3} mais
@@ -114,7 +114,7 @@ const SpaceCard = ({ space }: SpaceCardProps) => {
         </div>
 
         {/* Action Button */}
-        <Button 
+        <Button
           className="w-full bg-[#4e2780] bg-gradient-to-br from-[#4e2780] to-[#7c5ca3] text-white font-semibold h-12 rounded-xl hover:shadow-lg transition-all duration-300 focus-visible:ring-2 focus-visible:ring-[#b39ddb] cursor-pointer"
           aria-label={`Ver detalhes`}
           onClick={() => window.location.href = `/space/details/${space.id}`}
