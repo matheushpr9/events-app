@@ -117,7 +117,6 @@ const SpaceCard = ({ space }: SpaceCardProps) => {
         <Button
           className="w-full bg-[#4e2780] bg-gradient-to-br from-[#4e2780] to-[#7c5ca3] text-white font-semibold h-12 rounded-xl hover:shadow-lg transition-all duration-300 focus-visible:ring-2 focus-visible:ring-[#b39ddb] cursor-pointer"
           aria-label={`Ver detalhes`}
-          onClick={() => window.location.href = `/space/details/${space.id}`}
         >
           Ver Detalhes
         </Button>
