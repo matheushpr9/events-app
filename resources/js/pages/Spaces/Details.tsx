@@ -90,7 +90,7 @@ const Index = () => {
 
                 {/* Contact Section */}
                 <section className="container mx-auto max-w-7xl px-2 sm:px-4 pb-8 md:pb-12">
-                    <SpaceContact {...space.user} />
+                    <SpaceContact {...space} />
                 </section>
 
                 {/* Amenities Section */}
