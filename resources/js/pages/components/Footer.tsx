@@ -1,8 +1,13 @@
 import {HelpCircle, Instagram, Facebook, Phone, ArrowUp } from 'lucide-react';
 import { useMemo } from 'react';
 
+const formatCNPJ = (cnpj = '') =>
+  cnpj.replace(/\D/g, '').replace(/^(\d{2})(\d{3})(\d{3})(\d{4})(\d{2}).*/, '$1.$2.$3/$4-$5');
+
+
 const Footer = () => {
   const year = useMemo(() => new Date().getFullYear(), []);
+  const cnpj = '62851734000131'
 
   return (
     <footer className="w-full bg-white border-t">
@@ -50,19 +55,19 @@ const Footer = () => {
             <Phone className="w-5 h-5" />
             <span>WhatsApp:</span>
             <a
-              href="https://wa.me/5511999999999"
+              href="https://wa.me/5511961887079"
               target="_blank"
               rel="noopener noreferrer"
               className="font-medium hover:text-[#3a1e5a] transition-colors"
             >
-              (11) 99999-9999
+              (11) 96188-7079
             </a>
           </div>
           <div className="flex items-center gap-2 text-[#4e2780] text-base">
             <Phone className="w-5 h-5" />
             <span>Telefone:</span>
-            <a href="tel:+5511999999999" className="font-medium hover:text-[#3a1e5a] transition-colors">
-              +55 (11) 99999-9999
+            <a href="tel:+5511961887079" className="font-medium hover:text-[#3a1e5a] transition-colors">
+              +55 (11) 96188-7079
             </a>
           </div>
         </div>
@@ -101,7 +106,7 @@ const Footer = () => {
         </div>
       </div>
       <div className="bg-[#ede7f6] py-4 text-center text-[#4e2780]/80 text-sm rounded-b-2xl shadow-inner">
-        &copy; {year} floov. Todos os direitos reservados.
+        &copy; {year} floov. Todos os direitos reservados. — CNPJ: {formatCNPJ(cnpj)}
       </div>
     </footer>
   );
