@@ -1,6 +1,5 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import { Card, CardContent } from '@/components/ui/card';
 import { Search, MapPin, Filter, ChevronDown } from 'lucide-react';
 import getTypes from '../helpers/get-types';
@@ -8,8 +7,10 @@ import getLocalities from '../helpers/get-localities';
 import getAmenities from '../helpers/get-amenties';
 import getServices from '../helpers/get-services';
 import Select from 'react-select';
+import AsyncSelect from 'react-select/async';
 import makeAnimated from 'react-select/animated';
 import getCapacities from '../helpers/get-capacities';
+import searchCities, { CitySuggestion } from './helpers/search-cities';
 import { SearchFilters } from '../../interfaces/search-filters';
 
 import './search-section-mobile.css';
@@ -33,14 +34,13 @@ const SearchSection = ({ onSearch, loading, onToast }: SearchSectionProps) => {
     });
     const [showAdvanced, setShowAdvanced] = useState(false);
 
-    // Dados dinâmicos
+
     const [amenties, setAmenties] = useState<string[]>([]);
     const [spaceLocality, setSpaceLocality] = useState<string[]>([]);
     const [services, setServices] = useState<string[]>([]);
     const [spaceTypes, setSpaceTypes] = useState<string[]>([]);
     const [capacities, setCapacities] = useState<string[]>([]);
 
-    // Fetch helpers
     useEffect(() => { getAmenities().then(setAmenties).catch(() => setAmenties([])); }, []);
     useEffect(() => { getLocalities().then(setSpaceLocality).catch(() => setSpaceLocality([])); }, []);
     useEffect(() => { getServices().then(setServices).catch(() => setServices([])); }, []);
@@ -59,6 +59,45 @@ const SearchSection = ({ onSearch, loading, onToast }: SearchSectionProps) => {
         { value: 'SP', label: 'São Paulo' }, { value: 'SE', label: 'Sergipe' }, { value: 'TO', label: 'Tocantins' }
     ];
 
+    const abortRef = useRef<AbortController | null>(null);
+    const debounceRef = useRef<number | undefined>(undefined);
+
+    const loadCityOptions = useMemo(() => {
+        return (
+            inputValue: string,
+            callback: (options: Array<{ label: string; value: CitySuggestion }>) => void
+        ) => {
+            if (debounceRef.current) {
+                window.clearTimeout(debounceRef.current);
+            }
+
+            if (!inputValue || inputValue.trim().length < 2) {
+                callback([]);
+                return;
+            }
+
+            debounceRef.current = window.setTimeout(async () => {
+                if (abortRef.current) abortRef.current.abort();
+                abortRef.current = new AbortController();
+
+                try {
+                    const results = await searchCities(inputValue, abortRef.current.signal);
+                    interface CityOption {
+                        label: string;
+                        value: CitySuggestion;
+                    }
+                    const options: CityOption[] = results.map((r: CitySuggestion) => ({
+                        label: `${r.city} - ${r.state}`,
+                        value: r,
+                    }));
+                    callback(options);
+                } catch {
+                    callback([]);
+                }
+            }, 250);
+        };
+    }, []);
+
     const handleSearch = (e?: React.FormEvent) => {
         if (e) e.preventDefault();
         if (!filters.city && !filters.state) {
@@ -67,6 +106,22 @@ const SearchSection = ({ onSearch, loading, onToast }: SearchSectionProps) => {
         }
         onSearch(filters);
     };
+
+    const handleCitySelect = (selected: { label: string; value: CitySuggestion } | null) => {
+        if (!selected) {
+            const next = { ...filters, city: '', state: '' };
+            setFilters(next);
+            return;
+        }
+        const next = { ...filters, city: selected.value.city, state: selected.value.state };
+        setFilters(next);
+        onSearch(next);
+    };
+
+    const selectedCityOption =
+        filters.city && filters.state
+            ? { label: `${filters.city} - ${filters.state}`, value: { city: filters.city, state: filters.state } }
+            : null;
 
     return (
         <section
@@ -133,15 +188,55 @@ const SearchSection = ({ onSearch, loading, onToast }: SearchSectionProps) => {
                                     />
                                 </div>
 
-                                {/* City Search */}
+                                {/* City Autocomplete (API IBGE) */}
                                 <div className="relative w-full">
                                     <MapPin className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-[#4e2780]/50 pointer-events-none" aria-hidden="true" />
-                                    <Input
-                                        placeholder="Digite a cidade, bairro ou endereço..."
-                                        value={filters.city}
-                                        onChange={e => setFilters({ ...filters, city: e.target.value })}
-                                        className="pl-12 bg-white/95 border-[#4e2780]/20 text-[#4e2780] h-10 rounded-xl focus:ring-2 focus:ring-[#b39ddb] placeholder:text-[#4e2780]/50 text-base sm:text-lg"
-                                        aria-label="Buscar por cidade, bairro ou endereço"
+                                    <AsyncSelect
+                                        cacheOptions
+                                        defaultOptions={false}
+                                        loadOptions={loadCityOptions}
+                                        value={selectedCityOption}
+                                        onChange={(selected) => handleCitySelect(selected as any)}
+                                        isClearable
+                                        placeholder="Digite a cidade..."
+                                        classNamePrefix="react-select"
+                                        aria-label="Buscar por cidade (autocomplete)"
+                                        components={makeAnimated()}
+                                        noOptionsMessage={() => 'Digite pelo menos 2 letras'}
+                                        styles={{
+                                            control: (provided, state) => ({
+                                                ...provided,
+                                                paddingLeft: '2.25rem', // espaço para o ícone
+                                                backgroundColor: 'rgba(255,255,255,0.95)',
+                                                borderColor: 'rgba(78,39,128,0.2)',
+                                                minHeight: '2.5rem',
+                                                borderRadius: '0.75rem',
+                                                boxShadow: state.isFocused ? '0 0 0 2px #b39ddb' : undefined,
+                                            }),
+                                            menu: (provided) => ({
+                                                ...provided,
+                                                backgroundColor: '#fff',
+                                                color: '#4e2780',
+                                            }),
+                                            option: (provided, state) => ({
+                                                ...provided,
+                                                backgroundColor: state.isFocused ? '#f4e6f3' : '#fff',
+                                                color: '#4e2780',
+                                                cursor: 'pointer',
+                                            }),
+                                            singleValue: (provided) => ({
+                                                ...provided,
+                                                color: '#4e2780',
+                                            }),
+                                            placeholder: (provided) => ({
+                                                ...provided,
+                                                color: '#4e2780aa',
+                                            }),
+                                            input: (provided) => ({
+                                                ...provided,
+                                                color: '#4e2780',
+                                            }),
+                                        }}
                                     />
                                 </div>
                             </div>
@@ -201,7 +296,7 @@ const SearchSection = ({ onSearch, loading, onToast }: SearchSectionProps) => {
                                         options={spaceTypes.map(type => ({ value: type, label: type }))}
                                         value={spaceTypes.find(type => type === filters.type) ? { value: filters.type, label: filters.type } : null}
                                         onChange={selectedOption => {
-                                            setFilters({ ...filters, type: selectedOption ? selectedOption.value : '' });
+                                            setFilters({ ...filters, type: selectedOption ? (selectedOption as any).value : '' });
                                         }}
                                         classNamePrefix="react-select"
                                         aria-label="Tipo de espaço"
@@ -237,7 +332,7 @@ const SearchSection = ({ onSearch, loading, onToast }: SearchSectionProps) => {
                                         options={spaceLocality.map(locality => ({ value: locality, label: locality }))}
                                         value={spaceLocality.find(locality => locality === filters.locality) ? { value: filters.locality, label: filters.locality } : null}
                                         onChange={selectedOption => {
-                                            setFilters({ ...filters, locality: selectedOption ? selectedOption.value : '' });
+                                            setFilters({ ...filters, locality: selectedOption ? (selectedOption as any).value : '' });
                                         }}
                                         classNamePrefix="react-select"
                                         aria-label="Localização"
@@ -365,7 +460,7 @@ const SearchSection = ({ onSearch, loading, onToast }: SearchSectionProps) => {
                                                 : null
                                         }
                                         onChange={selectedOption => {
-                                            setFilters({ ...filters, capacity: selectedOption ? selectedOption.value : '' });
+                                            setFilters({ ...filters, capacity: selectedOption ? (selectedOption as any).value : '' });
                                         }}
                                         classNamePrefix="react-select"
                                         aria-label="Capacidade"
@@ -414,7 +509,7 @@ const SearchSection = ({ onSearch, loading, onToast }: SearchSectionProps) => {
                                             ].find(option => option.value === filters.sort_by) || null
                                         }
                                         onChange={selectedOption => {
-                                            setFilters({ ...filters, sort_by: selectedOption ? selectedOption.value : '' });
+                                            setFilters({ ...filters, sort_by: selectedOption ? (selectedOption as any).value : '' });
                                         }}
                                         classNamePrefix="react-select"
                                         aria-label="Ordenar por"
