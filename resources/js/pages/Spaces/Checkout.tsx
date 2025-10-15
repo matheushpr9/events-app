@@ -36,6 +36,10 @@ interface Plan {
     stripePriceId: string;
 }
 
+const monthlyPriceId = import.meta.env.VITE_STRIPE_MONTHLY_PRICE_ID;
+const semiannualPriceId = import.meta.env.VITE_STRIPE_SEMIANNUAL_PRICE_ID;
+const annualPriceId = import.meta.env.VITE_STRIPE_ANNUAL_PRICE_ID;
+
 const plans: Plan[] = [
     {
         id: 'monthly',
@@ -43,7 +47,7 @@ const plans: Plan[] = [
         price: 119.9,
         period: 'mês',
         description: 'Assinatura mensal, flexibilidade total.',
-        stripePriceId: 'price_1RtGLnKf1zEbOh7NrdTmChtJ',
+        stripePriceId: monthlyPriceId,
         features: ['Acesso completo', 'Até 5 fotos por espaço', 'Suporte prioritário via Email', 'Cancelamento a qualquer momento']
     },
     {
@@ -52,7 +56,7 @@ const plans: Plan[] = [
         price: 99.9,
         period: 'mês',
         description: 'Economize assinando por 6 meses.',
-        stripePriceId: 'price_1RtGNPKf1zEbOh7N0NkyjD6q',
+        stripePriceId: semiannualPriceId,
         features: ['Acesso completo', 'Até 15 fotos por espaço', 'Suporte prioritário via Email ou WhatsApp', 'Economia garantida',]
     },
     {
@@ -63,7 +67,7 @@ const plans: Plan[] = [
         period: 'mês',
         popular: true,
         description: 'O melhor custo-benefício para o ano todo.',
-        stripePriceId: 'price_1RtGOGKf1zEbOh7NKf129uqk',
+        stripePriceId: annualPriceId,
         features: ['Acesso completo', 'Fotos ilimitadas', 'Suporte prioritário via Email ou WhatsApp', 'Economia máxima', 'Relatórios personalizados', 'Calendário de disponibilidade (Em breve)']
     }
 ];
